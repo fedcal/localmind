@@ -3,7 +3,7 @@
 | Campo        | Valore                          |
 |--------------|---------------------------------|
 | **Documento**| Architettura Esagonale          |
-| **Versione** | 0.1.0                          |
+| **Versione** | 0.1.0                           |
 | **Data**     | 2026-02-09                      |
 | **Progetto** | LocalMind                       |
 
@@ -49,24 +49,24 @@ Grazie alla separazione, i servizi di dominio possono essere testati unitariamen
 L'architettura si organizza in tre layer concentrici, dal centro (piu' stabile) verso l'esterno (piu' volatile):
 
 ```
-+------------------------------------------------------------------+
-|                                                                    |
-|   INFRASTRUCTURE LAYER (Adapters)                                  |
-|   - REST Controllers                                               |
-|   - JPA Repositories                                               |
-|   - Spring AI Clients                                              |
-|   - Apache Tika Adapters                                           |
-|   - Spring Batch Jobs                                              |
-|   - HTTP Clients (n8n, Qdrant)                                     |
-|                                                                    |
-|   +------------------------------------------------------------+   |
++---------------------------------------------------------------------+
+|                                                                     |
+|   INFRASTRUCTURE LAYER (Adapters)                                   |
+|   - REST Controllers                                                |
+|   - JPA Repositories                                                |
+|   - Spring AI Clients                                               |
+|   - Apache Tika Adapters                                            |
+|   - Spring Batch Jobs                                               |
+|   - HTTP Clients (n8n, Qdrant)                                      |
+|                                                                     |
+|   +--------------------------------------------------------------+  |
 |   |                                                              |  |
 |   |   APPLICATION LAYER (Ports)                                  |  |
 |   |   - Use Case interfaces (ports in)                           |  |
 |   |   - Repository interfaces (ports out)                        |  |
 |   |   - Client interfaces (ports out)                            |  |
 |   |                                                              |  |
-|   |   +----------------------------------------------------+    |  |
+|   |   +------------------------------------------------------+   |  |
 |   |   |                                                      |   |  |
 |   |   |   DOMAIN LAYER (Core)                                |   |  |
 |   |   |   - Entities (Document, Agent, Webhook, etc.)        |   |  |
@@ -76,11 +76,11 @@ L'architettura si organizza in tre layer concentrici, dal centro (piu' stabile) 
 |   |   |   - Domain Exceptions                                |   |  |
 |   |   |   - ZERO dipendenze framework                        |   |  |
 |   |   |                                                      |   |  |
-|   |   +----------------------------------------------------+    |  |
+|   |   +------------------------------------------------------+   |  |
 |   |                                                              |  |
-|   +------------------------------------------------------------+   |
-|                                                                    |
-+------------------------------------------------------------------+
+|   +--------------------------------------------------------------+  |
+|                                                                     |
++---------------------------------------------------------------------+
 ```
 
 ### 2.1 Domain Layer (Centro)

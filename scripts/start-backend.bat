@@ -13,6 +13,18 @@ echo === LocalMind - Avvio Backend ===
 echo Directory: %BACKEND_DIR%
 echo.
 
+REM Carica variabili d'ambiente da .env
+if exist "%PROJECT_ROOT%\.env" (
+    for /f "usebackq tokens=1,* delims==" %%a in ("%PROJECT_ROOT%\.env") do (
+        set "%%a=%%b" 2>nul
+    )
+    echo Variabili caricate da .env
+) else (
+    echo ATTENZIONE: file .env non trovato.
+    echo Copia .env.example in .env e configura le credenziali.
+)
+echo.
+
 cd /d "%BACKEND_DIR%"
 
 REM Verifica Java
@@ -31,7 +43,17 @@ if %ERRORLEVEL% NEQ 0 (
     exit /b 1
 )
 
+echo Compilazione e installazione moduli...
+echo.
+
+mvn install -DskipTests -q
+if %ERRORLEVEL% NEQ 0 (
+    echo ERRORE: compilazione fallita.
+    pause
+    exit /b 1
+)
+
 echo Avvio Spring Boot (profilo: dev)...
 echo.
 
-mvn -pl localmind-app -am spring-boot:run -Dspring-boot.run.profiles=dev
+mvn -pl localmind-app spring-boot:run -Dspring-boot.run.profiles=dev

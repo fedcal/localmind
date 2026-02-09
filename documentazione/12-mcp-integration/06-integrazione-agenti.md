@@ -314,7 +314,7 @@ Passo 4: Gli agenti possono usare i nuovi tool nella prossima esecuzione
 |--------------------------|-----------------------------------------------|------------------------------------|
 | Accesso filesystem       | `@modelcontextprotocol/server-filesystem`     | read_file, write_file, list_dir    |
 | Database SQLite          | `@modelcontextprotocol/server-sqlite`         | read_query, write_query, list_tables|
-| Database PostgreSQL      | `@modelcontextprotocol/server-postgres`       | query, list_tables, describe_table |
+| Database MySQL           | `@modelcontextprotocol/server-mysql`          | query, list_tables, describe_table |
 | Ricerca web              | `@modelcontextprotocol/server-fetch`          | fetch                              |
 | Browser automation       | `@anthropic/server-puppeteer`                 | navigate, screenshot, click        |
 | Git operations           | `@modelcontextprotocol/server-git`            | log, diff, status, commit          |

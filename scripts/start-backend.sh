@@ -15,6 +15,19 @@ echo "=== LocalMind - Avvio Backend ==="
 echo "Directory: $BACKEND_DIR"
 echo ""
 
+# Carica variabili d'ambiente da .env
+ENV_FILE="$PROJECT_ROOT/.env"
+if [ -f "$ENV_FILE" ]; then
+    set -a
+    source "$ENV_FILE"
+    set +a
+    echo "Variabili caricate da .env"
+else
+    echo "ATTENZIONE: file .env non trovato in $PROJECT_ROOT"
+    echo "Copia .env.example in .env e configura le credenziali."
+fi
+echo ""
+
 cd "$BACKEND_DIR"
 
 # Verifica prerequisiti
@@ -36,7 +49,12 @@ if [ "$JAVA_VERSION" -lt 17 ]; then
     exit 1
 fi
 
+echo "Compilazione e installazione moduli..."
+echo ""
+
+mvn install -DskipTests -q
+
 echo "Avvio Spring Boot (profilo: dev)..."
 echo ""
 
-mvn -pl localmind-app -am spring-boot:run -Dspring-boot.run.profiles=dev
+mvn -pl localmind-app spring-boot:run -Dspring-boot.run.profiles=dev

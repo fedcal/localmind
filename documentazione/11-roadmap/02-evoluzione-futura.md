@@ -489,7 +489,7 @@ v2.x: Apache Kafka / RabbitMQ (distribuito, asincrono)
 
 **Implementazione prevista:**
 
-- **Modello di scrittura:** Entita' di dominio normalizzate su PostgreSQL.
+- **Modello di scrittura:** Entita' di dominio normalizzate su MySQL.
 - **Modello di lettura:** Viste materializzate o tabelle denormalizzate ottimizzate per le query.
 - **Sincronizzazione:** Eventi di dominio che aggiornano il modello di lettura.
 
@@ -502,7 +502,7 @@ v2.x: Apache Kafka / RabbitMQ (distribuito, asincrono)
 | Risorsa K8s | Utilizzo |
 |---|---|
 | **Deployment** | Per ogni microservizio (quando applicabile) |
-| **StatefulSet** | Per PostgreSQL e Qdrant (dati persistenti) |
+| **StatefulSet** | Per MySQL e Qdrant (dati persistenti) |
 | **Service** | Per comunicazione inter-pod |
 | **Ingress** | Per esposizione API e frontend |
 | **ConfigMap** | Per configurazioni non sensibili |
@@ -517,7 +517,7 @@ v2.x: Apache Kafka / RabbitMQ (distribuito, asincrono)
 helm repo add localmind https://charts.localmind.io
 helm install localmind localmind/localmind \
   --set ollama.gpu.enabled=true \
-  --set postgres.persistence.size=50Gi
+  --set mysql.persistence.size=50Gi
 ```
 
 ---

@@ -33,6 +33,10 @@ export const routes: Routes = [
       {
         path: 'dashboard',
         loadChildren: () => import('./features/dashboard/dashboard.routes').then(m => m.DASHBOARD_ROUTES)
+      },
+      {
+        path: 'guide',
+        loadChildren: () => import('./features/guide/guide.routes').then(m => m.GUIDE_ROUTES)
       }
     ]
   },

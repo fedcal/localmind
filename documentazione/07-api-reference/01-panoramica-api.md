@@ -22,15 +22,15 @@
 
 Le API REST di LocalMind espongono le funzionalita' della piattaforma attraverso endpoint HTTP standard. Tutte le API sono prefissate con `/api/v1` per consentire il versionamento futuro.
 
-| Proprieta'        | Valore                              |
-|--------------------|-------------------------------------|
-| **Base URL**       | `http://localhost:8080/api/v1`      |
+| Proprieta'         | Valore                                  |
+|--------------------|-----------------------------------------|
+| **Base URL**       | `http://localhost:8080/api/v1`          |
 | **Protocollo**     | HTTP (HTTPS pianificato per produzione) |
-| **Porta**          | 8080                                |
-| **Formato dati**   | JSON (`application/json`)           |
-| **Encoding**       | UTF-8                               |
-| **Upload file**    | `multipart/form-data`               |
-| **Autenticazione** | Nessuna (v0.1.0)                    |
+| **Porta**          | 8080                                    |
+| **Formato dati**   | JSON (`application/json`)               |
+| **Encoding**       | UTF-8                                   |
+| **Upload file**    | `multipart/form-data`                   |
+| **Autenticazione** | Nessuna (v0.1.0)                        |
 
 ---
 
@@ -61,14 +61,14 @@ I timestamp sono in formato ISO 8601 con timezone UTC:
 ### Codici di stato HTTP
 
 | Codice | Significato          | Utilizzo                                   |
-|--------|---------------------|--------------------------------------------|
-| 200    | OK                  | Richiesta completata con successo          |
-| 201    | Created             | Risorsa creata con successo (upload)       |
-| 204    | No Content          | Eliminazione completata                    |
-| 400    | Bad Request         | Validazione fallita, parametri mancanti    |
-| 404    | Not Found           | Risorsa non trovata                        |
+|--------|----------------------|--------------------------------------------|
+| 200    | OK                   | Richiesta completata con successo          |
+| 201    | Created              | Risorsa creata con successo (upload)       |
+| 204    | No Content           | Eliminazione completata                    |
+| 400    | Bad Request          | Validazione fallita, parametri mancanti    |
+| 404    | Not Found            | Risorsa non trovata                        |
 | 500    | Internal Server Error| Errore interno del server                  |
-| 502    | Bad Gateway         | Errore del provider LLM                    |
+| 502    | Bad Gateway          | Errore del provider LLM                    |
 
 ---
 
@@ -94,12 +94,12 @@ La gestione centralizzata degli errori e' implementata tramite `@RestControllerA
 
 ### Mapping eccezioni
 
-| Eccezione                     | Codice HTTP | Descrizione                              |
-|-------------------------------|-------------|------------------------------------------|
-| `ResourceNotFoundException`   | 404         | Risorsa richiesta non trovata            |
-| `LlmProviderException`       | 502         | Errore nella comunicazione con il provider LLM |
-| `DocumentProcessingException` | 500         | Errore durante l'elaborazione di un documento |
-| `Exception` (generica)        | 500         | Errore interno non gestito               |
+| Eccezione                     | Codice HTTP | Descrizione                                    |
+|-------------------------------|-------------|------------------------------------------------|
+| `ResourceNotFoundException`   | 404         | Risorsa richiesta non trovata                  |
+| `LlmProviderException`        | 502         | Errore nella comunicazione con il provider LLM |
+| `DocumentProcessingException` | 500         | Errore durante l'elaborazione di un documento  |
+| `Exception` (generica)        | 500         | Errore interno non gestito                     |
 
 ### Formato ErrorResponseDto
 
@@ -116,11 +116,11 @@ Tutte le risposte di errore seguono il formato standard `ErrorResponseDto`:
 }
 ```
 
-| Campo       | Tipo     | Descrizione                              |
-|-------------|----------|------------------------------------------|
-| `status`    | `int`    | Codice di stato HTTP                     |
-| `message`   | `String` | Messaggio descrittivo dell'errore        |
-| `timestamp` | `Instant`| Data/ora dell'errore in formato ISO 8601 |
+| Campo       | Tipo     | Descrizione                                       |
+|-------------|----------|---------------------------------------------------|
+| `status`    | `int`    | Codice di stato HTTP                              |
+| `message`   | `String` | Messaggio descrittivo dell'errore                 |
+| `timestamp` | `Instant`| Data/ora dell'errore in formato ISO 8601          |
 | `path`      | `String` | Percorso della richiesta che ha generato l'errore |
 
 ### Implementazione
@@ -175,13 +175,13 @@ public class GlobalExceptionHandler {
 
 La configurazione CORS e' gestita tramite Spring Security e consente l'accesso dal frontend Angular in esecuzione locale.
 
-| Proprieta'          | Valore                          |
-|---------------------|---------------------------------|
-| **Origini consentite** | `http://localhost:4200`      |
+| Proprieta'             | Valore                                    |
+|------------------------|-------------------------------------------|
+| **Origini consentite** | `http://localhost:4200`                   |
 | **Metodi consentiti**  | `GET`, `POST`, `PUT`, `DELETE`, `OPTIONS` |
-| **Header consentiti**  | `*` (tutti)                  |
-| **Credenziali**        | Non abilitate                |
-
+| **Header consentiti**  | `*` (tutti)                               |
+| **Credenziali**        | Non abilitate                             |
+             
 > **Nota**: in produzione, la configurazione CORS dovra' essere aggiornata per riflettere il dominio effettivo dell'applicazione.
 
 ---
@@ -190,13 +190,13 @@ La configurazione CORS e' gestita tramite Spring Security e consente l'accesso d
 
 ### Chat
 
-| Metodo | Endpoint         | Descrizione                    | Request Body      | Response              |
+| Metodo | Endpoint        | Descrizione                    | Request Body      | Response              |
 |--------|-----------------|--------------------------------|-------------------|-----------------------|
 | POST   | `/api/v1/chat`  | Invia un messaggio alla chat   | `ChatRequestDto`  | `ChatResponseDto`     |
 
 ### Documenti
 
-| Metodo | Endpoint                       | Descrizione                    | Request Body        | Response                  |
+| Metodo | Endpoint                      | Descrizione                    | Request Body        | Response                  |
 |--------|-------------------------------|--------------------------------|---------------------|---------------------------|
 | POST   | `/api/v1/documents/upload`    | Carica un documento            | `multipart/form-data`| `DocumentDto`            |
 | GET    | `/api/v1/documents`           | Lista tutti i documenti        | -                   | `List<DocumentDto>`       |
@@ -206,7 +206,7 @@ La configurazione CORS e' gestita tramite Spring Security e consente l'accesso d
 
 ### Modelli
 
-| Metodo | Endpoint                | Descrizione                    | Request Body | Response              |
+| Metodo | Endpoint               | Descrizione                    | Request Body | Response              |
 |--------|------------------------|--------------------------------|--------------|-----------------------|
 | GET    | `/api/v1/models`       | Lista modelli LLM disponibili  | -            | `List<ModelDto>`      |
 | GET    | `/api/v1/models/{id}`  | Dettaglio modello              | -            | `ModelDto`            |

@@ -94,7 +94,7 @@ Realizzare una chat funzionante con Ollama locale, implementando il layer di ast
 
 | Componente | Descrizione | Status |
 |---|---|---|
-| `docker-compose.yml` | Orchestrazione PostgreSQL, Qdrant, Ollama, n8n | Completato |
+| Script `scripts/` | Avvio nativo backend/frontend; servizi infrastrutturali (MySQL, Qdrant, Ollama, n8n) opzionali via Docker | Completato |
 | `.env.example` | Template variabili d'ambiente | Completato |
 | `application.yml` | Configurazione Spring Boot (dev) | Completato |
 | `application-prod.yml` | Configurazione Spring Boot (prod) | Completato |
@@ -142,7 +142,7 @@ LlmGatewayService
 ### Criteri di completamento
 
 - [ ] Chat funzionante con Ollama locale (invio messaggio, ricezione risposta).
-- [ ] Persistenza conversazioni su PostgreSQL.
+- [ ] Persistenza conversazioni su MySQL.
 - [ ] Health check endpoint funzionante (`/api/v1/dashboard/health`).
 - [ ] Cost tracking base (token consumati per richiesta).
 - [ ] Fallback chain configurabile (almeno 2 provider).
@@ -217,7 +217,7 @@ Calcolo SHA-256
                                   │
                                   ├── Estrazione testo
                                   ├── Creazione metadati
-                                  └── Salvataggio su PostgreSQL
+                                  └── Salvataggio su MySQL
 ```
 
 ### Stima effort

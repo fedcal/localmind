@@ -50,12 +50,12 @@ Tutti i dati gestiti da LocalMind risiedono fisicamente sulla macchina dell'uten
 | Tipo di dato | Storage locale | Tecnologia |
 |---|---|---|
 | Documenti originali | File system locale | Path configurabili |
-| Metadati documenti | PostgreSQL | Container Docker locale |
-| Embedding vettoriali | Qdrant | Container Docker locale |
-| Conversazioni e chat | PostgreSQL | Container Docker locale |
-| Modelli LLM | Ollama model store | Container Docker locale |
-| Workflow automazioni | n8n | Container Docker locale |
-| Configurazioni utente | PostgreSQL + file | Container Docker locale + .env |
+| Metadati documenti | MySQL | Istanza locale |
+| Embedding vettoriali | Qdrant | Istanza locale (nativa o Docker) |
+| Conversazioni e chat | MySQL | Istanza locale |
+| Modelli LLM | Ollama model store | Istanza locale (nativa o Docker) |
+| Workflow automazioni | n8n | Istanza locale (nativa o Docker) |
+| Configurazioni utente | MySQL + file | Istanza locale + .env |
 
 Non esiste alcun componente dell'architettura che richieda obbligatoriamente una connessione a server remoti per il funzionamento base del sistema.
 
@@ -64,7 +64,7 @@ Non esiste alcun componente dell'architettura che richieda obbligatoriamente una
 Nessun dato viene trasmesso a servizi di terze parti senza il consenso esplicito dell'utente.
 
 - **Ollama** opera interamente in locale: i modelli LLM vengono scaricati una sola volta e successivamente eseguiti senza alcuna comunicazione di rete.
-- **PostgreSQL** e **Qdrant** accettano connessioni esclusivamente da `localhost` nella configurazione di default.
+- **MySQL** e **Qdrant** accettano connessioni esclusivamente da `localhost` nella configurazione di default.
 - Le API REST del backend sono esposte solo su `localhost:8080`.
 - Il frontend Angular viene servito su `localhost:4200`.
 
@@ -74,7 +74,7 @@ Nessun dato viene trasmesso a servizi di terze parti senza il consenso esplicito
 Utente -> Angular (localhost:4200)
        -> Spring Boot (localhost:8080)
        -> Ollama (localhost:11434)     [LLM inference]
-       -> PostgreSQL (localhost:5432)  [persistence]
+       -> MySQL (localhost:3306)       [persistence]
        -> Qdrant (localhost:6333)      [vector search]
 ```
 
@@ -106,7 +106,7 @@ LocalMind **non raccoglie alcun dato di utilizzo** e non trasmette metriche, sta
 - Nessuna phone-home call al primo avvio o durante l'utilizzo.
 - Nessun tracking di funzionalita' utilizzate o pattern di navigazione.
 
-Le uniche metriche raccolte sono quelle interne, memorizzate localmente su PostgreSQL:
+Le uniche metriche raccolte sono quelle interne, memorizzate localmente su MySQL:
 
 - Numero di token consumati per provider (per tracking costi personale).
 - Numero di documenti indicizzati.
@@ -116,16 +116,16 @@ Queste metriche sono accessibili esclusivamente dall'utente tramite la dashboard
 
 ### 2.5 Self-Hosted
 
-Ogni componente dell'architettura LocalMind gira sulla macchina dell'utente, containerizzato tramite Docker:
+Ogni componente dell'architettura LocalMind gira sulla macchina dell'utente. Il backend e il frontend vengono eseguiti nativamente tramite script nella cartella `scripts/`, mentre i servizi infrastrutturali possono essere eseguiti nativamente o tramite Docker:
 
-| Componente | Container Docker | Funzione |
+| Componente | Modalita' di esecuzione | Funzione |
 |---|---|---|
-| PostgreSQL 16 | `localmind-postgres` | Database relazionale |
-| Qdrant | `localmind-qdrant` | Vector store per embedding |
-| Ollama | `localmind-ollama` | LLM inference locale |
-| n8n | `localmind-n8n` | Workflow automation |
-| Spring Boot | JVM locale o container | Backend API |
-| Angular | Dev server o nginx | Frontend UI |
+| MySQL 8.0 | Istanza locale nativa | Database relazionale |
+| Qdrant | Nativo o Docker (opzionale) | Vector store per embedding |
+| Ollama | Nativo o Docker (opzionale) | LLM inference locale |
+| n8n | Nativo o Docker (opzionale) | Workflow automation |
+| Spring Boot | JVM locale (script) | Backend API |
+| Angular | Dev server locale (script) | Frontend UI |
 
 L'utente ha pieno controllo su:
 
@@ -142,14 +142,14 @@ L'utente ha pieno controllo su:
 |---|---|---|---|---|
 | **Dove risiedono i dati** | Cloud OpenAI | Cloud Notion | Locale | **Locale** |
 | **Training sui dati utente** | Possibile (opt-out disponibile) | Non dichiarato | No | **No** |
-| **Persistence strutturata** | Cloud-only | Cloud-only | Limitata | **PostgreSQL + Qdrant locale** |
+| **Persistence strutturata** | Cloud-only | Cloud-only | Limitata | **MySQL + Qdrant locale** |
 | **Funziona offline** | No | No | Si' | **Si'** |
-| **Vector store dedicato** | Non esposto | Non esposto | In-memory / Chroma | **Qdrant containerizzato** |
+| **Vector store dedicato** | Non esposto | Non esposto | In-memory / Chroma | **Qdrant locale** |
 | **Automazioni** | No | Limitato | No | **n8n locale** |
 | **Multi-provider LLM** | Solo OpenAI | Solo OpenAI | Limitato | **Ollama + OpenAI + Anthropic + Google** |
 | **GDPR by design** | No (trasferimento US) | No (trasferimento US) | Si' | **Si'** |
 | **Open source** | No | No | Si' | **Si'** |
-| **Containerizzato** | N/A | N/A | Parziale | **Completo (Docker Compose)** |
+| **Self-hosted** | N/A | N/A | Parziale | **Completo (esecuzione nativa + Docker opzionale)** |
 
 ### Analisi dettagliata
 
@@ -171,10 +171,10 @@ L'utente ha pieno controllo su:
 
 **LocalMind:**
 - Combina il vantaggio della privacy locale con un'architettura enterprise-grade.
-- PostgreSQL per persistence strutturata e relazionale.
+- MySQL per persistence strutturata e relazionale.
 - Qdrant per vector search ad alte prestazioni.
 - Ollama per inference LLM senza dipendenze cloud.
-- n8n per automazioni avanzate, il tutto containerizzato e riproducibile.
+- n8n per automazioni avanzate, il tutto eseguibile localmente.
 
 ---
 
@@ -185,7 +185,7 @@ LocalMind e' progettato per funzionare **completamente offline** quando configur
 ### Prerequisiti per il funzionamento offline
 
 1. **Modelli LLM scaricati**: almeno un modello di chat (es. `llama3.2`) e un modello di embedding (es. `nomic-embed-text`) devono essere stati precedentemente scaricati tramite `ollama pull`.
-2. **Container Docker avviati**: PostgreSQL, Qdrant, Ollama e n8n devono essere in esecuzione.
+2. **Servizi infrastrutturali avviati**: MySQL, Qdrant, Ollama e n8n devono essere in esecuzione (nativamente o tramite Docker).
 3. **Applicazione avviata**: il backend Spring Boot e il frontend Angular devono essere stati compilati e avviati.
 
 ### Funzionalita' disponibili offline
@@ -197,7 +197,7 @@ LocalMind e' progettato per funzionare **completamente offline** quando configur
 | Ricerca semantica | Si' | Qdrant locale |
 | Q&A su documenti | Si' | RAG completo locale |
 | Automazioni n8n | Si' | Workflow locali |
-| Dashboard e metriche | Si' | Dati da PostgreSQL locale |
+| Dashboard e metriche | Si' | Dati da MySQL locale |
 | Provider cloud (OpenAI, ecc.) | **No** | Richiedono connessione internet |
 | Download nuovi modelli | **No** | Richiede connessione per `ollama pull` |
 
@@ -224,7 +224,7 @@ LocalMind e', per la propria architettura, intrinsecamente conforme ai principi 
 | **Privacy by design** | L'architettura local-first e' progettata fin dall'origine per la privacy |
 | **Privacy by default** | La configurazione predefinita non trasmette alcun dato a servizi esterni |
 | **Diritto alla cancellazione** | L'utente puo' eliminare qualsiasi dato in qualsiasi momento, con effetto immediato e verificabile |
-| **Portabilita' dei dati** | I dati sono in formati standard (PostgreSQL, file system) e facilmente esportabili |
+| **Portabilita' dei dati** | I dati sono in formati standard (MySQL, file system) e facilmente esportabili |
 
 ### Assenza di trasferimento transfrontaliero
 
@@ -247,7 +247,7 @@ LocalMind adotta un'architettura modulare basata su porte e adapter (Hexagonal A
 
 | Componente attuale | Alternative possibili | Porta/Interfaccia |
 |---|---|---|
-| PostgreSQL | MySQL, MariaDB, H2 | Spring Data JPA (astrazione) |
+| MySQL | PostgreSQL, MariaDB, H2 | Spring Data JPA (astrazione) |
 | Qdrant | Chroma, Milvus, Weaviate, Pinecone | `VectorStorePort` |
 | Ollama | llama.cpp, vLLM, LocalAI | `LlmPort` |
 | Spring AI | LangChain4j | `LlmPort` adapter |

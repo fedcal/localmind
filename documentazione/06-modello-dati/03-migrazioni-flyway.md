@@ -23,7 +23,7 @@
 
 ## 1. Panoramica
 
-Flyway e' il sistema di migrazione database adottato da LocalMind per gestire l'evoluzione dello schema PostgreSQL in modo versionato e ripetibile. Ogni modifica allo schema e' tracciata in un file SQL con versione incrementale, garantendo:
+Flyway e' il sistema di migrazione database adottato da LocalMind per gestire l'evoluzione dello schema MySQL in modo versionato e ripetibile. Ogni modifica allo schema e' tracciata in un file SQL con versione incrementale, garantendo:
 
 - **Versionamento**: ogni migrazione ha un numero di versione univoco e sequenziale.
 - **Ripetibilita'**: l'applicazione delle migrazioni e' idempotente; Flyway traccia le migrazioni gia' eseguite nella tabella interna `flyway_schema_history`.
@@ -77,11 +77,11 @@ spring:
 
 ### Parametri
 
-| Parametro                     | Valore                     | Descrizione                                |
-|-------------------------------|----------------------------|--------------------------------------------|
-| `spring.flyway.enabled`       | `true`                     | Attiva l'esecuzione automatica delle migrazioni all'avvio |
-| `spring.flyway.locations`     | `classpath:db/migration`   | Percorso dei file di migrazione SQL        |
-| `spring.jpa.hibernate.ddl-auto` | `validate`              | Hibernate verifica la coerenza entita'-schema senza modificare il DB |
+| Parametro                       | Valore                     | Descrizione                                                          |
+|---------------------------------|----------------------------|----------------------------------------------------------------------|
+| `spring.flyway.enabled`         | `true`                     | Attiva l'esecuzione automatica delle migrazioni all'avvio            |
+| `spring.flyway.locations`       | `classpath:db/migration`   | Percorso dei file di migrazione SQL                                  |
+| `spring.jpa.hibernate.ddl-auto` | `validate`                 | Hibernate verifica la coerenza entita'-schema senza modificare il DB |
 
 ### Dipendenze Maven (localmind-app)
 
@@ -92,11 +92,11 @@ spring:
 </dependency>
 <dependency>
     <groupId>org.flywaydb</groupId>
-    <artifactId>flyway-database-postgresql</artifactId>
+    <artifactId>flyway-mysql</artifactId>
 </dependency>
 ```
 
-La dipendenza `flyway-database-postgresql` e' necessaria per il supporto specifico di PostgreSQL (es. gestione di tipi come `JSONB`, `UUID`, funzioni come `gen_random_uuid()`).
+La dipendenza `flyway-mysql` e' necessaria per il supporto specifico di MySQL (es. gestione di tipi come `JSON`, funzioni come `UUID()`).
 
 ---
 
@@ -106,23 +106,23 @@ La dipendenza `flyway-database-postgresql` e' necessaria per il supporto specifi
 
 ### Motivazione
 
-Crea la tabella principale per la gestione dei documenti caricati nel sistema. Questa tabella memorizza i metadati dei file (nome, percorso, tipo MIME, dimensione, hash), lo stato di elaborazione e metadati aggiuntivi in formato JSONB.
+Crea la tabella principale per la gestione dei documenti caricati nel sistema. Questa tabella memorizza i metadati dei file (nome, percorso, tipo MIME, dimensione, hash), lo stato di elaborazione e metadati aggiuntivi in formato JSON.
 
 ### SQL
 
 ```sql
 CREATE TABLE documents (
-    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    id CHAR(36) PRIMARY KEY DEFAULT (UUID()),
     filename VARCHAR(500) NOT NULL,
     file_path VARCHAR(1000),
     mime_type VARCHAR(100),
     file_size BIGINT,
     file_hash VARCHAR(64),
     status VARCHAR(20) NOT NULL DEFAULT 'PENDING',
-    metadata JSONB,
-    created_at TIMESTAMP NOT NULL DEFAULT NOW(),
-    updated_at TIMESTAMP NOT NULL DEFAULT NOW(),
-    indexed_at TIMESTAMP
+    metadata JSON,
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    indexed_at TIMESTAMP NULL
 );
 
 CREATE INDEX idx_documents_status ON documents(status);
@@ -131,18 +131,18 @@ CREATE INDEX idx_documents_hash ON documents(file_hash);
 
 ### Indici creati
 
-| Indice                 | Colonna     | Motivazione                                         |
-|------------------------|------------|------------------------------------------------------|
+| Indice                 | Colonna    | Motivazione                                                                                                        |
+|------------------------|------------|--------------------------------------------------------------------------------------------------------------------|
 | `idx_documents_status` | `status`   | Filtraggio per stato (PENDING, PROCESSING, INDEXED, ERROR); query frequente nella dashboard e nel batch processing |
-| `idx_documents_hash`   | `file_hash`| Ricerca per hash SHA-256 per rilevare duplicati prima del caricamento |
+| `idx_documents_hash`   | `file_hash`| Ricerca per hash SHA-256 per rilevare duplicati prima del caricamento                                              |
 
 ### Constraint
 
-- `id`: PRIMARY KEY con valore di default generato da `gen_random_uuid()`.
+- `id`: PRIMARY KEY con valore di default generato da `UUID()`.
 - `filename`: NOT NULL, ogni documento deve avere un nome file.
 - `status`: NOT NULL con DEFAULT `'PENDING'`, ogni documento inizia nello stato PENDING.
-- `created_at`: NOT NULL con DEFAULT `NOW()`.
-- `updated_at`: NOT NULL con DEFAULT `NOW()`.
+- `created_at`: NOT NULL con DEFAULT `CURRENT_TIMESTAMP`.
+- `updated_at`: NOT NULL con DEFAULT `CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP`.
 
 ---
 
@@ -158,11 +158,11 @@ Crea la tabella per la configurazione delle cartelle locali monitorate dal siste
 
 ```sql
 CREATE TABLE folder_configs (
-    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    id CHAR(36) PRIMARY KEY DEFAULT (UUID()),
     path VARCHAR(1000) NOT NULL,
     recursive BOOLEAN NOT NULL DEFAULT TRUE,
     watch_enabled BOOLEAN NOT NULL DEFAULT FALSE,
-    last_scan_at TIMESTAMP,
+    last_scan_at TIMESTAMP NULL,
     document_count INTEGER NOT NULL DEFAULT 0
 );
 ```
@@ -194,37 +194,37 @@ Crea la tabella per il tracking dell'utilizzo dei provider LLM. Ogni record rapp
 
 ```sql
 CREATE TABLE llm_usage (
-    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    id CHAR(36) PRIMARY KEY DEFAULT (UUID()),
     provider VARCHAR(20) NOT NULL,
     model VARCHAR(100),
     prompt_tokens INTEGER NOT NULL DEFAULT 0,
     completion_tokens INTEGER NOT NULL DEFAULT 0,
     total_tokens INTEGER NOT NULL DEFAULT 0,
-    cost DOUBLE PRECISION NOT NULL DEFAULT 0,
+    cost DOUBLE NOT NULL DEFAULT 0,
     latency_ms BIGINT NOT NULL DEFAULT 0,
-    timestamp TIMESTAMP NOT NULL DEFAULT NOW()
+    `timestamp` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
-CREATE INDEX idx_llm_usage_timestamp ON llm_usage(timestamp);
+CREATE INDEX idx_llm_usage_timestamp ON llm_usage(`timestamp`);
 CREATE INDEX idx_llm_usage_provider ON llm_usage(provider);
 ```
 
 ### Indici creati
 
-| Indice                    | Colonna     | Motivazione                                         |
-|---------------------------|------------|------------------------------------------------------|
+| Indice                    | Colonna    | Motivazione                                                                                                               |
+|---------------------------|------------|---------------------------------------------------------------------------------------------------------------------------|
 | `idx_llm_usage_timestamp` | `timestamp`| Query per intervallo temporale (es. utilizzo nell'ultima settimana, nel mese corrente); essenziale per report e dashboard |
-| `idx_llm_usage_provider`  | `provider` | Aggregazione per provider (es. costo totale per OpenAI vs Ollama); filtraggio nella dashboard |
+| `idx_llm_usage_provider`  | `provider` | Aggregazione per provider (es. costo totale per OpenAI vs Ollama); filtraggio nella dashboard                             |
 
 ### Constraint
 
 - Tutti i campi numerici (`prompt_tokens`, `completion_tokens`, `total_tokens`, `cost`, `latency_ms`) sono NOT NULL con DEFAULT `0`.
 - `provider`: NOT NULL, identificativo del provider LLM.
-- `timestamp`: NOT NULL con DEFAULT `NOW()`.
+- `timestamp`: NOT NULL con DEFAULT `CURRENT_TIMESTAMP`.
 
 ### Nota sul tipo cost
 
-Il campo `cost` utilizza `DOUBLE PRECISION` (IEEE 754 a 64 bit). Per la versione 0.1.0 questa precisione e' sufficiente. In versioni future potrebbe essere migrato a `DECIMAL(10,6)` per calcoli finanziari esatti.
+Il campo `cost` utilizza `DOUBLE` (IEEE 754 a 64 bit). Per la versione 0.1.0 questa precisione e' sufficiente. In versioni future potrebbe essere migrato a `DECIMAL(10,6)` per calcoli finanziari esatti.
 
 ---
 
@@ -240,18 +240,20 @@ Crea le tabelle per il sistema di chat conversazionale. La migrazione include du
 
 ```sql
 CREATE TABLE conversations (
-    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    id CHAR(36) PRIMARY KEY DEFAULT (UUID()),
     title VARCHAR(500),
-    created_at TIMESTAMP NOT NULL DEFAULT NOW(),
-    updated_at TIMESTAMP NOT NULL DEFAULT NOW()
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
 
 CREATE TABLE chat_messages (
-    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    conversation_id UUID NOT NULL REFERENCES conversations(id) ON DELETE CASCADE,
+    id CHAR(36) PRIMARY KEY DEFAULT (UUID()),
+    conversation_id CHAR(36) NOT NULL,
     role VARCHAR(20) NOT NULL,
     content TEXT NOT NULL,
-    created_at TIMESTAMP NOT NULL DEFAULT NOW()
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT fk_chat_messages_conversation
+        FOREIGN KEY (conversation_id) REFERENCES conversations(id) ON DELETE CASCADE
 );
 
 CREATE INDEX idx_chat_messages_conversation ON chat_messages(conversation_id);
@@ -259,8 +261,8 @@ CREATE INDEX idx_chat_messages_conversation ON chat_messages(conversation_id);
 
 ### Indici creati
 
-| Indice                            | Colonna           | Motivazione                                         |
-|-----------------------------------|------------------|------------------------------------------------------|
+| Indice                            | Colonna           | Motivazione                                          |
+|-----------------------------------|-------------------|------------------------------------------------------|
 | `idx_chat_messages_conversation`  | `conversation_id` | Join e filtraggio per conversazione; ogni apertura di conversazione richiede il caricamento di tutti i messaggi associati |
 
 ### Constraint
@@ -288,7 +290,7 @@ Crea la tabella per la configurazione dei webhook utilizzati per notifiche e aut
 
 ```sql
 CREATE TABLE webhooks (
-    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    id CHAR(36) PRIMARY KEY DEFAULT (UUID()),
     name VARCHAR(200) NOT NULL,
     url VARCHAR(1000) NOT NULL,
     event_type VARCHAR(30) NOT NULL,
@@ -306,19 +308,19 @@ CREATE TABLE webhooks (
 ### Note
 
 - Non sono presenti indici aggiuntivi poiche' il volume di dati previsto e' ridotto.
-- Il campo `event_type` utilizza `VARCHAR(30)` anziche' un tipo enumerato PostgreSQL per flessibilita' nell'aggiunta di nuovi tipi di evento.
+- Il campo `event_type` utilizza `VARCHAR(30)` anziche' un tipo `ENUM` MySQL per flessibilita' nell'aggiunta di nuovi tipi di evento.
 
 ---
 
 ## 8. Riepilogo Migrazioni
 
-| Versione | File                                    | Tabelle create      | Indici creati                                  |
-|----------|----------------------------------------|---------------------|-------------------------------------------------|
-| V1       | `V1__create_documents_table.sql`       | `documents`         | `idx_documents_status`, `idx_documents_hash`    |
-| V2       | `V2__create_folder_configs_table.sql`  | `folder_configs`    | (nessuno)                                       |
-| V3       | `V3__create_llm_usage_table.sql`       | `llm_usage`         | `idx_llm_usage_timestamp`, `idx_llm_usage_provider` |
-| V4       | `V4__create_conversations_table.sql`   | `conversations`, `chat_messages` | `idx_chat_messages_conversation` |
-| V5       | `V5__create_webhooks_table.sql`        | `webhooks`          | (nessuno)                                       |
+| Versione | File                                   | Tabelle create                   | Indici creati                                       |
+|----------|----------------------------------------|----------------------------------|-----------------------------------------------------|
+| V1       | `V1__create_documents_table.sql`       | `documents`                      | `idx_documents_status`, `idx_documents_hash`        |
+| V2       | `V2__create_folder_configs_table.sql`  | `folder_configs`                 | (nessuno)                                           |
+| V3       | `V3__create_llm_usage_table.sql`       | `llm_usage`                      | `idx_llm_usage_timestamp`, `idx_llm_usage_provider` |
+| V4       | `V4__create_conversations_table.sql`   | `conversations`, `chat_messages` | `idx_chat_messages_conversation`                    |
+| V5       | `V5__create_webhooks_table.sql`        | `webhooks`                       | (nessuno)                                           |
 
 ### Totali
 
@@ -335,7 +337,7 @@ CREATE TABLE webhooks (
 
 ```bash
 # Accesso al database
-docker exec -it localmind-postgres psql -U localmind -d localmind
+mysql -h localhost -u localmind -plocalmind localmind
 
 # Query sulla tabella di tracking Flyway
 SELECT version, description, installed_on, success

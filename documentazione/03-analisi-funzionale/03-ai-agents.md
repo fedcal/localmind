@@ -3,7 +3,7 @@
 | Campo        | Valore                          |
 |--------------|---------------------------------|
 | **Documento**| Specifica Funzionale AI Agents  |
-| **Versione** | 0.1.0                          |
+| **Versione** | 0.1.0                           |
 | **Data**     | 2026-02-09                      |
 | **Progetto** | LocalMind                       |
 
@@ -40,7 +40,7 @@ LocalMind fornisce quattro agenti specializzati predefiniti:
 ### 2.1 Tech Agent
 
 | Attributo       | Valore                                                  |
-|----------------|----------------------------------------------------------|
+|-----------------|---------------------------------------------------------|
 | **Tipo**        | TECH                                                    |
 | **Destinatari** | Sviluppatori, DevOps, architetti                        |
 | **Competenze**  | Debug, code review, analisi tecnica, spiegazione codice |
@@ -57,7 +57,7 @@ LocalMind fornisce quattro agenti specializzati predefiniti:
 ### 2.2 Business Agent
 
 | Attributo       | Valore                                                    |
-|----------------|-----------------------------------------------------------|
+|-----------------|-----------------------------------------------------------|
 | **Tipo**        | BUSINESS                                                  |
 | **Destinatari** | Manager, analisti, consulenti                             |
 | **Competenze**  | Report, sintesi, analisi dati, presentazioni              |
@@ -74,7 +74,7 @@ LocalMind fornisce quattro agenti specializzati predefiniti:
 ### 2.3 Legal Agent
 
 | Attributo       | Valore                                                    |
-|----------------|-----------------------------------------------------------|
+|-----------------|-----------------------------------------------------------|
 | **Tipo**        | LEGAL                                                     |
 | **Destinatari** | Avvocati, consulenti legali, compliance officer           |
 | **Competenze**  | Clausole contrattuali, riferimenti normativi, compliance  |
@@ -91,7 +91,7 @@ LocalMind fornisce quattro agenti specializzati predefiniti:
 ### 2.4 Personal Agent
 
 | Attributo       | Valore                                                    |
-|----------------|-----------------------------------------------------------|
+|-----------------|-----------------------------------------------------------|
 | **Tipo**        | PERSONAL                                                  |
 | **Destinatari** | Studenti, freelancer, utenti comuni                       |
 | **Competenze**  | Spiegazioni semplici, assistenza quotidiana, scrittura    |
@@ -119,27 +119,27 @@ Ogni agente e' composto da:
 |                                                       |
 |  +------------------+  +---------------------------+  |
 |  |   System Prompt  |  |   Agent Configuration     |  |
-|  |                  |  |   - type                   |  |
-|  |  Istruzioni      |  |   - temperature            |  |
-|  |  specializzate   |  |   - maxTokens              |  |
-|  |  per il ruolo    |  |   - model                  |  |
+|  |                  |  |   - type                  |  |
+|  |  Istruzioni      |  |   - temperature           |  |
+|  |  specializzate   |  |   - maxTokens             |  |
+|  |  per il ruolo    |  |   - model                 |  |
 |  +------------------+  +---------------------------+  |
 |                                                       |
 |  +------------------+  +---------------------------+  |
 |  |   LLM Gateway    |  |   RAG Context             |  |
-|  |                  |  |                            |  |
+|  |                  |  |                           |  |
 |  |  Generazione     |  |   Documenti rilevanti     |  |
 |  |  risposte        |  |   per la query            |  |
 |  +------------------+  +---------------------------+  |
 |                                                       |
-|  +------------------------------------------------+  |
-|  |              Tools (AgentTool[])                 |  |
+|  +-------------------------------------------------+  |
+|  |              Tools (AgentTool[])                |  |
 |  |                                                 |  |
 |  |  - document_search: ricerca nel RAG             |  |
 |  |  - web_search: ricerca web (futuro)             |  |
 |  |  - calculator: calcoli matematici               |  |
 |  |  - formatter: formattazione output              |  |
-|  +------------------------------------------------+  |
+|  +-------------------------------------------------+  |
 +------------------------------------------------------+
 ```
 
@@ -158,7 +158,7 @@ L'agente segue il pattern ReAct (Reasoning + Acting):
 
 ### 4.1 Agent (Entity)
 
-| Campo          | Tipo             | Descrizione                              |
+| Campo         | Tipo             | Descrizione                              |
 |---------------|------------------|------------------------------------------|
 | `id`          | UUID             | Identificativo univoco dell'agente       |
 | `name`        | String           | Nome visualizzato (es. "Tech Agent")     |
@@ -185,10 +185,10 @@ public enum AgentType {
 
 ### 4.3 AgentTool (Value Object)
 
-| Campo              | Tipo   | Descrizione                                     |
+| Campo             | Tipo   | Descrizione                                      |
 |-------------------|--------|--------------------------------------------------|
 | `name`            | String | Nome del tool (es. "document_search")            |
-| `description`     | String | Descrizione del tool per l'LLM                  |
+| `description`     | String | Descrizione del tool per l'LLM                   |
 | `parametersSchema`| String | JSON Schema dei parametri del tool               |
 
 Esempio di parametersSchema per il tool `document_search`:
@@ -213,11 +213,11 @@ Esempio di parametersSchema per il tool `document_search`:
 
 ### 4.4 AgentExecutionResult (Value Object)
 
-| Campo        | Tipo                | Descrizione                              |
+| Campo       | Tipo                | Descrizione                              |
 |-------------|---------------------|------------------------------------------|
 | `response`  | String              | Risposta generata dall'agente            |
 | `citations` | List<Citation>      | Citazioni dai documenti RAG utilizzati   |
-| `toolCalls` | List<ToolCallResult> | Risultati delle invocazioni di tool      |
+| `toolCalls` | List<ToolCallResult>| Risultati delle invocazioni di tool      |
 | `latencyMs` | long                | Tempo totale di esecuzione in ms         |
 | `provider`  | LlmProvider         | Provider LLM utilizzato                  |
 | `model`     | String              | Modello LLM utilizzato                   |
@@ -225,13 +225,13 @@ Esempio di parametersSchema per il tool `document_search`:
 
 ### 4.5 Citation (Value Object)
 
-| Campo           | Tipo    | Descrizione                              |
-|----------------|---------|------------------------------------------|
-| `documentId`   | UUID    | ID del documento sorgente                |
-| `filename`     | String  | Nome del file sorgente                   |
-| `chunkIndex`   | int     | Indice del chunk citato                  |
-| `text`         | String  | Testo del chunk citato                   |
-| `similarityScore` | double | Score di similarita' (0.0 - 1.0)      |
+| Campo             | Tipo    | Descrizione                              |
+|-------------------|---------|------------------------------------------|
+| `documentId`      | UUID    | ID del documento sorgente                |
+| `filename`        | String  | Nome del file sorgente                   |
+| `chunkIndex`      | int     | Indice del chunk citato                  |
+| `text`            | String  | Testo del chunk citato                   |
+| `similarityScore` | double  | Score di similarita' (0.0 - 1.0)         |
 
 ---
 
@@ -249,15 +249,15 @@ Utente      AgentController   AgentExecutionUseCase   AgentService    LlmGateway
   |               |------------------>|                    |               |               |
   |               |                   | execute(agentId,   |               |               |
   |               |                   |   query)           |               |               |
-  |               |                   |------------------>|               |               |
+  |               |                   |------------------->|               |               |
   |               |                   |                    |               |               |
   |               |                   |                    | loadAgent()   |               |
   |               |                   |                    |----+          |               |
   |               |                   |                    |    |          |               |
   |               |                   |                    |<---+          |               |
   |               |                   |                    |               |               |
-  |               |                   |                    | [Se RAG abilitato]           |
-  |               |                   |                    | searchContext  |               |
+  |               |                   |                    | [Se RAG abilitato]            |
+  |               |                   |                    | searchContext |               |
   |               |                   |                    |------------------------------>|
   |               |                   |                    |               |               |
   |               |                   |                    | List<Chunk>   |               |

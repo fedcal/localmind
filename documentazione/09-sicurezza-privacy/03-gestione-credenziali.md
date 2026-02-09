@@ -30,7 +30,7 @@ LocalMind gestisce diversi tipi di credenziali necessarie al funzionamento del s
 
 | Tipo | Obbligatorieta' | Esempio |
 |---|---|---|
-| Credenziali database | Obbligatorie | Username/password PostgreSQL |
+| Credenziali database | Obbligatorie | Username/password MySQL |
 | API key provider LLM | Opzionali | OpenAI, Anthropic, Google |
 | Credenziali servizi interni | Obbligatorie | Basic auth n8n |
 
@@ -53,7 +53,7 @@ Le API key dei provider LLM cloud (OpenAI, Anthropic, Google) seguono una strate
 La priorita' di risoluzione e':
 
 1. Variabile d'ambiente del sistema operativo (massima priorita').
-2. Variabile definita nel file `.env` (caricata da Docker Compose o Spring Boot).
+2. Variabile definita nel file `.env` (caricata da Spring Boot).
 3. Valore di default definito in `application.yml` (tipicamente vuoto).
 
 ### 2.2 File .env e .env.example
@@ -65,7 +65,7 @@ La priorita' di risoluzione e':
 # LocalMind - Environment Variables
 # ==================================================
 
-# PostgreSQL
+# MySQL
 DB_USERNAME=localmind
 DB_PASSWORD=localmind_secret_password
 
@@ -91,7 +91,7 @@ N8N_BASIC_AUTH_PASSWORD=n8n_secret_password
 # ATTENZIONE: Non committare mai il file .env nel repository!
 # ==================================================
 
-# PostgreSQL
+# MySQL
 DB_USERNAME=localmind
 DB_PASSWORD=changeme
 
@@ -115,26 +115,32 @@ N8N_BASIC_AUTH_PASSWORD=changeme
 !.env.example
 ```
 
-### 2.3 Docker Secrets (Produzione)
+### 2.3 Secrets Management (Produzione)
 
-Per ambienti di produzione con Docker Swarm o Kubernetes, le credenziali possono essere gestite tramite Docker secrets:
+Per ambienti di produzione, le credenziali possono essere gestite tramite variabili d'ambiente del sistema operativo o tramite un secrets manager:
+
+```bash
+# Variabili d'ambiente di sistema (Linux)
+export DB_PASSWORD=my_secret_password
+export OPENAI_API_KEY=sk-...
+
+# Oppure tramite file di systemd environment
+# /etc/localmind/env
+DB_PASSWORD=my_secret_password
+OPENAI_API_KEY=sk-...
+```
+
+Per deployment Kubernetes, le credenziali possono essere gestite tramite Kubernetes Secrets:
 
 ```yaml
-# docker-compose.prod.yml
-services:
-  backend:
-    secrets:
-      - db_password
-      - openai_api_key
-    environment:
-      DB_PASSWORD_FILE: /run/secrets/db_password
-      OPENAI_API_KEY_FILE: /run/secrets/openai_api_key
-
-secrets:
-  db_password:
-    external: true
-  openai_api_key:
-    external: true
+apiVersion: v1
+kind: Secret
+metadata:
+  name: localmind-secrets
+type: Opaque
+data:
+  db-password: <base64-encoded>
+  openai-api-key: <base64-encoded>
 ```
 
 ---
@@ -145,8 +151,8 @@ La tabella seguente elenca tutte le variabili d'ambiente riconosciute da LocalMi
 
 | Variabile | Obbligatoria | Default | Descrizione |
 |---|---|---|---|
-| `DB_USERNAME` | Si' | `localmind` | Username per la connessione a PostgreSQL |
-| `DB_PASSWORD` | Si' | `localmind` | Password per la connessione a PostgreSQL |
+| `DB_USERNAME` | Si' | `localmind` | Username per la connessione a MySQL |
+| `DB_PASSWORD` | Si' | `localmind` | Password per la connessione a MySQL |
 | `OPENAI_API_KEY` | No | *(vuoto)* | API key per il provider OpenAI |
 | `ANTHROPIC_API_KEY` | No | *(vuoto)* | API key per il provider Anthropic |
 | `GOOGLE_API_KEY` | No | *(vuoto)* | API key per il provider Google AI |
@@ -214,7 +220,7 @@ Il profilo di produzione sovrascrive le impostazioni di default:
 ```yaml
 spring:
   datasource:
-    url: jdbc:postgresql://postgres:5432/localmind
+    url: jdbc:mysql://localhost:3306/localmind
     username: ${DB_USERNAME}
     password: ${DB_PASSWORD}
 ```
@@ -424,7 +430,7 @@ spring:
         default-context: localmind
 ```
 
-**Nota:** Spring Vault richiede un'istanza di HashiCorp Vault in esecuzione. Per mantenere il principio self-hosted, Vault verrebbe aggiunto come ulteriore container Docker nel `docker-compose.yml`.
+**Nota:** Spring Vault richiede un'istanza di HashiCorp Vault in esecuzione. Per mantenere il principio self-hosted, Vault verrebbe eseguito localmente (nativamente o tramite Docker).
 
 ### Confronto soluzioni
 

@@ -63,7 +63,7 @@ Gli sviluppatori rappresentano il target che maggiormente apprezza le scelte arc
 - **API REST documentate**: integrazione programmatica con strumenti di sviluppo
 - **Estensibilita'**: possibilita' di aggiungere nuovi adapter, provider e tool
 - **Multi-modulo Maven**: struttura del progetto pulita e modulare
-- **Docker Compose**: deployment riproducibile e isolato
+- **Script di avvio**: esecuzione nativa di backend e frontend tramite script nella cartella `scripts/`
 
 ### 3.4 Scenari d'Uso Concreti
 

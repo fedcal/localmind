@@ -1,8 +1,17 @@
 spring:
+  autoconfigure:
+    exclude:
+      - org.springframework.ai.model.openai.autoconfigure.OpenAiChatAutoConfiguration
+      - org.springframework.ai.model.openai.autoconfigure.OpenAiEmbeddingAutoConfiguration
+      - org.springframework.ai.model.openai.autoconfigure.OpenAiAudioSpeechAutoConfiguration
+      - org.springframework.ai.model.openai.autoconfigure.OpenAiAudioTranscriptionAutoConfiguration
+      - org.springframework.ai.model.openai.autoconfigure.OpenAiImageAutoConfiguration
+      - org.springframework.ai.model.openai.autoconfigure.OpenAiModerationAutoConfiguration
+      - org.springframework.ai.model.anthropic.autoconfigure.AnthropicChatAutoConfiguration
   datasource:
-    url: jdbc:mysql://localhost:3306/localmind?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
-    username: localmind
-    password: localmind
+    url: jdbc:mysql://${DB_HOST:localhost}:${DB_PORT:3306}/${DB_NAME:localmind}?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
+    username: ${DB_USERNAME:root}
+    password: ${DB_PASSWORD:}
     driver-class-name: com.mysql.cj.jdbc.Driver
   jpa:
     hibernate:
@@ -11,40 +20,39 @@ spring:
     properties:
       hibernate:
         format_sql: true
-        dialect: org.hibernate.dialect.MySQLDialect
   flyway:
     enabled: true
     locations: classpath:db/migration
   ai:
     ollama:
-      base-url: http://localhost:11434
+      base-url: http://${OLLAMA_HOST:localhost}:${OLLAMA_PORT:11434}
       chat:
-        model: llama3.2
+        model: ${OLLAMA_CHAT_MODEL:llama3.2}
       embedding:
-        model: nomic-embed-text
+        model: ${OLLAMA_EMBED_MODEL:nomic-embed-text}
     openai:
       api-key: ${OPENAI_API_KEY:}
       chat:
         options:
-          model: gpt-4o
+          model: ${OPENAI_MODEL:gpt-4o}
     anthropic:
       api-key: ${ANTHROPIC_API_KEY:}
       chat:
         options:
-          model: claude-sonnet-4-20250514
+          model: ${ANTHROPIC_MODEL:claude-sonnet-4-20250514}
     vectorstore:
       qdrant:
-        host: localhost
-        port: 6334
-        collection-name: localmind-documents
+        host: ${QDRANT_HOST:localhost}
+        port: ${QDRANT_PORT:6334}
+        collection-name: ${QDRANT_COLLECTION:localmind-documents}
     mcp:
       server:
         name: localmind
         version: 0.1.0
   servlet:
     multipart:
-      max-file-size: 50MB
-      max-request-size: 50MB
+      max-file-size: ${MAX_FILE_SIZE:50MB}
+      max-request-size: ${MAX_FILE_SIZE:50MB}
   batch:
     job:
       enabled: false
@@ -52,14 +60,14 @@ spring:
 localmind:
   llm:
     ollama:
-      enabled: true
+      enabled: ${LLM_OLLAMA_ENABLED:true}
     openai:
-      enabled: false
+      enabled: ${LLM_OPENAI_ENABLED:false}
     anthropic:
-      enabled: false
+      enabled: ${LLM_ANTHROPIC_ENABLED:false}
     google:
-      enabled: false
-    default-provider: OLLAMA
+      enabled: ${LLM_GOOGLE_ENABLED:false}
+    default-provider: ${LLM_DEFAULT_PROVIDER:OLLAMA}
     retry:
       max-attempts: 3
       backoff-ms: 1000
@@ -67,21 +75,24 @@ localmind:
       enabled: true
       order: OLLAMA,OPENAI,ANTHROPIC,GOOGLE
   document:
-    upload-dir: ${user.home}/.localmind/uploads
-    max-file-size: 50MB
+    upload-dir: ${DOCUMENT_UPLOAD_DIR:${user.home}/.localmind/uploads}
+    max-file-size: ${MAX_FILE_SIZE:50MB}
     supported-types: pdf,docx,txt,eml
   batch:
     chunk-size: 500
     chunk-overlap: 50
     cron-folder-scan: "0 */15 * * * *"
   n8n:
-    base-url: http://localhost:5678
+    base-url: http://${N8N_HOST:localhost}:${N8N_PORT:5678}
     webhook-path: /webhook
   mcp:
     server:
       enabled: true
     client:
       enabled: true
+
+server:
+  port: ${SERVER_PORT:8080}
 
 logging:
   level:

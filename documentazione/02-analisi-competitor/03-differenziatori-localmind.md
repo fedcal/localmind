@@ -124,7 +124,7 @@ L'architettura esagonale di LocalMind garantisce una separazione netta che nessu
 ### 3.3 Impatto Utente
 
 - **Testabilita'**: i servizi di dominio possono essere testati unitariamente senza contesto Spring, database o servizi esterni
-- **Sostituibilita'**: ogni adapter e' sostituibile senza toccare il dominio (es. passare da PostgreSQL a MySQL modificando solo l'adapter)
+- **Sostituibilita'**: ogni adapter e' sostituibile senza toccare il dominio (es. passare da MySQL a PostgreSQL modificando solo l'adapter)
 - **Evoluzione**: nuovi provider LLM, formati documentali o canali di automazione possono essere aggiunti senza modificare la logica di business
 - **Comprensibilita'**: la struttura a package chiari (domain, infrastructure, api) rende il codice navigabile e comprensibile
 

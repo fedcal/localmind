@@ -3,7 +3,7 @@
 | Campo        | Valore                                    |
 |--------------|-------------------------------------------|
 | **Documento**| Document Intelligence e RAG Pipeline      |
-| **Versione** | 0.1.0                                    |
+| **Versione** | 0.1.0                                     |
 | **Data**     | 2026-02-09                                |
 | **Progetto** | LocalMind                                 |
 
@@ -55,11 +55,11 @@ LocalMind supporta due modalita' di ingestione documenti:
 ### 2.2 Formati Supportati
 
 | Formato | Estensione | Libreria di Estrazione | Note                           |
-|---------|-----------|------------------------|--------------------------------|
-| PDF     | .pdf      | Apache Tika 2.9.2      | Testo e metadati               |
-| DOCX    | .docx     | Apache Tika 2.9.2      | Testo, tabelle, metadati       |
-| TXT     | .txt      | Lettura diretta         | Encoding UTF-8                 |
-| EML     | .eml      | Apache Tika 2.9.2      | Corpo email, header, allegati  |
+|---------|------------|------------------------|--------------------------------|
+| PDF     | .pdf       | Apache Tika 2.9.2      | Testo e metadati               |
+| DOCX    | .docx      | Apache Tika 2.9.2      | Testo, tabelle, metadati       |
+| TXT     | .txt       | Lettura diretta        | Encoding UTF-8                 |
+| EML     | .eml       | Apache Tika 2.9.2      | Corpo email, header, allegati  |
 
 ### 2.3 Deduplicazione
 
@@ -74,7 +74,7 @@ La deduplicazione avviene tramite calcolo dell'hash SHA-256 del contenuto del fi
 
 Prima dell'ingestione, il sistema esegue le seguenti validazioni:
 
-| Controllo              | Azione in caso di fallimento         |
+| Controllo             | Azione in caso di fallimento         |
 |-----------------------|--------------------------------------|
 | Formato supportato    | Rifiuto con errore 400               |
 | Dimensione <= 50 MB   | Rifiuto con errore 413               |
@@ -295,17 +295,17 @@ I documenti in LocalMind seguono un workflow di stato definito:
 PENDING --> PROCESSING --> INDEXED --> ARCHIVED
 ```
 
-| Stato        | Descrizione                                      | Badge UI       |
-|-------------|--------------------------------------------------|----------------|
-| `PENDING`   | Documento ricevuto, in attesa di elaborazione     | Giallo         |
-| `PROCESSING`| Documento in fase di elaborazione (extract/chunk/embed) | Blu    |
-| `INDEXED`   | Documento elaborato e indicizzato nel vector store | Verde         |
-| `FAILED`    | Elaborazione fallita (errore estrazione o embedding) | Rosso       |
-| `ARCHIVED`  | Documento archiviato, non piu' ricercabile        | Grigio         |
+| Stato       | Descrizione                                             | Badge UI       |
+|-------------|---------------------------------------------------------|----------------|
+| `PENDING`   | Documento ricevuto, in attesa di elaborazione           | Giallo         |
+| `PROCESSING`| Documento in fase di elaborazione (extract/chunk/embed) | Blu            |
+| `INDEXED`   | Documento elaborato e indicizzato nel vector store      | Verde          |
+| `FAILED`    | Elaborazione fallita (errore estrazione o embedding)    | Rosso          |
+| `ARCHIVED`  | Documento archiviato, non piu' ricercabile              | Grigio         |
 
 ### Transizioni
 
-| Da           | A            | Trigger                                    |
+| Da          | A            | Trigger                                     |
 |-------------|--------------|---------------------------------------------|
 | -           | PENDING      | Upload o rilevamento da folder scan         |
 | PENDING     | PROCESSING   | Inizio elaborazione batch job               |
@@ -362,16 +362,16 @@ Utente       DocumentController   DocumentService    Batch Job     TikaExtractor
   |                |                    |                |<--------------|                |                |
   |                |                    |                |               |                |                |
   |                |                    |                | chunk(text)   |                |                |
-  |                |                    |                |------------------------------>|                |
+  |                |                    |                |------------------------------->|                |
   |                |                    |                |               |                |                |
   |                |                    |                | List<Chunk>   |                |                |
-  |                |                    |                |<------------------------------|                |
+  |                |                    |                |<-------------------------------|                |
   |                |                    |                |               |                |                |
   |                |                    |                | embed + store(chunks)          |                |
-  |                |                    |                |---------------------------------------------->|
+  |                |                    |                |------------------------------------------------>|
   |                |                    |                |               |                |                |
   |                |                    |                | success       |                |                |
-  |                |                    |                |<----------------------------------------------|
+  |                |                    |                |<------------------------------------------------|
   |                |                    |                |               |                |                |
   |                |                    |                | update(INDEXED)                |                |
   |                |                    |                |----+          |                |                |

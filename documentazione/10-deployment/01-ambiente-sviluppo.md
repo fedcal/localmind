@@ -14,7 +14,7 @@
 1. [Prerequisiti](#1-prerequisiti)
 2. [Step 1: Clonare il Repository](#2-step-1-clonare-il-repository)
 3. [Step 2: Configurare le Variabili d'Ambiente](#3-step-2-configurare-le-variabili-dambiente)
-4. [Step 3: Avviare l'Infrastruttura Docker](#4-step-3-avviare-linfrastruttura-docker)
+4. [Step 3: Configurare MySQL](#4-step-3-configurare-mysql)
 5. [Step 4: Scaricare i Modelli Ollama](#5-step-4-scaricare-i-modelli-ollama)
 6. [Step 5: Compilare e Avviare il Backend](#6-step-5-compilare-e-avviare-il-backend)
 7. [Step 6: Installare Dipendenze e Avviare il Frontend](#7-step-6-installare-dipendenze-e-avviare-il-frontend)
@@ -22,10 +22,9 @@
 9. [Troubleshooting](#9-troubleshooting)
    - 9.1 [Porta gia' in uso](#91-porta-gia-in-uso)
    - 9.2 [Ollama non risponde](#92-ollama-non-risponde)
-   - 9.3 [PostgreSQL connection refused](#93-postgresql-connection-refused)
+   - 9.3 [MySQL connection refused](#93-mysql-connection-refused)
    - 9.4 [Angular build errors](#94-angular-build-errors)
    - 9.5 [Problemi di memoria con Ollama](#95-problemi-di-memoria-con-ollama)
-   - 9.6 [Docker Compose non si avvia](#96-docker-compose-non-si-avvia)
 
 ---
 
@@ -41,8 +40,7 @@ Prima di procedere con la configurazione dell'ambiente di sviluppo, verificare c
 | **Maven** | 3.9+ | `mvn -version` | Wrapper Maven (`mvnw`) incluso nel progetto |
 | **Node.js** | 22+ | `node -v` | Runtime per il frontend Angular |
 | **npm** | 11+ | `npm -v` | Package manager per Node.js |
-| **Docker** | 24+ | `docker --version` | Container runtime |
-| **Docker Compose** | 2.20+ (V2) | `docker compose version` | Orchestrazione container |
+| **MySQL** | 8.0 | `mysql --version` | Database relazionale (nativo o via Docker) |
 | **Git** | 2.40+ | `git --version` | Version control |
 
 ### Software opzionale (raccomandato)
@@ -52,7 +50,8 @@ Prima di procedere con la configurazione dell'ambiente di sviluppo, verificare c
 | **IntelliJ IDEA** (Ultimate o Community) | IDE per lo sviluppo backend Java/Spring Boot | Plugin consigliati: Spring Boot, Lombok |
 | **VS Code** | IDE alternativo o per lo sviluppo frontend | Estensioni consigliate: Angular Language Service, ESLint |
 | **Postman** o **Insomnia** | Testing API REST | Alternativa: `curl` da terminale |
-| **DBeaver** | Client GUI per PostgreSQL | Alternativa: `psql` da terminale |
+| **DBeaver** | Client GUI per MySQL | Alternativa: `mysql` da terminale |
+| **Docker** (opzionale) | Per eseguire servizi infrastrutturali (Qdrant, Ollama, n8n) in container | Non necessario se i servizi sono installati nativamente |
 
 ### Verifica rapida dei prerequisiti
 
@@ -78,12 +77,8 @@ echo "npm:"
 npm -v
 echo ""
 
-echo "Docker:"
-docker --version
-echo ""
-
-echo "Docker Compose:"
-docker compose version
+echo "MySQL:"
+mysql --version
 echo ""
 
 echo "Git:"
@@ -116,7 +111,15 @@ localmind/
 │   ├── src/
 │   ├── angular.json
 │   └── package.json
-├── docker-compose.yml          # Orchestrazione servizi Docker
+├── scripts/                    # Script di avvio e setup
+│   ├── setup-mysql.sh          # Setup database MySQL (Linux/macOS)
+│   ├── setup-mysql.bat         # Setup database MySQL (Windows)
+│   ├── start-backend.sh        # Avvio backend (Linux/macOS)
+│   ├── start-backend.bat       # Avvio backend (Windows)
+│   ├── start-frontend.sh       # Avvio frontend (Linux/macOS)
+│   ├── start-frontend.bat      # Avvio frontend (Windows)
+│   ├── start-all.sh            # Avvio completo (Linux/macOS)
+│   └── start-all.bat           # Avvio completo (Windows)
 ├── .env.example                # Template variabili d'ambiente
 ├── .gitignore
 └── README.md
@@ -150,7 +153,7 @@ vim .env
 # LocalMind - Environment Variables
 # ==================================================
 
-# PostgreSQL
+# MySQL
 DB_USERNAME=localmind
 DB_PASSWORD=localmind
 
@@ -164,37 +167,53 @@ N8N_BASIC_AUTH_USER=admin
 N8N_BASIC_AUTH_PASSWORD=admin
 ```
 
-**Nota:** Per lo sviluppo locale, i valori di default per PostgreSQL e n8n sono sufficienti. Le API key dei provider cloud sono opzionali e possono essere aggiunte in un secondo momento.
+**Nota:** Per lo sviluppo locale, i valori di default per MySQL e n8n sono sufficienti. Le API key dei provider cloud sono opzionali e possono essere aggiunte in un secondo momento.
 
 ---
 
-## 4. Step 3: Avviare l'Infrastruttura Docker
+## 4. Step 3: Configurare MySQL
+
+Lo script `setup-mysql.sh` (o `setup-mysql.bat` su Windows) rileva automaticamente se MySQL e' installato nativamente o disponibile via Docker, e configura il database di conseguenza.
 
 ```bash
-docker-compose up -d
+./scripts/setup-mysql.sh
 ```
 
-### Verifica dello stato dei container
+In alternativa, e' possibile configurare MySQL manualmente:
+
+### Configurazione manuale di MySQL
 
 ```bash
-docker-compose ps
+# Accedere a MySQL come root
+mysql -u root -p
+
+# Creare il database e l'utente
+CREATE DATABASE localmind CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+CREATE USER 'localmind'@'localhost' IDENTIFIED BY 'localmind';
+GRANT ALL PRIVILEGES ON localmind.* TO 'localmind'@'localhost';
+FLUSH PRIVILEGES;
 ```
 
-Output atteso:
+### Verifica della connessione
 
+```bash
+mysql -h localhost -u localmind -plocalmind localmind -e "SELECT 1;"
 ```
-NAME                  STATUS                   PORTS
-localmind-postgres    Up (healthy)             0.0.0.0:5432->5432/tcp
-localmind-qdrant      Up (healthy)             0.0.0.0:6333->6333/tcp, 0.0.0.0:6334->6334/tcp
-localmind-ollama      Up                       0.0.0.0:11434->11434/tcp
-localmind-n8n         Up                       0.0.0.0:5678->5678/tcp
+
+### Servizi infrastrutturali opzionali
+
+I servizi Qdrant, Ollama e n8n possono essere eseguiti nativamente o tramite Docker. Per l'avvio tramite Docker (opzionale):
+
+```bash
+# Avviare solo i servizi infrastrutturali (senza MySQL)
+docker compose up -d qdrant ollama n8n
 ```
 
 ### Servizi e porte
 
 | Servizio | Porta locale | Protocollo | Verifica |
 |---|---|---|---|
-| PostgreSQL | `5432` | TCP | `psql -h localhost -U localmind -d localmind` |
+| MySQL | `3306` | TCP | `mysql -h localhost -u localmind -plocalmind localmind` |
 | Qdrant REST | `6333` | HTTP | `curl http://localhost:6333/healthz` |
 | Qdrant gRPC | `6334` | gRPC | - |
 | Ollama | `11434` | HTTP | `curl http://localhost:11434/api/tags` |
@@ -203,8 +222,8 @@ localmind-n8n         Up                       0.0.0.0:5678->5678/tcp
 ### Verifica rapida dell'infrastruttura
 
 ```bash
-echo "PostgreSQL:"
-docker exec localmind-postgres pg_isready -U localmind && echo "OK" || echo "ERRORE"
+echo "MySQL:"
+mysqladmin ping -h localhost -u localmind -plocalmind && echo "OK" || echo "ERRORE"
 
 echo ""
 echo "Qdrant:"
@@ -223,12 +242,12 @@ curl -s -o /dev/null -w "%{http_code}" http://localhost:5678 && echo " OK" || ec
 
 ## 5. Step 4: Scaricare i Modelli Ollama
 
-Dopo il primo avvio del container Ollama, e' necessario scaricare i modelli LLM che verranno utilizzati da LocalMind.
+Dopo il primo avvio di Ollama (nativo o in Docker), e' necessario scaricare i modelli LLM che verranno utilizzati da LocalMind.
 
 ### Modello di chat (obbligatorio)
 
 ```bash
-docker exec -it localmind-ollama ollama pull llama3.2
+ollama pull llama3.2
 ```
 
 Tempo stimato: 5-15 minuti (dipende dalla connessione internet e dalla dimensione del modello).
@@ -236,7 +255,7 @@ Tempo stimato: 5-15 minuti (dipende dalla connessione internet e dalla dimension
 ### Modello di embedding (obbligatorio per RAG)
 
 ```bash
-docker exec -it localmind-ollama ollama pull nomic-embed-text
+ollama pull nomic-embed-text
 ```
 
 Tempo stimato: 1-3 minuti.
@@ -244,7 +263,7 @@ Tempo stimato: 1-3 minuti.
 ### Verifica dei modelli installati
 
 ```bash
-docker exec localmind-ollama ollama list
+ollama list
 ```
 
 Output atteso:
@@ -266,7 +285,7 @@ nomic-embed-text:latest xxxxxxxxx       274 MB    x minutes ago
 | `nomic-embed-text` | ~274 MB | Embedding (default) | `ollama pull nomic-embed-text` |
 | `mxbai-embed-large` | ~670 MB | Embedding (maggiore qualita') | `ollama pull mxbai-embed-large` |
 
-**Nota:** I modelli vengono salvati nel volume Docker `localmind-ollama-data` e persistono tra i riavvii del container.
+**Nota:** I modelli vengono salvati nella directory locale di Ollama (`~/.ollama/models`) e persistono tra i riavvii del servizio.
 
 ---
 
@@ -297,7 +316,16 @@ Output atteso alla fine della compilazione:
 
 ### Avvio dell'applicazione
 
+Tramite lo script fornito:
+
 ```bash
+./scripts/start-backend.sh
+```
+
+Oppure manualmente:
+
+```bash
+cd localmind-backend
 mvn spring-boot:run -pl localmind-app
 ```
 
@@ -331,7 +359,7 @@ Risposta attesa:
   "status": "UP",
   "components": {
     "ollama": { "status": "UP" },
-    "postgres": { "status": "UP" },
+    "mysql": { "status": "UP" },
     "qdrant": { "status": "UP" }
   }
 }
@@ -352,7 +380,16 @@ Tempo stimato: 1-3 minuti (primo avvio). Le dipendenze vengono cachate in `node_
 
 ### Avvio del dev server Angular
 
+Tramite lo script fornito:
+
 ```bash
+./scripts/start-frontend.sh
+```
+
+Oppure manualmente:
+
+```bash
+cd localmind-frontend
 ng serve
 ```
 
@@ -368,6 +405,14 @@ Output atteso:
 ** Angular Live Development Server is listening on localhost:4200 **
 
 ✔ Compiled successfully.
+```
+
+### Avvio rapido completo
+
+Per avviare backend e frontend insieme:
+
+```bash
+./scripts/start-all.sh
 ```
 
 ### Verifica del frontend
@@ -386,7 +431,7 @@ Dopo aver completato tutti gli step, verificare che l'intero stack sia funzionan
 
 | Componente | URL/Comando | Stato atteso |
 |---|---|---|
-| PostgreSQL | `docker exec localmind-postgres pg_isready` | `/var/run/postgresql:5432 - accepting connections` |
+| MySQL | `mysqladmin ping -h localhost -u localmind -plocalmind` | `mysqld is alive` |
 | Qdrant | `curl http://localhost:6333/healthz` | `OK` (HTTP 200) |
 | Ollama | `curl http://localhost:11434/api/tags` | JSON con lista modelli |
 | n8n | `http://localhost:5678` (browser) | Interfaccia web n8n |
@@ -401,7 +446,7 @@ Dopo aver completato tutti gli step, verificare che l'intero stack sia funzionan
 │                                               │
 │   :4200  ─── Angular Dev Server (Frontend)    │
 │   :8080  ─── Spring Boot (Backend API)        │
-│   :5432  ─── PostgreSQL (Database)            │
+│   :3306  ─── MySQL (Database)                 │
 │   :6333  ─── Qdrant REST API (Vector Store)   │
 │   :6334  ─── Qdrant gRPC (Vector Store)       │
 │   :11434 ─── Ollama (LLM Inference)           │
@@ -436,7 +481,7 @@ kill -9 <PID>
 **Alternativa:** Modificare la porta nel file di configurazione:
 
 - Backend Spring Boot: modificare `server.port` in `application.yml`
-- Docker services: modificare il port mapping in `docker-compose.yml`
+- MySQL: modificare la porta nel file di configurazione `my.cnf`
 
 ### 9.2 Ollama non risponde
 
@@ -444,45 +489,46 @@ kill -9 <PID>
 
 **Cause possibili e soluzioni:**
 
-1. **Container non avviato:**
+1. **Servizio non avviato:**
    ```bash
-   docker-compose ps | grep ollama
-   # Se il container non e' in esecuzione:
-   docker-compose up -d ollama
+   # Se Ollama e' installato nativamente:
+   sudo systemctl status ollama
+   # Se non attivo:
+   sudo systemctl start ollama
    ```
 
-2. **Container in fase di avvio (modello in caricamento):**
+2. **Servizio in fase di avvio (modello in caricamento):**
    ```bash
-   docker-compose logs -f ollama
+   # Verificare i log
+   journalctl -u ollama -f
    # Attendere che il log mostri "Listening on 0.0.0.0:11434"
    ```
 
 3. **Risorse insufficienti:**
    ```bash
    # Verificare l'utilizzo di memoria
-   docker stats localmind-ollama
-   # Se la memoria e' al 100%, considerare un modello piu' leggero
+   free -h
+   # Se la memoria e' al limite, considerare un modello piu' leggero
    ```
 
-4. **Conflitto con Ollama installato nativamente:**
+4. **Conflitto di porta:**
    ```bash
-   # Verificare se Ollama e' installato anche nativamente
-   which ollama
-   # Se presente, fermarlo per evitare conflitti di porta
-   sudo systemctl stop ollama
+   # Verificare se un altro processo usa la porta 11434
+   sudo lsof -i :11434
    ```
 
-### 9.3 PostgreSQL connection refused
+### 9.3 MySQL connection refused
 
-**Sintomo:** L'applicazione Spring Boot non riesce a connettersi a PostgreSQL con errore `Connection refused`.
+**Sintomo:** L'applicazione Spring Boot non riesce a connettersi a MySQL con errore `Connection refused`.
 
 **Cause possibili e soluzioni:**
 
-1. **Container non avviato o non healthy:**
+1. **Servizio non avviato:**
    ```bash
-   docker-compose ps | grep postgres
-   # Se lo stato non e' "healthy":
-   docker-compose logs postgres
+   # Verificare lo stato del servizio MySQL
+   sudo systemctl status mysql
+   # Se non attivo:
+   sudo systemctl start mysql
    ```
 
 2. **Credenziali errate:**
@@ -490,22 +536,21 @@ kill -9 <PID>
    # Verificare le credenziali nel .env
    cat .env | grep DB_
    # Tentare la connessione manuale
-   docker exec -it localmind-postgres psql -U localmind -d localmind -c "SELECT 1;"
+   mysql -h localhost -u localmind -plocalmind localmind -e "SELECT 1;"
    ```
 
 3. **Database non ancora creato:**
    ```bash
-   # Il database viene creato automaticamente dal container
-   # Se necessario, crearlo manualmente:
-   docker exec -it localmind-postgres createdb -U localmind localmind
+   # Eseguire lo script di setup
+   ./scripts/setup-mysql.sh
+   # Oppure creare manualmente:
+   mysql -u root -p -e "CREATE DATABASE IF NOT EXISTS localmind CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;"
    ```
 
-4. **Volume corrotto:**
+4. **Reset del database:**
    ```bash
    # ATTENZIONE: questo cancella tutti i dati del database!
-   docker-compose down
-   docker volume rm localmind_localmind-postgres-data
-   docker-compose up -d
+   mysql -u root -p -e "DROP DATABASE localmind; CREATE DATABASE localmind CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;"
    ```
 
 ### 9.4 Angular build errors
@@ -545,7 +590,7 @@ kill -9 <PID>
 
 ### 9.5 Problemi di memoria con Ollama
 
-**Sintomo:** Ollama risponde lentamente o il container viene terminato per Out Of Memory (OOM).
+**Sintomo:** Ollama risponde lentamente o il processo viene terminato per Out Of Memory (OOM).
 
 **Cause e soluzioni:**
 
@@ -554,54 +599,15 @@ kill -9 <PID>
    # Verificare la RAM disponibile
    free -h
    # Utilizzare un modello piu' leggero
-   docker exec -it localmind-ollama ollama pull llama3.2:1b
+   ollama pull llama3.2:1b
    ```
 
-2. **Aumentare la memoria Docker:**
-   - Su Docker Desktop: Settings -> Resources -> Memory -> aumentare il limite.
-   - Su Linux: Docker utilizza tutta la RAM disponibile per default.
+2. **Verificare e aumentare la RAM disponibile:**
+   - Chiudere applicazioni non necessarie per liberare memoria.
+   - Considerare l'upgrade della RAM se si utilizzano modelli grandi.
 
 3. **Utilizzare la GPU (se disponibile):**
-   Verificare che il supporto GPU sia configurato in `docker-compose.yml`:
-   ```yaml
-   ollama:
-     deploy:
-       resources:
-         reservations:
-           devices:
-             - driver: nvidia
-               count: all
-               capabilities: [gpu]
-   ```
-
-### 9.6 Docker Compose non si avvia
-
-**Sintomo:** `docker-compose up -d` restituisce errori.
-
-**Cause possibili e soluzioni:**
-
-1. **Docker daemon non in esecuzione:**
+   Ollama rileva automaticamente le GPU NVIDIA con driver CUDA installati. Verificare con:
    ```bash
-   sudo systemctl status docker
-   # Se non attivo:
-   sudo systemctl start docker
-   ```
-
-2. **Versione Docker Compose obsoleta:**
-   ```bash
-   docker compose version
-   # Se la versione e' inferiore alla 2.20, aggiornare Docker
-   ```
-
-3. **Conflitti di rete Docker:**
-   ```bash
-   # Rimuovere reti orfane
-   docker network prune
-   ```
-
-4. **Spazio disco insufficiente:**
-   ```bash
-   df -h
-   # Liberare spazio se necessario
-   docker system prune -a
+   nvidia-smi
    ```

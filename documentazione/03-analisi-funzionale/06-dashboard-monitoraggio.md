@@ -3,7 +3,7 @@
 | Campo        | Valore                            |
 |--------------|-----------------------------------|
 | **Documento**| Dashboard e Monitoraggio          |
-| **Versione** | 0.1.0                            |
+| **Versione** | 0.1.0                             |
 | **Data**     | 2026-02-09                        |
 | **Progetto** | LocalMind                         |
 
@@ -44,11 +44,11 @@ GET /api/v1/dashboard/health
   "status": "UP",
   "timestamp": "2026-02-09T15:30:00",
   "services": {
-    "postgresql": {
+    "mysql": {
       "status": "UP",
       "latencyMs": 23,
       "details": {
-        "version": "16.2",
+        "version": "8.0",
         "database": "localmind",
         "activeConnections": 5
       }
@@ -108,41 +108,41 @@ GET /api/v1/dashboard/health
 
 ### 3.1 Stato Servizi
 
-| Servizio     | Metodo di Verifica              | Timeout | Frequenza |
+| Servizio    | Metodo di Verifica             | Timeout | Frequenza |
 |-------------|--------------------------------|---------|-----------|
-| PostgreSQL  | SELECT 1 (JDBC)               | 5s      | 30s       |
+| MySQL       | SELECT 1 (JDBC)                | 5s      | 30s       |
 | Qdrant      | GET /health (HTTP)             | 5s      | 30s       |
 | Ollama      | GET /api/tags (HTTP)           | 10s     | 30s       |
 | n8n         | GET / (HTTP)                   | 5s      | 60s       |
 
 Ogni servizio puo' trovarsi in uno dei seguenti stati:
 
-| Stato  | Descrizione                              | Colore UI |
-|--------|------------------------------------------|-----------|
-| `UP`   | Servizio raggiungibile e funzionante     | Verde     |
-| `DOWN` | Servizio non raggiungibile o in errore   | Rosso     |
-| `DEGRADED` | Servizio raggiungibile ma con problemi | Giallo    |
+| Stato      | Descrizione                                | Colore UI |
+|------------|--------------------------------------------|-----------|
+| `UP`       | Servizio raggiungibile e funzionante       | Verde     |
+| `DOWN`     | Servizio non raggiungibile o in errore     | Rosso     |
+| `DEGRADED` | Servizio raggiungibile ma con problemi     | Giallo    |
 
 ### 3.2 Utilizzo Token per Provider
 
-| Metrica              | Descrizione                              | Aggregazione       |
-|---------------------|------------------------------------------|--------------------|
+| Metrica             | Descrizione                              | Aggregazione                  |
+|---------------------|------------------------------------------|-------------------------------|
 | `promptTokens`      | Token utilizzati nei prompt (input)      | Per provider, modello, giorno |
 | `completionTokens`  | Token generati nelle risposte (output)   | Per provider, modello, giorno |
 | `totalTokens`       | Somma prompt + completion                | Per provider, modello, giorno |
 
 ### 3.3 Costi Aggregati
 
-| Metrica              | Descrizione                              | Aggregazione         |
-|---------------------|------------------------------------------|----------------------|
-| `dailyCost`         | Costo giornaliero per provider           | Per provider, giorno |
+| Metrica             | Descrizione                              | Aggregazione            |
+|---------------------|------------------------------------------|-------------------------|
+| `dailyCost`         | Costo giornaliero per provider           | Per provider, giorno    |
 | `weeklyCost`        | Costo settimanale per provider           | Per provider, settimana |
-| `monthlyCost`       | Costo mensile per provider               | Per provider, mese   |
-| `totalCost`         | Costo totale cumulativo                  | Per provider         |
+| `monthlyCost`       | Costo mensile per provider               | Per provider, mese      |
+| `totalCost`         | Costo totale cumulativo                  | Per provider            |
 
 ### 3.4 Latenza per Provider
 
-| Metrica              | Descrizione                              |
+| Metrica             | Descrizione                              |
 |---------------------|------------------------------------------|
 | `averageLatencyMs`  | Latenza media in millisecondi            |
 | `p50LatencyMs`      | 50esimo percentile (mediana)             |
@@ -152,7 +152,7 @@ Ogni servizio puo' trovarsi in uno dei seguenti stati:
 
 ### 3.5 Documenti Indicizzati
 
-| Metrica              | Descrizione                              |
+| Metrica             | Descrizione                              |
 |---------------------|------------------------------------------|
 | `totalDocuments`    | Numero totale di documenti nel sistema   |
 | `indexedDocuments`  | Documenti con stato INDEXED              |
@@ -164,7 +164,7 @@ Ogni servizio puo' trovarsi in uno dei seguenti stati:
 
 ### 3.6 Job Batch
 
-| Metrica              | Descrizione                              |
+| Metrica             | Descrizione                              |
 |---------------------|------------------------------------------|
 | `completedJobs`     | Job completati con successo              |
 | `failedJobs`        | Job completati con errore                |
@@ -180,7 +180,7 @@ LocalMind espone le metriche infrastrutturali tramite Spring Boot Actuator:
 
 ### 4.1 Endpoint Actuator
 
-| Endpoint                        | Descrizione                              |
+| Endpoint                       | Descrizione                              |
 |--------------------------------|------------------------------------------|
 | `/actuator/health`             | Health check complessivo                 |
 | `/actuator/info`               | Informazioni applicazione                |
@@ -190,7 +190,7 @@ LocalMind espone le metriche infrastrutturali tramite Spring Boot Actuator:
 
 ### 4.2 Metriche JVM
 
-| Metrica                        | Descrizione                              |
+| Metrica                       | Descrizione                              |
 |-------------------------------|------------------------------------------|
 | `jvm.memory.used`             | Memoria JVM utilizzata                   |
 | `jvm.memory.max`              | Memoria JVM massima                      |
@@ -201,14 +201,14 @@ LocalMind espone le metriche infrastrutturali tramite Spring Boot Actuator:
 
 ### 4.3 Metriche HTTP
 
-| Metrica                        | Descrizione                              |
+| Metrica                       | Descrizione                              |
 |-------------------------------|------------------------------------------|
 | `http.server.requests`        | Richieste HTTP totali                    |
 | `http.server.requests.active` | Richieste HTTP attualmente in corso      |
 
 ### 4.4 Metriche Database
 
-| Metrica                        | Descrizione                              |
+| Metrica                       | Descrizione                              |
 |-------------------------------|------------------------------------------|
 | `hikaricp.connections.active` | Connessioni JDBC attive                  |
 | `hikaricp.connections.idle`   | Connessioni JDBC idle                    |

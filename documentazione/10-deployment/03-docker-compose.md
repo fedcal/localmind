@@ -1,4 +1,4 @@
-# Configurazione Docker Compose
+# Configurazione Docker Compose (Opzionale)
 
 | | |
 |---|---|
@@ -14,10 +14,9 @@
 1. [Panoramica](#1-panoramica)
 2. [Struttura del File](#2-struttura-del-file)
 3. [Servizi Dettagliati](#3-servizi-dettagliati)
-   - 3.1 [PostgreSQL](#31-postgresql)
-   - 3.2 [Qdrant](#32-qdrant)
-   - 3.3 [Ollama](#33-ollama)
-   - 3.4 [n8n](#34-n8n)
+   - 3.1 [Qdrant](#31-qdrant)
+   - 3.2 [Ollama](#32-ollama)
+   - 3.3 [n8n](#33-n8n)
 4. [Network](#4-network)
 5. [Volumes](#5-volumes)
 6. [Comandi Utili](#6-comandi-utili)
@@ -28,18 +27,19 @@
 
 ## 1. Panoramica
 
-L'infrastruttura di LocalMind e' orchestrata tramite **Docker Compose** nella versione V2 (formato `services`, senza il campo `version` deprecato). Il file `docker-compose.yml` si trova nella **directory root del progetto**.
+Docker Compose e' utilizzato in LocalMind in modo **opzionale** per i soli servizi infrastrutturali. Il backend (Spring Boot) e il frontend (Angular) vengono eseguiti nativamente tramite gli script nella directory `scripts/`. Il database MySQL viene installato e gestito nativamente (o in Docker, auto-rilevato dallo script `setup-mysql.sh`).
 
-Docker Compose gestisce quattro servizi principali:
+Il file `docker-compose.yml` si trova nella **directory root del progetto** e gestisce tre servizi infrastrutturali opzionali:
 
 | Servizio | Funzione | Immagine |
 |---|---|---|
-| **postgres** | Database relazionale per persistence strutturata | `postgres:16-alpine` |
 | **qdrant** | Vector store per embedding e ricerca semantica | `qdrant/qdrant:latest` |
 | **ollama** | LLM inference locale | `ollama/ollama:latest` |
 | **n8n** | Workflow automation | `n8nio/n8n:latest` |
 
-Tutti i servizi sono configurati con:
+**Nota:** Tutti questi servizi possono essere eseguiti anche nativamente senza Docker. Docker Compose e' fornito come opzione di convenienza per chi preferisce l'approccio containerizzato.
+
+Tutti i servizi Docker sono configurati con:
 
 - **Volumes persistenti**: i dati sopravvivono al riavvio dei container.
 - **Health checks**: Docker verifica periodicamente lo stato di salute.
@@ -52,12 +52,11 @@ Tutti i servizi sono configurati con:
 
 ```yaml
 # docker-compose.yml
-# LocalMind - Infrastructure Services
+# LocalMind - Infrastructure Services (opzionale)
 # Compose V2 format (no version field)
+# Nota: backend, frontend e MySQL vengono eseguiti nativamente
 
 services:
-  postgres:
-    # ... configurazione PostgreSQL
   qdrant:
     # ... configurazione Qdrant
   ollama:
@@ -66,7 +65,6 @@ services:
     # ... configurazione n8n
 
 volumes:
-  localmind-postgres-data:
   localmind-qdrant-data:
   localmind-ollama-data:
   localmind-n8n-data:
@@ -76,64 +74,7 @@ volumes:
 
 ## 3. Servizi Dettagliati
 
-### 3.1 PostgreSQL
-
-PostgreSQL 16 e' il database relazionale principale di LocalMind, utilizzato per la persistence di documenti, conversazioni, configurazioni, metriche e tutti i dati strutturati dell'applicazione.
-
-```yaml
-postgres:
-  image: postgres:16-alpine
-  container_name: localmind-postgres
-  ports:
-    - "5432:5432"
-  environment:
-    POSTGRES_DB: localmind
-    POSTGRES_USER: ${DB_USERNAME:-localmind}
-    POSTGRES_PASSWORD: ${DB_PASSWORD:-localmind}
-  volumes:
-    - localmind-postgres-data:/var/lib/postgresql/data
-  healthcheck:
-    test: ["CMD-SHELL", "pg_isready -U ${DB_USERNAME:-localmind}"]
-    interval: 10s
-    timeout: 5s
-    retries: 5
-    start_period: 30s
-  restart: unless-stopped
-```
-
-#### Dettaglio configurazione
-
-| Parametro | Valore | Descrizione |
-|---|---|---|
-| `image` | `postgres:16-alpine` | Immagine Alpine (dimensione ridotta ~80 MB vs ~400 MB per l'immagine standard) |
-| `container_name` | `localmind-postgres` | Nome fisso del container per riferimenti cross-service |
-| `ports` | `5432:5432` | Mapping porta host:container. Accessibile da `localhost:5432` |
-| `POSTGRES_DB` | `localmind` | Nome del database creato automaticamente al primo avvio |
-| `POSTGRES_USER` | `${DB_USERNAME:-localmind}` | Username. Valore da `.env`, default `localmind` |
-| `POSTGRES_PASSWORD` | `${DB_PASSWORD:-localmind}` | Password. Valore da `.env`, default `localmind` |
-| `volumes` | `localmind-postgres-data:/var/lib/postgresql/data` | Volume nominato per persistenza dati |
-| `restart` | `unless-stopped` | Riavvio automatico tranne se fermato manualmente |
-
-#### Health check
-
-| Parametro | Valore | Descrizione |
-|---|---|---|
-| `test` | `pg_isready -U localmind` | Comando per verificare che PostgreSQL accetti connessioni |
-| `interval` | `10s` | Frequenza del controllo |
-| `timeout` | `5s` | Timeout massimo per il singolo controllo |
-| `retries` | `5` | Numero di tentativi falliti prima di dichiarare `unhealthy` |
-| `start_period` | `30s` | Periodo di grazia dopo l'avvio (i check falliti non contano) |
-
-#### Connessione dall'applicazione Spring Boot
-
-| Ambiente | URL JDBC |
-|---|---|
-| Sviluppo | `jdbc:postgresql://localhost:5432/localmind` |
-| Produzione (Docker network) | `jdbc:postgresql://postgres:5432/localmind` |
-
----
-
-### 3.2 Qdrant
+### 3.1 Qdrant
 
 Qdrant e' il vector store utilizzato per memorizzare gli embedding dei documenti e per eseguire ricerche semantiche ad alta performance.
 
@@ -178,7 +119,7 @@ qdrant:
 | Ambiente | Host | Porta |
 |---|---|---|
 | Sviluppo | `localhost` | `6334` (gRPC) |
-| Produzione (Docker network) | `qdrant` | `6334` (gRPC) |
+| Produzione | `localhost` (configurabile) | `6334` (gRPC) |
 
 #### Risorse di storage
 
@@ -190,7 +131,7 @@ Qdrant memorizza i dati nel volume `localmind-qdrant-data`:
 
 ---
 
-### 3.3 Ollama
+### 3.2 Ollama
 
 Ollama fornisce l'inference LLM locale, permettendo di eseguire modelli di linguaggio senza connessione a servizi cloud.
 
@@ -225,20 +166,21 @@ ollama:
 
 #### Modelli da scaricare manualmente
 
-Dopo il primo avvio del container, e' necessario scaricare i modelli manualmente:
+Dopo il primo avvio del container (o del servizio nativo), e' necessario scaricare i modelli manualmente:
 
 ```bash
-# Modello di chat (obbligatorio)
+# Se Ollama e' in Docker:
 docker exec -it localmind-ollama ollama pull llama3.2
-
-# Modello di embedding (obbligatorio per RAG)
 docker exec -it localmind-ollama ollama pull nomic-embed-text
-
-# Verifica modelli installati
 docker exec localmind-ollama ollama list
+
+# Se Ollama e' installato nativamente:
+ollama pull llama3.2
+ollama pull nomic-embed-text
+ollama list
 ```
 
-**Nota importante:** I modelli vengono salvati nel volume `localmind-ollama-data` e persistono tra i riavvii del container. Non e' necessario riscaricarli dopo un `docker-compose down` (che non rimuove i volumi) o un riavvio del container.
+**Nota importante:** I modelli vengono salvati nel volume `localmind-ollama-data` (Docker) o in `~/.ollama/models` (nativo) e persistono tra i riavvii. Non e' necessario riscaricarli dopo un riavvio del servizio.
 
 #### API Ollama
 
@@ -264,7 +206,7 @@ L'API di Ollama e' accessibile su `http://localhost:11434` e supporta i seguenti
 
 ---
 
-### 3.4 n8n
+### 3.3 n8n
 
 n8n e' la piattaforma di workflow automation utilizzata da LocalMind per gestire flussi automatizzati trigger-based.
 
@@ -284,9 +226,6 @@ n8n:
     - WEBHOOK_URL=http://localhost:5678/
   volumes:
     - localmind-n8n-data:/home/node/.n8n
-  depends_on:
-    postgres:
-      condition: service_healthy
   restart: unless-stopped
 ```
 
@@ -303,16 +242,7 @@ n8n:
 | `N8N_HOST` | `localhost` | Hostname per generazione URL webhook |
 | `WEBHOOK_URL` | `http://localhost:5678/` | URL base per i webhook |
 | `volumes` | `localmind-n8n-data:/home/node/.n8n` | Volume per persistenza workflow e credenziali |
-| `depends_on` | `postgres: service_healthy` | n8n si avvia solo dopo che PostgreSQL e' healthy |
 | `restart` | `unless-stopped` | Riavvio automatico |
-
-#### Dipendenze
-
-n8n dipende da PostgreSQL (`depends_on` con `condition: service_healthy`). Questo garantisce che:
-
-1. Docker Compose avvii PostgreSQL prima di n8n.
-2. n8n non si avvii finche' PostgreSQL non supera il health check.
-3. I workflow n8n che interagiscono con il database trovino il servizio disponibile.
 
 #### Interfaccia web
 
@@ -337,24 +267,14 @@ localmind_default (bridge)
 
 ### Comunicazione tra servizi
 
-Nella rete Docker interna, i servizi si raggiungono tramite il nome del servizio come hostname:
+I servizi infrastrutturali in Docker comunicano tra loro tramite la rete interna. Il backend Spring Boot (che gira nativamente) si connette ai servizi tramite `localhost` e le porte mappate:
 
 | Da | A | Hostname | Porta |
 |---|---|---|---|
-| Spring Boot | PostgreSQL | `postgres` | `5432` |
-| Spring Boot | Qdrant | `qdrant` | `6334` (gRPC) |
-| Spring Boot | Ollama | `ollama` | `11434` |
-| Spring Boot | n8n | `n8n` | `5678` |
-| n8n | PostgreSQL | `postgres` | `5432` |
-| n8n | Spring Boot | `host.docker.internal` o IP host | `8080` |
-
-### Isolamento di rete
-
-La rete Docker interna garantisce che:
-
-- I servizi possono comunicare tra loro senza esporre porte all'esterno.
-- Le porte mappate (`ports`) rendono i servizi accessibili da `localhost` per debug e sviluppo.
-- Nessun servizio e' accessibile da macchine esterne alla rete locale (binding su `0.0.0.0` per default, modificabile a `127.0.0.1` per maggiore sicurezza).
+| Spring Boot (nativo) | MySQL (nativo) | `localhost` | `3306` |
+| Spring Boot (nativo) | Qdrant (Docker) | `localhost` | `6334` (gRPC) |
+| Spring Boot (nativo) | Ollama (Docker o nativo) | `localhost` | `11434` |
+| Spring Boot (nativo) | n8n (Docker o nativo) | `localhost` | `5678` |
 
 ### Binding su localhost (configurazione sicura)
 
@@ -362,20 +282,19 @@ Per limitare l'accesso ai servizi esclusivamente dalla macchina locale:
 
 ```yaml
 ports:
-  - "127.0.0.1:5432:5432"  # Solo localhost
+  - "127.0.0.1:6333:6333"  # Solo localhost
   # invece di
-  - "5432:5432"             # Tutte le interfacce
+  - "6333:6333"             # Tutte le interfacce
 ```
 
 ---
 
 ## 5. Volumes
 
-LocalMind utilizza **named volumes** di Docker per la persistenza dei dati:
+LocalMind utilizza **named volumes** di Docker per la persistenza dei dati dei servizi infrastrutturali:
 
 ```yaml
 volumes:
-  localmind-postgres-data:
   localmind-qdrant-data:
   localmind-ollama-data:
   localmind-n8n-data:
@@ -385,10 +304,11 @@ volumes:
 
 | Volume | Mount point nel container | Contenuto |
 |---|---|---|
-| `localmind-postgres-data` | `/var/lib/postgresql/data` | Dati PostgreSQL (tabelle, indici, WAL) |
 | `localmind-qdrant-data` | `/qdrant/storage` | Dati Qdrant (collezioni, segmenti, indici HNSW) |
 | `localmind-ollama-data` | `/root/.ollama` | Modelli LLM scaricati |
 | `localmind-n8n-data` | `/home/node/.n8n` | Workflow, credenziali, configurazioni n8n |
+
+**Nota:** Il database MySQL viene gestito nativamente e i suoi dati risiedono nella directory standard del sistema (`/var/lib/mysql` o equivalente).
 
 ### Gestione dei volumi
 
@@ -396,8 +316,8 @@ volumes:
 # Elencare i volumi
 docker volume ls | grep localmind
 
-# Ispezionare un volume (es. postgres)
-docker volume inspect localmind_localmind-postgres-data
+# Ispezionare un volume (es. qdrant)
+docker volume inspect localmind_localmind-qdrant-data
 
 # Calcolare lo spazio utilizzato
 docker system df -v | grep localmind
@@ -407,12 +327,12 @@ docker system df -v | grep localmind
 
 | Operazione | Effetto sui volumi |
 |---|---|
-| `docker-compose stop` | Container fermati, volumi **preservati** |
-| `docker-compose down` | Container rimossi, volumi **preservati** |
-| `docker-compose down -v` | Container rimossi, volumi **eliminati** |
+| `docker compose stop` | Container fermati, volumi **preservati** |
+| `docker compose down` | Container rimossi, volumi **preservati** |
+| `docker compose down -v` | Container rimossi, volumi **eliminati** |
 | `docker volume prune` | Volumi orfani **eliminati** |
 
-**Attenzione:** `docker-compose down -v` elimina **tutti i dati** (database, modelli, workflow). Utilizzare con estrema cautela e solo dopo aver eseguito un backup.
+**Attenzione:** `docker compose down -v` elimina **tutti i dati** dei servizi Docker (modelli Ollama, dati Qdrant, workflow n8n). Utilizzare con estrema cautela e solo dopo aver eseguito un backup. Il database MySQL non e' influenzato da questo comando in quanto gestito nativamente.
 
 ---
 
@@ -421,54 +341,52 @@ docker system df -v | grep localmind
 ### Gestione del ciclo di vita
 
 ```bash
-# Avviare tutti i servizi in background
-docker-compose up -d
+# Avviare tutti i servizi infrastrutturali in background
+docker compose up -d
 
 # Avviare un singolo servizio
-docker-compose up -d postgres
+docker compose up -d qdrant
 
 # Fermare tutti i servizi (preserva volumi)
-docker-compose stop
+docker compose stop
 
 # Fermare e rimuovere container (preserva volumi)
-docker-compose down
+docker compose down
 
 # Fermare, rimuovere container E volumi (DISTRUTTIVO)
-docker-compose down -v
+docker compose down -v
 
 # Riavviare un singolo servizio
-docker-compose restart ollama
+docker compose restart ollama
 
 # Ricreare un servizio (es. dopo modifica docker-compose.yml)
-docker-compose up -d --force-recreate ollama
+docker compose up -d --force-recreate ollama
 ```
 
 ### Monitoraggio
 
 ```bash
 # Stato di tutti i servizi
-docker-compose ps
+docker compose ps
 
 # Log di tutti i servizi (live)
-docker-compose logs -f
+docker compose logs -f
 
 # Log di un singolo servizio (ultime 100 righe, live)
-docker-compose logs -f --tail=100 postgres
+docker compose logs -f --tail=100 qdrant
 
 # Statistiche risorse (CPU, RAM, I/O)
-docker stats localmind-postgres localmind-qdrant localmind-ollama localmind-n8n
+docker stats localmind-qdrant localmind-ollama localmind-n8n
 ```
 
 ### Accesso ai container
 
 ```bash
 # Shell interattiva in un container
-docker exec -it localmind-postgres bash
 docker exec -it localmind-ollama bash
 docker exec -it localmind-n8n sh
 
 # Eseguire un comando specifico
-docker exec localmind-postgres pg_isready -U localmind
 docker exec localmind-ollama ollama list
 ```
 
@@ -476,10 +394,10 @@ docker exec localmind-ollama ollama list
 
 ```bash
 # Aggiornare le immagini all'ultima versione
-docker-compose pull
+docker compose pull
 
 # Aggiornare e ricreare i container
-docker-compose pull && docker-compose up -d
+docker compose pull && docker compose up -d
 
 # Rimuovere immagini non utilizzate
 docker image prune
@@ -492,15 +410,15 @@ docker system prune
 
 ## 7. Configurazione GPU per Ollama
 
-Per abilitare il supporto GPU NVIDIA in Ollama, e' necessario:
+Per abilitare il supporto GPU NVIDIA in Ollama (sia Docker che nativo), e' necessario:
 
 ### Prerequisiti
 
 1. **GPU NVIDIA** con supporto CUDA.
 2. **NVIDIA Driver** versione 525 o superiore.
-3. **NVIDIA Container Toolkit** installato.
+3. **NVIDIA Container Toolkit** installato (solo per Docker).
 
-### Installazione NVIDIA Container Toolkit (Ubuntu/Debian)
+### Installazione NVIDIA Container Toolkit (Ubuntu/Debian) - Solo per Docker
 
 ```bash
 # Aggiungere il repository NVIDIA
@@ -517,6 +435,8 @@ sudo apt-get update && sudo apt-get install -y nvidia-container-toolkit
 sudo nvidia-ctk runtime configure --runtime=docker
 sudo systemctl restart docker
 ```
+
+**Nota:** Se Ollama e' installato nativamente, rileva automaticamente la GPU NVIDIA senza bisogno del Container Toolkit.
 
 ### Configurazione docker-compose.yml
 
@@ -543,13 +463,13 @@ ollama:
 ### Verifica del supporto GPU
 
 ```bash
-# Verificare che il container veda la GPU
+# Se in Docker:
 docker exec localmind-ollama nvidia-smi
+docker compose logs ollama | grep -i cuda
 
-# Verificare che Ollama utilizzi la GPU
-docker exec localmind-ollama ollama run llama3.2 "Ciao, che GPU stai usando?"
-# Controllare nei log: "using CUDA"
-docker-compose logs ollama | grep -i cuda
+# Se nativo:
+nvidia-smi
+ollama run llama3.2 "Ciao, che GPU stai usando?"
 ```
 
 ---
@@ -561,10 +481,11 @@ docker-compose logs ollama | grep -i cuda
 Per evitare conflitti con altri servizi sulla macchina, e' possibile modificare le porte esposte:
 
 ```yaml
-# Esempio: spostare PostgreSQL sulla porta 15432
-postgres:
+# Esempio: spostare Qdrant REST sulla porta 16333
+qdrant:
   ports:
-    - "15432:5432"
+    - "16333:6333"
+    - "16334:6334"
 ```
 
 **Nota:** Dopo aver modificato le porte, aggiornare anche il file `application.yml` di Spring Boot per riflettere le nuove porte.
@@ -572,7 +493,7 @@ postgres:
 ### Aggiungere limiti di risorse
 
 ```yaml
-postgres:
+qdrant:
   deploy:
     resources:
       limits:

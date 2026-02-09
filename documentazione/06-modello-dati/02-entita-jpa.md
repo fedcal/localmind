@@ -22,7 +22,7 @@
 
 ## 1. Panoramica
 
-Le entita' JPA risiedono nel modulo `localmind-infrastructure` e rappresentano il mapping Object-Relational tra i modelli Java e le tabelle PostgreSQL. Ogni entita' e' annotata con le annotazioni JPA standard (`jakarta.persistence.*`) e utilizza Lombok per la riduzione del boilerplate.
+Le entita' JPA risiedono nel modulo `localmind-infrastructure` e rappresentano il mapping Object-Relational tra i modelli Java e le tabelle MySQL. Ogni entita' e' annotata con le annotazioni JPA standard (`jakarta.persistence.*`) e utilizza Lombok per la riduzione del boilerplate.
 
 ### Architettura di mapping
 
@@ -37,7 +37,7 @@ JPA Entity (localmind-infrastructure)
        ^
        |  Hibernate ORM
        v
-PostgreSQL Table
+MySQL Table
 ```
 
 ### Package structure
@@ -97,7 +97,7 @@ public class DocumentEntity {
     private String status;
 
     @JdbcTypeCode(SqlTypes.JSON)
-    @Column(columnDefinition = "jsonb")
+    @Column(columnDefinition = "json")
     private Map<String, Object> metadata;
 
     @Column(nullable = false)
@@ -123,22 +123,22 @@ public class DocumentEntity {
 
 | Campo Java   | Colonna DB   | Tipo Java             | Tipo SQL          | Note                          |
 |-------------|-------------|------------------------|-------------------|-------------------------------|
-| `id`        | `id`        | `UUID`                 | `UUID`            | Generato con `GenerationType.UUID` |
+| `id`        | `id`        | `UUID`                 | `CHAR(36)`        | Generato con `GenerationType.UUID` |
 | `filename`  | `filename`  | `String`               | `VARCHAR(500)`    | NOT NULL                       |
 | `filePath`  | `file_path` | `String`               | `VARCHAR(1000)`   | Naming strategy: camelCase -> snake_case |
 | `mimeType`  | `mime_type` | `String`               | `VARCHAR(100)`    | -                              |
 | `fileSize`  | `file_size` | `Long`                 | `BIGINT`          | Wrapper type, nullable         |
 | `fileHash`  | `file_hash` | `String`               | `VARCHAR(64)`     | Hash SHA-256                   |
 | `status`    | `status`    | `String`               | `VARCHAR(20)`     | NOT NULL, default 'PENDING'    |
-| `metadata`  | `metadata`  | `Map<String, Object>`  | `JSONB`           | Hibernate `@JdbcTypeCode(SqlTypes.JSON)` |
+| `metadata`  | `metadata`  | `Map<String, Object>`  | `JSON`            | Hibernate `@JdbcTypeCode(SqlTypes.JSON)` |
 | `createdAt` | `created_at`| `Instant`              | `TIMESTAMP`       | NOT NULL, gestito da `@PrePersist` |
 | `updatedAt` | `updated_at`| `Instant`              | `TIMESTAMP`       | Gestito da `@PrePersist` e `@PreUpdate` |
 | `indexedAt` | `indexed_at`| `Instant`              | `TIMESTAMP`       | Nullable, impostato post-indicizzazione |
 
 ### Annotazioni chiave
 
-- **`@JdbcTypeCode(SqlTypes.JSON)`**: istruisce Hibernate 6 a serializzare/deserializzare il campo `metadata` come JSON, mappandolo al tipo `JSONB` di PostgreSQL. Richiede l'import `org.hibernate.annotations.JdbcTypeCode` e `org.hibernate.type.SqlTypes`.
-- **`@Column(columnDefinition = "jsonb")`**: specifica il tipo di colonna DDL per la validazione di Hibernate.
+- **`@JdbcTypeCode(SqlTypes.JSON)`**: istruisce Hibernate 6 a serializzare/deserializzare il campo `metadata` come JSON, mappandolo al tipo `JSON` di MySQL. Richiede l'import `org.hibernate.annotations.JdbcTypeCode` e `org.hibernate.type.SqlTypes`.
+- **`@Column(columnDefinition = "json")`**: specifica il tipo di colonna DDL per la validazione di Hibernate.
 - **`@PrePersist`**: callback invocato prima dell'inserimento; inizializza `createdAt` e `updatedAt`.
 - **`@PreUpdate`**: callback invocato prima dell'aggiornamento; aggiorna `updatedAt`.
 
@@ -201,13 +201,13 @@ public class ConversationEntity {
 
 La relazione e' di tipo **bidirezionale one-to-many**:
 
-| Proprieta' JPA     | Valore                     | Descrizione                                              |
-|---------------------|---------------------------|----------------------------------------------------------|
-| `mappedBy`          | `"conversation"`          | Il lato owning e' `ChatMessageEntity.conversation`       |
-| `cascade`           | `CascadeType.ALL`         | Tutte le operazioni (persist, merge, remove) sono propagate |
-| `orphanRemoval`     | `true`                    | I messaggi rimossi dalla lista vengono eliminati dal DB  |
-| `@OrderBy`          | `"createdAt ASC"`         | I messaggi sono ordinati cronologicamente                |
-| `@Builder.Default`  | `new ArrayList<>()`       | Inizializzazione della lista nel pattern Builder di Lombok |
+| Proprieta' JPA      | Valore                     | Descrizione                                                 |
+|---------------------|----------------------------|-------------------------------------------------------------|
+| `mappedBy`          | `"conversation"`           | Il lato owning e' `ChatMessageEntity.conversation`          |
+| `cascade`           | `CascadeType.ALL`          | Tutte le operazioni (persist, merge, remove) sono propagate |
+| `orphanRemoval`     | `true`                     | I messaggi rimossi dalla lista vengono eliminati dal DB     |
+| `@OrderBy`          | `"createdAt ASC"`          | I messaggi sono ordinati cronologicamente                   |
+| `@Builder.Default`  | `new ArrayList<>()`        | Inizializzazione della lista nel pattern Builder di Lombok  |
 
 ### Note sulla relazione bidirezionale
 
@@ -257,13 +257,13 @@ public class ChatMessageEntity {
 
 ### Mapping colonne
 
-| Campo Java      | Colonna DB        | Tipo Java                | Tipo SQL       | Note                          |
-|----------------|-------------------|--------------------------|----------------|-------------------------------|
-| `id`           | `id`              | `UUID`                   | `UUID`         | Generato con `GenerationType.UUID` |
-| `role`         | `role`            | `String`                 | `VARCHAR(20)`  | Valori: `USER`, `ASSISTANT`    |
-| `content`      | `content`         | `String`                 | `TEXT`         | Contenuto del messaggio        |
-| `conversation` | `conversation_id` | `ConversationEntity`     | `UUID` (FK)    | Lazy loading                   |
-| `createdAt`    | `created_at`      | `Instant`                | `TIMESTAMP`    | Gestito da `@PrePersist`       |
+| Campo Java     | Colonna DB        | Tipo Java                | Tipo SQL       | Note                               |
+|----------------|-------------------|--------------------------|----------------|------------------------------------|
+| `id`           | `id`              | `UUID`                   | `CHAR(36)`     | Generato con `GenerationType.UUID` |
+| `role`         | `role`            | `String`                 | `VARCHAR(20)`  | Valori: `USER`, `ASSISTANT`        |
+| `content`      | `content`         | `String`                 | `TEXT`         | Contenuto del messaggio            |
+| `conversation` | `conversation_id` | `ConversationEntity`     | `CHAR(36)` (FK)| Lazy loading                       |
+| `createdAt`    | `created_at`      | `Instant`                | `TIMESTAMP`    | Gestito da `@PrePersist`           |
 
 ### Annotazioni chiave
 
@@ -355,16 +355,16 @@ public class LlmUsageEntity {
 
 ### Mapping colonne
 
-| Campo Java         | Colonna DB          | Tipo Java  | Tipo SQL            | Note                          |
-|-------------------|---------------------|------------|---------------------|-------------------------------|
-| `id`              | `id`                | `UUID`     | `UUID`              | PK generato                   |
-| `provider`        | `provider`          | `String`   | `VARCHAR(20)`       | OLLAMA, OPENAI, ANTHROPIC, GOOGLE |
-| `model`           | `model`             | `String`   | `VARCHAR(100)`      | Nome modello (es. `llama3.2`) |
-| `promptTokens`    | `prompt_tokens`     | `int`      | `INTEGER`           | Token nel prompt              |
-| `completionTokens`| `completion_tokens` | `int`      | `INTEGER`           | Token nella risposta          |
-| `totalTokens`     | `total_tokens`      | `int`      | `INTEGER`           | Token totali                  |
-| `cost`            | `cost`              | `double`   | `DOUBLE PRECISION`  | Costo stimato                 |
-| `latencyMs`       | `latency_ms`        | `long`     | `BIGINT`            | Latenza in ms                 |
+| Campo Java        | Colonna DB          | Tipo Java  | Tipo SQL            | Note                                    |
+|-------------------|---------------------|------------|---------------------|-----------------------------------------|
+| `id`              | `id`                | `UUID`     | `CHAR(36)`          | PK generato                             |
+| `provider`        | `provider`          | `String`   | `VARCHAR(20)`       | OLLAMA, OPENAI, ANTHROPIC, GOOGLE       |
+| `model`           | `model`             | `String`   | `VARCHAR(100)`      | Nome modello (es. `llama3.2`)           |
+| `promptTokens`    | `prompt_tokens`     | `int`      | `INTEGER`           | Token nel prompt                        |
+| `completionTokens`| `completion_tokens` | `int`      | `INTEGER`           | Token nella risposta                    |
+| `totalTokens`     | `total_tokens`      | `int`      | `INTEGER`           | Token totali                            |
+| `cost`            | `cost`              | `double`   | `DOUBLE`            | Costo stimato                           |
+| `latencyMs`       | `latency_ms`        | `long`     | `BIGINT`            | Latenza in ms                           |
 | `timestamp`       | `timestamp`         | `Instant`  | `TIMESTAMP`         | NOT NULL, con fallback in `@PrePersist` |
 
 ### Nota sul callback @PrePersist
@@ -387,9 +387,9 @@ Domain Port (localmind-domain)             Adapter (localmind-infrastructure)
 | LlmUsageRepository          |            | LlmUsageRepositoryAdapter      |
 | (interface)                 |  <------   | implements LlmUsageRepository  |
 |                             |            |                                |
-| + save(UsageRecord)        |            | + save(UsageRecord)            |
-| + findByDateRange(from, to)|            | + findByDateRange(from, to)    |
-| + findAll()                |            | + findAll()                    |
+| + save(UsageRecord)         |            | + save(UsageRecord)            |
+| + findByDateRange(from, to) |            | + findByDateRange(from, to)    |
+| + findAll()                 |            | + findAll()                    |
 +-----------------------------+            +-----+--------------------------+
                                                  |
                                                  | utilizza
@@ -467,7 +467,7 @@ public class LlmUsageRepositoryAdapter implements LlmUsageRepository {
 
 | Direzione                         | Da                  | A                    | Metodo            |
 |-----------------------------------|---------------------|----------------------|-------------------|
-| Dominio -> Infrastruttura         | `UsageRecord`       | `LlmUsageEntity`    | `save()` inline   |
+| Dominio -> Infrastruttura         | `UsageRecord`       | `LlmUsageEntity`     | `save()` inline   |
 | Infrastruttura -> Dominio         | `LlmUsageEntity`    | `UsageRecord`        | `toUsageRecord()` |
 
 #### Punti chiave del pattern
@@ -490,23 +490,23 @@ Hibernate utilizza la `PhysicalNamingStrategyStandardImpl` di Spring Boot che co
 
 ### Generazione UUID
 
-Tutte le entita' utilizzano `@GeneratedValue(strategy = GenerationType.UUID)` di JPA 3.1+, che delega la generazione al provider (Hibernate genera UUID v4 lato applicazione oppure utilizza `gen_random_uuid()` lato database).
+Tutte le entita' utilizzano `@GeneratedValue(strategy = GenerationType.UUID)` di JPA 3.1+, che delega la generazione al provider (Hibernate genera UUID v4 lato applicazione oppure utilizza `UUID()` lato database MySQL).
 
 ### Lifecycle callbacks
 
-| Callback       | Entita'                              | Operazione                           |
-|----------------|--------------------------------------|--------------------------------------|
+| Callback       | Entita'                                                               | Operazione                              |
+|----------------|-----------------------------------------------------------------------|-----------------------------------------|
 | `@PrePersist`  | DocumentEntity, ConversationEntity, ChatMessageEntity, LlmUsageEntity | Inizializzazione timestamp di creazione |
-| `@PreUpdate`   | DocumentEntity, ConversationEntity   | Aggiornamento timestamp di modifica  |
+| `@PreUpdate`   | DocumentEntity, ConversationEntity                                    | Aggiornamento timestamp di modifica     |
 
 ### Annotazioni Lombok comuni
 
 Tutte le entita' condividono le seguenti annotazioni Lombok:
 
-| Annotazione            | Scopo                                              |
-|------------------------|-----------------------------------------------------|
-| `@Data`                | Genera getter, setter, equals, hashCode, toString   |
-| `@Builder`             | Pattern builder per costruzione fluente              |
-| `@NoArgsConstructor`   | Costruttore senza argomenti (richiesto da JPA)       |
+| Annotazione            | Scopo                                                         |
+|------------------------|---------------------------------------------------------------|
+| `@Data`                | Genera getter, setter, equals, hashCode, toString             |
+| `@Builder`             | Pattern builder per costruzione fluente                       |
+| `@NoArgsConstructor`   | Costruttore senza argomenti (richiesto da JPA)                |
 | `@AllArgsConstructor`  | Costruttore con tutti gli argomenti (richiesto da `@Builder`) |
-| `@Builder.Default`     | Valori di default nei builder                        |
+| `@Builder.Default`     | Valori di default nei builder                                 |

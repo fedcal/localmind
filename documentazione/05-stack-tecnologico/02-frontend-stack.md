@@ -31,7 +31,7 @@ Il frontend di LocalMind e' un'applicazione Single Page Application (SPA) costru
 
 ## 2. Angular 21.0.0
 
-| Proprieta'   | Valore                                              |
+| Proprieta'  | Valore                                               |
 |-------------|------------------------------------------------------|
 | **Nome**    | Angular                                              |
 | **Versione**| 21.0.0                                               |
@@ -50,29 +50,29 @@ Angular 21 e' stato selezionato come framework frontend per le seguenti ragioni:
 
 ### Funzionalita' Angular 21 utilizzate
 
-| Funzionalita'            | Descrizione                                                |
-|--------------------------|-------------------------------------------------------------|
-| Standalone Components    | Componenti autonomi senza NgModule                          |
-| Signals                  | `signal()`, `computed()`, `effect()` per stato reattivo     |
-| Control Flow (`@for`, `@if`) | Nuova sintassi di template per condizionali e iterazioni |
-| `inject()`               | Funzione per dependency injection nei componenti            |
-| `provideRouter()`        | Configurazione router tramite function-based provider       |
-| `provideHttpClient()`    | Client HTTP configurato tramite provider                    |
+| Funzionalita'                 | Descrizione                                                |
+|-------------------------------|-------------------------------------------------------------|
+| Standalone Components         | Componenti autonomi senza NgModule                          |
+| Signals                       | `signal()`, `computed()`, `effect()` per stato reattivo     |
+| Control Flow (`@for`, `@if`)  | Nuova sintassi di template per condizionali e iterazioni    |
+| `inject()`                    | Funzione per dependency injection nei componenti            |
+| `provideRouter()`             | Configurazione router tramite function-based provider       |
+| `provideHttpClient()`         | Client HTTP configurato tramite provider                    |
 | `withComponentInputBinding()` | Binding automatico dei route parameters ai component inputs |
 
 ### Alternative considerate
 
-| Alternativa | Motivo del rifiuto                                                |
-|-------------|------------------------------------------------------------------|
+| Alternativa | Motivo del rifiuto                                                                                                                  |
+|-------------|-------------------------------------------------------------------------------------------------------------------------------------|
 | React       | Eccellente ecosistema, ma meno opinionated; richiede scelte architetturali aggiuntive per routing, state management e form handling |
-| Vue.js      | Framework progressivo e accessibile, ma ecosistema enterprise meno consolidato rispetto ad Angular |
-| Svelte      | Approccio innovativo con compilazione, ma ecosistema meno maturo per applicazioni enterprise complesse |
+| Vue.js      | Framework progressivo e accessibile, ma ecosistema enterprise meno consolidato rispetto ad Angular                                  |
+| Svelte      | Approccio innovativo con compilazione, ma ecosistema meno maturo per applicazioni enterprise complesse                              |
 
 ---
 
 ## 3. TypeScript 5.9.2
 
-| Proprieta'   | Valore                                        |
+| Proprieta'  | Valore                                         |
 |-------------|------------------------------------------------|
 | **Nome**    | TypeScript                                     |
 | **Versione**| 5.9.2                                          |
@@ -92,11 +92,11 @@ TypeScript e' il linguaggio nativo di Angular. La versione 5.9.2 e' utilizzata p
 
 ## 4. RxJS 7.8.0
 
-| Proprieta'   | Valore                                        |
+| Proprieta'  | Valore                                         |
 |-------------|------------------------------------------------|
 | **Nome**    | RxJS (Reactive Extensions for JavaScript)      |
 | **Versione**| 7.8.0                                          |
-| **Scopo**   | Stream asincroni e integrazione HTTP client     |
+| **Scopo**   | Stream asincroni e integrazione HTTP client    |
 
 ### Utilizzo nel progetto
 
@@ -113,7 +113,7 @@ RxJS e' una dipendenza core di Angular, utilizzata nel progetto per:
 
 ## 5. Angular Signals
 
-| Proprieta'   | Valore                                              |
+| Proprieta'  | Valore                                               |
 |-------------|------------------------------------------------------|
 | **Nome**    | Angular Signals                                      |
 | **Versione**| Integrato in Angular 21.0.0                          |
@@ -125,12 +125,12 @@ Angular Signals e' una primitiva reattiva introdotta in Angular 16 e divenuta ma
 
 ### Primitive utilizzate
 
-| Primitiva     | Descrizione                                                     | Esempio                                     |
-|---------------|------------------------------------------------------------------|----------------------------------------------|
-| `signal()`    | Crea un valore reattivo mutabile                                 | `_messages = signal<ChatMessage[]>([])`      |
+| Primitiva     | Descrizione                                                      | Esempio                                                  |
+|---------------|------------------------------------------------------------------|----------------------------------------------------------|
+| `signal()`    | Crea un valore reattivo mutabile                                 | `_messages = signal<ChatMessage[]>([])`                  |
 | `computed()`  | Crea un valore derivato che si aggiorna automaticamente          | `messageCount = computed(() => this._messages().length)` |
-| `effect()`    | Esegue side effect quando i segnali dipendenti cambiano          | `effect(() => console.log(this._messages()))` |
-| `.asReadonly()`| Espone un signal in sola lettura                                | `messages = this._messages.asReadonly()`     |
+| `effect()`    | Esegue side effect quando i segnali dipendenti cambiano          | `effect(() => console.log(this._messages()))`            |
+| `.asReadonly()`| Espone un signal in sola lettura                                | `messages = this._messages.asReadonly()`                 |
 
 ### Pattern di stato in LocalMind
 
@@ -142,19 +142,19 @@ Il pattern adottato prevede:
 
 ### Vantaggi rispetto a NgRx
 
-| Aspetto              | Angular Signals (LocalMind)    | NgRx                            |
-|----------------------|--------------------------------|---------------------------------|
-| Boilerplate          | Zero                           | Actions, Reducers, Effects, Selectors |
-| Dipendenze esterne   | Nessuna                        | `@ngrx/store`, `@ngrx/effects`, ecc. |
-| Type safety          | Nativa                         | Richiede configurazione          |
-| Curva di apprendimento| Bassa                         | Alta                             |
-| Adeguatezza          | Ottimale per app medio-piccole | Necessario per app molto complesse |
+| Aspetto               | Angular Signals (LocalMind)    | NgRx                                  |
+|-----------------------|--------------------------------|---------------------------------------|
+| Boilerplate           | Zero                           | Actions, Reducers, Effects, Selectors |
+| Dipendenze esterne    | Nessuna                        | `@ngrx/store`, `@ngrx/effects`, ecc.  |
+| Type safety           | Nativa                         | Richiede configurazione               |
+| Curva di apprendimento| Bassa                          | Alta                                  |
+| Adeguatezza           | Ottimale per app medio-piccole | Necessario per app molto complesse    |
 
 ---
 
 ## 6. Standalone Components
 
-| Proprieta'   | Valore                                        |
+| Proprieta'  | Valore                                         |
 |-------------|------------------------------------------------|
 | **Nome**    | Angular Standalone Components                  |
 | **Versione**| Default da Angular 17+                         |
@@ -192,7 +192,7 @@ export class ChatPageComponent {
 
 ## 7. Angular Router
 
-| Proprieta'   | Valore                                        |
+| Proprieta'  | Valore                                         |
 |-------------|------------------------------------------------|
 | **Nome**    | Angular Router                                 |
 | **Versione**| Integrato in Angular 21.0.0                    |
@@ -210,7 +210,7 @@ export class ChatPageComponent {
 
 ## 8. SCSS
 
-| Proprieta'   | Valore                                        |
+| Proprieta'  | Valore                                         |
 |-------------|------------------------------------------------|
 | **Nome**    | SCSS (Sassy CSS)                               |
 | **Versione**| Integrato in Angular CLI                       |
@@ -226,11 +226,11 @@ export class ChatPageComponent {
 
 ## 9. Vitest 4.0.8
 
-| Proprieta'   | Valore                                        |
+| Proprieta'  | Valore                                         |
 |-------------|------------------------------------------------|
 | **Nome**    | Vitest                                         |
 | **Versione**| 4.0.8                                          |
-| **Scopo**   | Test runner per unit test e component test      |
+| **Scopo**   | Test runner per unit test e component test     |
 
 ### Motivazione della scelta
 
@@ -275,15 +275,15 @@ export const environment = {
 
 ## 11. Tabella Riepilogativa Dipendenze
 
-| Dipendenza           | Versione | Scopo                                     |
-|----------------------|----------|-------------------------------------------|
-| Angular              | 21.0.0   | Framework applicativo                     |
-| TypeScript           | 5.9.2    | Linguaggio tipizzato                      |
-| RxJS                 | 7.8.0    | Stream asincroni e HTTP                   |
-| Angular Signals      | built-in | State management reattivo                 |
-| Angular Router       | built-in | Navigazione e lazy loading                |
-| Angular HttpClient   | built-in | Client HTTP con interceptor               |
-| Angular Forms        | built-in | Template-driven e reactive forms          |
-| SCSS                 | built-in | Preprocessore CSS                         |
-| Vitest               | 4.0.8    | Test runner                               |
+| Dipendenza           | Versione | Scopo                                                     |
+|----------------------|----------|-----------------------------------------------------------|
+| Angular              | 21.0.0   | Framework applicativo                                     |
+| TypeScript           | 5.9.2    | Linguaggio tipizzato                                      |
+| RxJS                 | 7.8.0    | Stream asincroni e HTTP                                   |
+| Angular Signals      | built-in | State management reattivo                                 |
+| Angular Router       | built-in | Navigazione e lazy loading                                |
+| Angular HttpClient   | built-in | Client HTTP con interceptor                               |
+| Angular Forms        | built-in | Template-driven e reactive forms                          |
+| SCSS                 | built-in | Preprocessore CSS                                         |
+| Vitest               | 4.0.8    | Test runner                                               |
 | Zone.js              | built-in | Change detection (progressivamente sostituito da Signals) |

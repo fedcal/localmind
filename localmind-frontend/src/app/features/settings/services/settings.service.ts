@@ -22,4 +22,8 @@ export class SettingsService {
   testProvider(id: string): Observable<{ status: string; message: string }> {
     return this.api.post<{ status: string; message: string }>(`/settings/providers/${id}/test`, {});
   }
+
+  listOllamaModels(baseUrl: string): Observable<string[]> {
+    return this.api.get<string[]>(`/settings/providers/ollama/models?baseUrl=${encodeURIComponent(baseUrl)}`);
+  }
 }

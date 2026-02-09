@@ -267,7 +267,7 @@ Grazie a MCP, LocalMind puo' espandere le proprie capacita' connettendosi a qual
 MCP compatibile senza modificare il codice core. Un utente puo' aggiungere:
 
 - Accesso al filesystem locale (lettura/scrittura file)
-- Connessione a database esterni (PostgreSQL, SQLite, MongoDB)
+- Connessione a database esterni (MySQL, PostgreSQL, SQLite, MongoDB)
 - Web scraping e ricerca web
 - Integrazione con API aziendali
 - Strumenti di sviluppo (Git, Docker, Kubernetes)

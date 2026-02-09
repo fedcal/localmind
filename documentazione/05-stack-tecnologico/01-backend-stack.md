@@ -17,7 +17,7 @@
 6. [Spring Security](#6-spring-security)
 7. [Spring Batch](#7-spring-batch)
 8. [Spring Retry](#8-spring-retry)
-9. [PostgreSQL 16](#9-postgresql-16)
+9. [MySQL 8.0](#9-mysql-80)
 10. [Qdrant](#10-qdrant)
 11. [Apache Tika 2.9.2](#11-apache-tika-292)
 12. [Flyway](#12-flyway)
@@ -34,23 +34,23 @@ Il backend di LocalMind e' costruito su un'architettura multi-modulo Maven basat
 
 La struttura multi-modulo comprende:
 
-| Modulo                    | Descrizione                                              |
-|---------------------------|----------------------------------------------------------|
+| Modulo                    | Descrizione                                                                |
+|---------------------------|----------------------------------------------------------------------------|
 | `localmind-domain`        | Entita' di dominio, porte e logica di business (zero dipendenze framework) |
-| `localmind-infrastructure`| Adapter: database, client LLM, vector store, filesystem  |
-| `localmind-api`           | Controller REST, DTO e mapper                            |
-| `localmind-batch`         | Job Spring Batch per elaborazione documenti              |
-| `localmind-app`           | Modulo applicativo eseguibile (aggregatore)              |
+| `localmind-infrastructure`| Adapter: database, client LLM, vector store, filesystem                    |
+| `localmind-api`           | Controller REST, DTO e mapper                                              |
+| `localmind-batch`         | Job Spring Batch per elaborazione documenti                                |
+| `localmind-app`           | Modulo applicativo eseguibile (aggregatore)                                |
 
 ---
 
 ## 2. Java 17
 
-| Proprieta'   | Valore                          |
-|-------------|----------------------------------|
-| **Nome**    | Java Development Kit (JDK)       |
-| **Versione**| 17 (LTS)                        |
-| **Scopo**   | Linguaggio e runtime di esecuzione |
+| Proprieta'   | Valore                             |
+|--------------|------------------------------------|
+| **Nome**     | Java Development Kit (JDK)         |
+| **Versione** | 17 (LTS)                           |
+| **Scopo**    | Linguaggio e runtime di esecuzione |
 
 ### Motivazione della scelta
 
@@ -64,16 +64,16 @@ Java 17 e' stato selezionato in quanto versione Long-Term Support (LTS), garante
 
 ### Alternative considerate
 
-| Alternativa | Motivo del rifiuto                                                |
-|-------------|------------------------------------------------------------------|
+| Alternativa | Motivo del rifiuto                                                                                                                                            |
+|-------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | Java 21     | Funzionalita' avanzate (virtual threads) non necessarie per v0.1.0; compatibilita' con Spring AI 1.0.0 non completamente verificata al momento dello sviluppo |
-| Java 11     | Mancanza di records, sealed classes e altre funzionalita' moderne essenziali per il design del dominio |
+| Java 11     | Mancanza di records, sealed classes e altre funzionalita' moderne essenziali per il design del dominio                                                        |
 
 ---
 
 ## 3. Spring Boot 3.4.2
 
-| Proprieta'   | Valore                                        |
+| Proprieta'  | Valore                                         |
 |-------------|------------------------------------------------|
 | **Nome**    | Spring Boot                                    |
 | **Versione**| 3.4.2                                          |
@@ -91,19 +91,19 @@ Spring Boot 3.4.2 e' il parent POM del progetto (`spring-boot-starter-parent`). 
 
 ### Alternative considerate
 
-| Alternativa  | Motivo del rifiuto                                                |
-|--------------|------------------------------------------------------------------|
+| Alternativa  | Motivo del rifiuto                                                                                                            |
+|--------------|-------------------------------------------------------------------------------------------------------------------------------|
 | Quarkus      | Ottimo per microservizi cloud-native e GraalVM, ma ecosistema AI meno maturo; l'integrazione con Spring AI non e' disponibile |
-| Micronaut    | Performance comparabili, ma community e documentazione meno estese; assenza di integrazione con Spring AI |
+| Micronaut    | Performance comparabili, ma community e documentazione meno estese; assenza di integrazione con Spring AI                     |
 
 ---
 
 ## 4. Spring AI 1.0.0
 
-| Proprieta'   | Valore                                              |
+| Proprieta'  | Valore                                               |
 |-------------|------------------------------------------------------|
 | **Nome**    | Spring AI                                            |
-| **Versione**| 1.0.0 (gestita tramite BOM `spring-ai-bom`)         |
+| **Versione**| 1.0.0 (gestita tramite BOM `spring-ai-bom`)          |
 | **Scopo**   | API unificata per provider LLM e vector store        |
 
 ### Motivazione della scelta
@@ -124,7 +124,7 @@ Spring AI fornisce un'astrazione unificata per l'interazione con diversi provide
 
 ### Alternative considerate
 
-| Alternativa   | Motivo del rifiuto                                                |
+| Alternativa   | Motivo del rifiuto                                               |
 |---------------|------------------------------------------------------------------|
 | LangChain4j   | Libreria valida e matura, ma priva dell'integrazione nativa con lo stack Spring (auto-configurazione, starter, profili); richiede piu' codice di configurazione manuale |
 
@@ -132,10 +132,10 @@ Spring AI fornisce un'astrazione unificata per l'interazione con diversi provide
 
 ## 5. Spring Data JPA / Hibernate
 
-| Proprieta'   | Valore                                        |
+| Proprieta'  | Valore                                         |
 |-------------|------------------------------------------------|
 | **Nome**    | Spring Data JPA con Hibernate ORM              |
-| **Versione**| Gestita da Spring Boot 3.4.2 (Hibernate 6.x)  |
+| **Versione**| Gestita da Spring Boot 3.4.2 (Hibernate 6.x)   |
 | **Scopo**   | Object-Relational Mapping e accesso dati       |
 
 ### Motivazione della scelta
@@ -144,23 +144,23 @@ Spring Data JPA e' lo standard de facto per l'accesso dati in applicazioni Sprin
 
 Caratteristiche utilizzate:
 - **Repository interface**: `JpaRepository<Entity, UUID>` per operazioni CRUD automatiche.
-- **Hibernate 6.x**: ORM con supporto nativo per Jakarta EE 10 e mapping JSONB PostgreSQL.
-- **`@JdbcTypeCode(SqlTypes.JSON)`**: per mapping nativo di campi JSONB PostgreSQL a `Map<String, Object>`.
+- **Hibernate 6.x**: ORM con supporto nativo per Jakarta EE 10 e mapping JSON MySQL.
+- **`@JdbcTypeCode(SqlTypes.JSON)`**: per mapping nativo di campi JSON MySQL a `Map<String, Object>`.
 - **Lifecycle callbacks**: `@PrePersist`, `@PreUpdate` per gestione automatica dei timestamp.
 - **DDL validation**: `ddl-auto: validate` in combinazione con Flyway per garantire coerenza schema-entita'.
 
 ### Alternative considerate
 
-| Alternativa | Motivo del rifiuto                                                |
-|-------------|------------------------------------------------------------------|
+| Alternativa | Motivo del rifiuto                                                                                                            |
+|-------------|-------------------------------------------------------------------------------------------------------------------------------|
 | jOOQ        | Eccellente per query SQL complesse e type-safe; non necessario per il livello di complessita' delle query di LocalMind v0.1.0 |
-| MyBatis     | Buon controllo SQL, ma richiede piu' codice boilerplate rispetto a Spring Data JPA per operazioni CRUD standard |
+| MyBatis     | Buon controllo SQL, ma richiede piu' codice boilerplate rispetto a Spring Data JPA per operazioni CRUD standard               |
 
 ---
 
 ## 6. Spring Security
 
-| Proprieta'   | Valore                                        |
+| Proprieta'  | Valore                                         |
 |-------------|------------------------------------------------|
 | **Nome**    | Spring Security                                |
 | **Versione**| Gestita da Spring Boot 3.4.2                   |
@@ -181,7 +181,7 @@ Nella versione 0.1.0, Spring Security e' configurato in modalita' permissiva per
 
 ## 7. Spring Batch
 
-| Proprieta'   | Valore                                        |
+| Proprieta'  | Valore                                         |
 |-------------|------------------------------------------------|
 | **Nome**    | Spring Batch                                   |
 | **Versione**| Gestita da Spring Boot 3.4.2                   |
@@ -197,19 +197,19 @@ Il modulo `localmind-batch` utilizza Spring Batch per la pipeline di elaborazion
 
 ### Alternative considerate
 
-| Alternativa       | Motivo del rifiuto                                                |
-|-------------------|------------------------------------------------------------------|
+| Alternativa       | Motivo del rifiuto                                                                                 |
+|-------------------|----------------------------------------------------------------------------------------------------|
 | Custom Scheduler  | Meno robusto; Spring Batch offre gestione transazioni, retry, skip, restart e monitoring integrati |
 
 ---
 
 ## 8. Spring Retry
 
-| Proprieta'   | Valore                                        |
+| Proprieta'  | Valore                                         |
 |-------------|------------------------------------------------|
 | **Nome**    | Spring Retry                                   |
 | **Versione**| Gestita da Spring Boot 3.4.2                   |
-| **Scopo**   | Logica di retry per chiamate LLM              |
+| **Scopo**   | Logica di retry per chiamate LLM               |
 
 ### Utilizzo nel progetto
 
@@ -221,21 +221,21 @@ Spring Retry e' utilizzato nel modulo `localmind-infrastructure` per gestire err
 
 ---
 
-## 9. PostgreSQL 16
+## 9. MySQL 8.0
 
-| Proprieta'   | Valore                                        |
+| Proprieta'  | Valore                                         |
 |-------------|------------------------------------------------|
-| **Nome**    | PostgreSQL                                     |
-| **Versione**| 16 (Alpine)                                   |
-| **Scopo**   | Database relazionale principale               |
+| **Nome**    | MySQL                                          |
+| **Versione**| 8.0                                            |
+| **Scopo**   | Database relazionale principale                |
 
 ### Motivazione della scelta
 
-PostgreSQL 16 e' il database relazionale primario del sistema. E' distribuito tramite Docker (`postgres:16-alpine`).
+MySQL 8.0 e' il database relazionale primario del sistema. Puo' essere installato nativamente sull'host oppure eseguito tramite Docker (`mysql:8.0`); lo script di setup rileva automaticamente la modalita' disponibile.
 
 Caratteristiche utilizzate:
-- **JSONB**: per il campo `metadata` nella tabella `documents`, consentendo storage flessibile di metadati eterogenei.
-- **`gen_random_uuid()`**: generazione UUID lato database per chiavi primarie.
+- **JSON**: per il campo `metadata` nella tabella `documents`, consentendo storage flessibile di metadati eterogenei.
+- **`UUID()`**: generazione UUID lato database per chiavi primarie.
 - **Indici B-tree**: su colonne ad alta cardinalita' per query performanti.
 - **TIMESTAMP**: gestione temporale precisa per audit trail.
 
@@ -244,24 +244,24 @@ Caratteristiche utilizzate:
 ```yaml
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:5432/localmind
+    url: jdbc:mysql://localhost:3306/localmind?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
     username: localmind
     password: localmind
-    driver-class-name: org.postgresql.Driver
+    driver-class-name: com.mysql.cj.jdbc.Driver
 ```
 
 ### Alternative considerate
 
-| Alternativa | Motivo del rifiuto                                                |
-|-------------|------------------------------------------------------------------|
-| MySQL       | Supporto JSONB meno maturo; funzionalita' avanzate (gen_random_uuid, JSONB indexing) non native |
-| H2          | Adatto solo per test; non adeguato per produzione con JSONB e UUID |
+| Alternativa          | Motivo del rifiuto                                               |
+|----------------------|------------------------------------------------------------------|
+| PostgreSQL           | Funzionalita' avanzate (JSONB, gen_random_uuid) non necessarie per il livello di complessita' di LocalMind v0.1.0; MySQL e' piu' diffuso e semplice da installare nativamente |
+| H2                   | Adatto solo per test; non adeguato per produzione con JSON e UUID |
 
 ---
 
 ## 10. Qdrant
 
-| Proprieta'   | Valore                                        |
+| Proprieta'  | Valore                                         |
 |-------------|------------------------------------------------|
 | **Nome**    | Qdrant                                         |
 | **Versione**| latest                                         |
@@ -292,18 +292,18 @@ spring:
 
 ### Alternative considerate
 
-| Alternativa | Motivo del rifiuto                                                |
-|-------------|------------------------------------------------------------------|
+| Alternativa | Motivo del rifiuto                                                                      |
+|-------------|-----------------------------------------------------------------------------------------|
 | Chroma      | Community piu' piccola; assenza di starter Spring AI dedicato al momento dello sviluppo |
-| Milvus      | Piu' complesso da configurare e operare; overhead per un progetto single-node |
-| Weaviate    | Funzionalita' avanzate non necessarie; starter Spring AI non disponibile |
-| Pinecone    | Servizio cloud-only; incompatibile con l'approccio local-first di LocalMind |
+| Milvus      | Piu' complesso da configurare e operare; overhead per un progetto single-node           |
+| Weaviate    | Funzionalita' avanzate non necessarie; starter Spring AI non disponibile                |
+| Pinecone    | Servizio cloud-only; incompatibile con l'approccio local-first di LocalMind             |
 
 ---
 
 ## 11. Apache Tika 2.9.2
 
-| Proprieta'   | Valore                                        |
+| Proprieta'  | Valore                                         |
 |-------------|------------------------------------------------|
 | **Nome**    | Apache Tika                                    |
 | **Versione**| 2.9.2                                          |
@@ -318,25 +318,25 @@ Apache Tika e' la libreria di riferimento per l'estrazione di testo da formati e
 
 ### Formati supportati
 
-| Formato | MIME Type                                                      |
-|---------|----------------------------------------------------------------|
-| PDF     | `application/pdf`                                              |
+| Formato | MIME Type                                                                 |
+|---------|---------------------------------------------------------------------------|
+| PDF     | `application/pdf`                                                         |
 | DOCX    | `application/vnd.openxmlformats-officedocument.wordprocessingml.document` |
-| TXT     | `text/plain`                                                   |
-| EML     | `message/rfc822`                                               |
+| TXT     | `text/plain`                                                              |
+| EML     | `message/rfc822`                                                          |
 
 ### Alternative considerate
 
-| Alternativa | Motivo del rifiuto                                                |
-|-------------|------------------------------------------------------------------|
-| PDFBox      | Supporta solo PDF; Tika offre un'API unificata per formati multipli |
+| Alternativa | Motivo del rifiuto                                                                       |
+|-------------|------------------------------------------------------------------------------------------|
+| PDFBox      | Supporta solo PDF; Tika offre un'API unificata per formati multipli                      |
 | iText       | Licenza commerciale (AGPL); orientato alla generazione PDF piu' che all'estrazione testo |
 
 ---
 
 ## 12. Flyway
 
-| Proprieta'   | Valore                                        |
+| Proprieta'  | Valore                                         |
 |-------------|------------------------------------------------|
 | **Nome**    | Flyway                                         |
 | **Versione**| Gestita da Spring Boot 3.4.2                   |
@@ -344,9 +344,9 @@ Apache Tika e' la libreria di riferimento per l'estrazione di testo da formati e
 
 ### Utilizzo nel progetto
 
-Flyway gestisce le migrazioni del database PostgreSQL in modo versionato e ripetibile:
+Flyway gestisce le migrazioni del database MySQL in modo versionato e ripetibile:
 
-- **Artefatti**: `flyway-core`, `flyway-database-postgresql`.
+- **Artefatti**: `flyway-core`, `flyway-mysql`.
 - **Directory migrazioni**: `localmind-app/src/main/resources/db/migration/`.
 - **Convenzione naming**: `V{numero}__{descrizione}.sql`.
 - **Integrazione**: attivato automaticamente all'avvio dell'applicazione Spring Boot.
@@ -367,15 +367,15 @@ spring:
 
 ### Alternative considerate
 
-| Alternativa | Motivo del rifiuto                                                |
-|-------------|------------------------------------------------------------------|
+| Alternativa | Motivo del rifiuto                                                                                               |
+|-------------|------------------------------------------------------------------------------------------------------------------|
 | Liquibase   | Piu' flessibile (formato XML/YAML/JSON), ma maggiore complessita'; Flyway e' sufficiente per migrazioni SQL pure |
 
 ---
 
 ## 13. MapStruct 1.6.3
 
-| Proprieta'   | Valore                                        |
+| Proprieta'  | Valore                                         |
 |-------------|------------------------------------------------|
 | **Nome**    | MapStruct                                      |
 | **Versione**| 1.6.3                                          |
@@ -408,15 +408,15 @@ MapStruct genera codice di mapping tra DTO e modelli di dominio a tempo di compi
 
 ### Alternative considerate
 
-| Alternativa   | Motivo del rifiuto                                                |
-|---------------|------------------------------------------------------------------|
+| Alternativa   | Motivo del rifiuto                                                                        |
+|---------------|-------------------------------------------------------------------------------------------|
 | ModelMapper   | Mapping basato su reflection a runtime; meno performante e type-safe rispetto a MapStruct |
 
 ---
 
 ## 14. Lombok 1.18.36
 
-| Proprieta'   | Valore                                        |
+| Proprieta'  | Valore                                         |
 |-------------|------------------------------------------------|
 | **Nome**    | Project Lombok                                 |
 | **Versione**| 1.18.36                                        |
@@ -436,10 +436,10 @@ Lombok e' una dipendenza condivisa (`<optional>true</optional>`) tra tutti i mod
 
 ## 15. Maven
 
-| Proprieta'   | Valore                                        |
+| Proprieta'  | Valore                                         |
 |-------------|------------------------------------------------|
 | **Nome**    | Apache Maven                                   |
-| **Versione**| 3.x (wrapper non incluso)                     |
+| **Versione**| 3.x (wrapper non incluso)                      |
 | **Scopo**   | Build tool e gestione dipendenze               |
 
 ### Motivazione della scelta
@@ -454,8 +454,8 @@ Maven e' il build tool del progetto, scelto per:
 
 ### Alternative considerate
 
-| Alternativa | Motivo del rifiuto                                                |
-|-------------|------------------------------------------------------------------|
+| Alternativa | Motivo del rifiuto                                                                                                        |
+|-------------|---------------------------------------------------------------------------------------------------------------------------|
 | Gradle      | Build incrementali piu' veloci, ma DSL Groovy/Kotlin aggiunge complessita'; Maven e' piu' prevedibile per team eterogenei |
 
 ---
@@ -466,7 +466,7 @@ La tabella seguente elenca tutte le dipendenze con le rispettive versioni, come 
 
 ### Dipendenze gestite dal POM Parent
 
-| Dipendenza                              | Versione     | Modulo                    | Scope     |
+| Dipendenza                              | Versione    | Modulo                    | Scope     |
 |-----------------------------------------|-------------|---------------------------|-----------|
 | `spring-boot-starter-parent`            | 3.4.2       | Parent POM                | -         |
 | `spring-ai-bom`                         | 1.0.0       | Parent POM (BOM)          | import    |
@@ -477,8 +477,8 @@ La tabella seguente elenca tutte le dipendenze con le rispettive versioni, come 
 ### Dipendenze per Modulo
 
 #### localmind-domain
-| Dipendenza     | Versione | Note                    |
-|---------------|----------|--------------------------|
+| Dipendenza    | Versione | Note                                        |
+|---------------|----------|---------------------------------------------|
 | (nessuna)     | -        | Modulo Java puro, zero dipendenze framework |
 
 #### localmind-infrastructure
@@ -491,27 +491,27 @@ La tabella seguente elenca tutte le dipendenze con le rispettive versioni, come 
 | `spring-ai-starter-model-openai`            | 1.0.0*    | Client OpenAI              |
 | `spring-ai-starter-model-anthropic`         | 1.0.0*    | Client Anthropic           |
 | `spring-ai-starter-vector-store-qdrant`     | 1.0.0*    | Client Qdrant              |
-| `postgresql`                                | runtime*  | Driver JDBC PostgreSQL     |
+| `mysql-connector-j`                         | runtime*  | Driver JDBC MySQL          |
 | `tika-core`                                 | 2.9.2     | Estrazione testo (core)    |
 | `tika-parsers-standard-package`             | 2.9.2     | Parser multi-formato       |
 | `spring-retry`                              | 3.4.2*    | Retry per chiamate LLM     |
 
 #### localmind-api
-| Dipendenza                          | Versione | Note                    |
-|-------------------------------------|---------|--------------------------|
-| `spring-boot-starter-web`           | 3.4.2*  | Web MVC e REST            |
-| `spring-boot-starter-validation`    | 3.4.2*  | Bean Validation (Jakarta) |
+| Dipendenza                          | Versione | Note                      |
+|-------------------------------------|----------|---------------------------|
+| `spring-boot-starter-web`           | 3.4.2*   | Web MVC e REST            |
+| `spring-boot-starter-validation`    | 3.4.2*   | Bean Validation (Jakarta) |
 
 #### localmind-batch
-| Dipendenza                          | Versione | Note                    |
-|-------------------------------------|---------|--------------------------|
-| `spring-boot-starter-batch`         | 3.4.2*  | Spring Batch framework    |
+| Dipendenza                          | Versione | Note                     |
+|-------------------------------------|----------|--------------------------|
+| `spring-boot-starter-batch`         | 3.4.2*   | Spring Batch framework   |
 
 #### localmind-app
-| Dipendenza                          | Versione | Note                    |
-|-------------------------------------|---------|--------------------------|
-| `spring-boot-starter-actuator`      | 3.4.2*  | Health check e metriche   |
-| `flyway-core`                       | 3.4.2*  | Migrazioni database       |
-| `flyway-database-postgresql`        | 3.4.2*  | Supporto PostgreSQL       |
+| Dipendenza                          | Versione | Note                     |
+|-------------------------------------|----------|--------------------------|
+| `spring-boot-starter-actuator`      | 3.4.2*   | Health check e metriche  |
+| `flyway-core`                       | 3.4.2*   | Migrazioni database      |
+| `flyway-mysql`                      | 3.4.2*   | Supporto MySQL           |
 
 > **Nota**: le versioni contrassegnate con `*` sono gestite automaticamente dal parent POM (`spring-boot-starter-parent` 3.4.2) o dal BOM Spring AI 1.0.0 e non sono specificate esplicitamente nei POM dei moduli.

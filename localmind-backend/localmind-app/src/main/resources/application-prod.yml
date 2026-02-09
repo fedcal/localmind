@@ -8,9 +8,6 @@ spring:
     hibernate:
       ddl-auto: validate
     show-sql: false
-    properties:
-      hibernate:
-        dialect: org.hibernate.dialect.MySQLDialect
   ai:
     ollama:
       base-url: http://${OLLAMA_HOST:localhost}:11434

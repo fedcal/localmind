@@ -1,7 +1,9 @@
+export type ProviderType = 'OLLAMA' | 'OPENAI' | 'ANTHROPIC' | 'GOOGLE';
+
 export interface LlmProviderConfig {
   id: string;
   name: string;
-  type: 'OLLAMA' | 'OPENAI' | 'ANTHROPIC';
+  type: ProviderType;
   baseUrl: string;
   apiKey?: string;
   enabled: boolean;
@@ -11,7 +13,7 @@ export interface LlmProviderConfig {
 
 export interface CreateProviderRequest {
   name: string;
-  type: 'OLLAMA' | 'OPENAI' | 'ANTHROPIC';
+  type: ProviderType;
   baseUrl: string;
   apiKey?: string;
   defaultModel?: string;

@@ -13,7 +13,7 @@ import { LlmProviderConfig, CreateProviderRequest } from '../../models/settings.
           <h1>Impostazioni</h1>
           <p class="subtitle">Configurazione provider LLM e preferenze</p>
         </div>
-        <button class="btn btn-primary" (click)="showForm = !showForm">
+        <button class="btn btn-primary" (click)="toggleForm()">
           {{ showForm ? 'Annulla' : '+ Aggiungi Provider' }}
         </button>
       </div>
@@ -28,31 +28,56 @@ import { LlmProviderConfig, CreateProviderRequest } from '../../models/settings.
             </div>
             <div class="form-group">
               <label>Tipo *</label>
-              <select [(ngModel)]="newProvider.type">
+              <select [(ngModel)]="newProvider.type" (ngModelChange)="onTypeChange($event)">
                 <option value="OLLAMA">Ollama</option>
                 <option value="OPENAI">OpenAI</option>
                 <option value="ANTHROPIC">Anthropic</option>
+                <option value="GOOGLE">Google Gemini</option>
               </select>
             </div>
             <div class="form-group">
               <label>URL Base *</label>
               <input type="text" [(ngModel)]="newProvider.baseUrl"
-                     [placeholder]="newProvider.type === 'OLLAMA' ? 'http://localhost:11434' : 'https://api.openai.com'">
+                     (blur)="onBaseUrlBlur()"
+                     [placeholder]="getUrlPlaceholder()">
             </div>
             @if (newProvider.type !== 'OLLAMA') {
               <div class="form-group">
-                <label>API Key</label>
-                <input type="password" [(ngModel)]="newProvider.apiKey" placeholder="sk-...">
+                <label>API Key *</label>
+                <input type="password" [(ngModel)]="newProvider.apiKey"
+                       [placeholder]="getApiKeyPlaceholder()">
               </div>
             }
             <div class="form-group">
               <label>Modello Predefinito</label>
-              <input type="text" [(ngModel)]="newProvider.defaultModel"
-                     [placeholder]="newProvider.type === 'OLLAMA' ? 'llama3.2' : 'gpt-4o-mini'">
+              @if (newProvider.type === 'OLLAMA') {
+                <div class="select-with-refresh">
+                  <select [(ngModel)]="newProvider.defaultModel" [disabled]="loadingModels()">
+                    <option value="">-- Seleziona modello --</option>
+                    @for (model of ollamaModels(); track model) {
+                      <option [value]="model">{{ model }}</option>
+                    }
+                  </select>
+                  <button class="btn-icon" (click)="fetchOllamaModels()" [disabled]="loadingModels()"
+                          title="Aggiorna lista modelli">
+                    @if (loadingModels()) {
+                      <span class="spinner-sm"></span>
+                    } @else {
+                      &#x21bb;
+                    }
+                  </button>
+                </div>
+                @if (ollamaModels().length === 0 && !loadingModels() && ollamaModelsFetched()) {
+                  <span class="hint error">Nessun modello trovato. Verifica URL e che Ollama sia in esecuzione.</span>
+                }
+              } @else {
+                <input type="text" [(ngModel)]="newProvider.defaultModel"
+                       [placeholder]="getModelPlaceholder()">
+              }
             </div>
           </div>
           <button class="btn btn-primary" (click)="addProvider()"
-                  [disabled]="!newProvider.name.trim() || !newProvider.baseUrl.trim()">
+                  [disabled]="!isFormValid()">
             Salva Provider
           </button>
         </div>
@@ -134,6 +159,7 @@ import { LlmProviderConfig, CreateProviderRequest } from '../../models/settings.
           }
         </div>
       }
+
     </div>
   `,
   styles: [`
@@ -150,6 +176,9 @@ import { LlmProviderConfig, CreateProviderRequest } from '../../models/settings.
     .btn-danger:hover:not(:disabled) { background: #fef2f2; }
     .btn-sm { padding: 0.35rem 0.7rem; font-size: 0.8rem; }
     .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+    .btn-icon { background: none; border: 1px solid #ddd; border-radius: 4px; padding: 0.4rem 0.6rem; cursor: pointer; font-size: 1rem; line-height: 1; display: flex; align-items: center; }
+    .btn-icon:hover:not(:disabled) { background: #f5f5f5; }
+    .btn-icon:disabled { opacity: 0.5; cursor: not-allowed; }
     .card { background: white; border-radius: 10px; box-shadow: 0 1px 3px rgba(0,0,0,0.08); padding: 1.25rem; }
     .add-form { margin-bottom: 1.5rem; }
     .add-form h3 { margin: 0 0 1rem 0; font-size: 1rem; }
@@ -160,6 +189,10 @@ import { LlmProviderConfig, CreateProviderRequest } from '../../models/settings.
       padding: 0.5rem; border: 1px solid #ddd; border-radius: 4px;
       font-size: 0.85rem; font-family: inherit; width: 100%; box-sizing: border-box;
     }
+    .select-with-refresh { display: flex; gap: 0.35rem; }
+    .select-with-refresh select { flex: 1; }
+    .hint { font-size: 0.7rem; margin-top: 0.15rem; }
+    .hint.error { color: #e74c3c; }
 
     .notification { padding: 0.6rem 1rem; border-radius: 6px; font-size: 0.8rem; margin-bottom: 1rem; }
     .notification.success { background: #d4edda; color: #155724; }
@@ -191,6 +224,7 @@ import { LlmProviderConfig, CreateProviderRequest } from '../../models/settings.
     .provider-type-icon.ollama { background: #2ecc71; }
     .provider-type-icon.openai { background: #10a37f; }
     .provider-type-icon.anthropic { background: #d4a574; }
+    .provider-type-icon.google { background: #4285f4; }
     .provider-name { font-weight: 600; font-size: 0.95rem; }
     .provider-url { font-size: 0.75rem; color: #999; font-family: monospace; }
     .badge { font-size: 0.65rem; padding: 0.1rem 0.45rem; border-radius: 10px; font-weight: 600; text-transform: uppercase; }
@@ -204,6 +238,7 @@ import { LlmProviderConfig, CreateProviderRequest } from '../../models/settings.
     .models-list { display: flex; flex-wrap: wrap; gap: 0.25rem; }
     .model-tag { background: #f0f0f0; padding: 0.1rem 0.4rem; border-radius: 4px; font-size: 0.7rem; font-family: monospace; }
     .provider-actions { display: flex; gap: 0.5rem; }
+
   `]
 })
 export class SettingsPageComponent implements OnInit {
@@ -214,10 +249,19 @@ export class SettingsPageComponent implements OnInit {
   showForm = false;
   testingId = signal<string | null>(null);
   notification = signal<{ type: string; message: string } | null>(null);
-
-  newProvider: CreateProviderRequest = { name: '', type: 'OLLAMA', baseUrl: 'http://localhost:11434' };
+  ollamaModels = signal<string[]>([]);
+  loadingModels = signal(false);
+  ollamaModelsFetched = signal(false);
+  newProvider: CreateProviderRequest = { name: '', type: 'OLLAMA', baseUrl: 'http://localhost:11434', defaultModel: '' };
 
   ngOnInit() { this.loadProviders(); }
+
+  toggleForm() {
+    this.showForm = !this.showForm;
+    if (this.showForm) {
+      this.resetForm();
+    }
+  }
 
   loadProviders() {
     this.loading.set(true);
@@ -227,12 +271,96 @@ export class SettingsPageComponent implements OnInit {
     });
   }
 
+  onTypeChange(type: string) {
+    this.newProvider.defaultModel = '';
+    this.ollamaModels.set([]);
+    this.ollamaModelsFetched.set(false);
+    switch (type) {
+      case 'OLLAMA':
+        this.newProvider.baseUrl = 'http://localhost:11434';
+        this.newProvider.apiKey = undefined;
+        this.fetchOllamaModels();
+        break;
+      case 'OPENAI':
+        this.newProvider.baseUrl = 'https://api.openai.com';
+        break;
+      case 'ANTHROPIC':
+        this.newProvider.baseUrl = 'https://api.anthropic.com';
+        break;
+      case 'GOOGLE':
+        this.newProvider.baseUrl = 'https://generativelanguage.googleapis.com';
+        break;
+    }
+  }
+
+  onBaseUrlBlur() {
+    if (this.newProvider.type === 'OLLAMA' && this.newProvider.baseUrl?.trim()) {
+      this.fetchOllamaModels();
+    }
+  }
+
+  fetchOllamaModels() {
+    const url = this.newProvider.baseUrl?.trim();
+    if (!url) return;
+    this.loadingModels.set(true);
+    this.ollamaModelsFetched.set(false);
+    this.settingsService.listOllamaModels(url).subscribe({
+      next: (models) => {
+        this.ollamaModels.set(models);
+        this.loadingModels.set(false);
+        this.ollamaModelsFetched.set(true);
+        if (models.length > 0 && !this.newProvider.defaultModel) {
+          this.newProvider.defaultModel = models[0];
+        }
+      },
+      error: () => {
+        this.ollamaModels.set([]);
+        this.loadingModels.set(false);
+        this.ollamaModelsFetched.set(true);
+      }
+    });
+  }
+
+  getUrlPlaceholder(): string {
+    switch (this.newProvider.type) {
+      case 'OLLAMA': return 'http://localhost:11434';
+      case 'OPENAI': return 'https://api.openai.com';
+      case 'ANTHROPIC': return 'https://api.anthropic.com';
+      case 'GOOGLE': return 'https://generativelanguage.googleapis.com';
+      default: return '';
+    }
+  }
+
+  getApiKeyPlaceholder(): string {
+    switch (this.newProvider.type) {
+      case 'OPENAI': return 'sk-...';
+      case 'ANTHROPIC': return 'sk-ant-...';
+      case 'GOOGLE': return 'AIza...';
+      default: return '';
+    }
+  }
+
+  getModelPlaceholder(): string {
+    switch (this.newProvider.type) {
+      case 'OPENAI': return 'gpt-4o-mini';
+      case 'ANTHROPIC': return 'claude-sonnet-4-20250514';
+      case 'GOOGLE': return 'gemini-2.0-flash';
+      default: return '';
+    }
+  }
+
+  isFormValid(): boolean {
+    if (!this.newProvider.name?.trim() || !this.newProvider.baseUrl?.trim()) return false;
+    if (this.newProvider.type !== 'OLLAMA' && !this.newProvider.apiKey?.trim()) return false;
+    return true;
+  }
+
   addProvider() {
-    if (!this.newProvider.name?.trim() || !this.newProvider.baseUrl?.trim()) return;
+    if (!this.isFormValid()) return;
     this.settingsService.saveProvider(this.newProvider).subscribe({
       next: () => {
         this.showForm = false;
-        this.newProvider = { name: '', type: 'OLLAMA', baseUrl: 'http://localhost:11434' };
+        this.resetForm();
         this.showNotify('success', 'Provider aggiunto');
         this.loadProviders();
       },
@@ -260,6 +388,12 @@ export class SettingsPageComponent implements OnInit {
       next: () => { this.showNotify('success', 'Provider rimosso'); this.loadProviders(); },
       error: () => this.showNotify('error', 'Errore nella rimozione')
     });
+  }
+
+  private resetForm() {
+    this.newProvider = { name: '', type: 'OLLAMA', baseUrl: 'http://localhost:11434', defaultModel: '' };
+    this.ollamaModels.set([]);
+    this.ollamaModelsFetched.set(false);
   }
 
   private showNotify(type: string, message: string) {

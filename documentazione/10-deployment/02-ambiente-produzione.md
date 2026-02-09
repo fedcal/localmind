@@ -42,10 +42,10 @@ Le principali differenze rispetto all'ambiente di sviluppo riguardano:
 
 | Aspetto | Sviluppo (`dev`) | Produzione (`prod`) |
 |---|---|---|
-| **Database hostname** | `localhost` | `postgres` (nome container Docker) |
-| **Ollama hostname** | `localhost` | `ollama` (nome container Docker) |
-| **Qdrant hostname** | `localhost` | `qdrant` (nome container Docker) |
-| **n8n hostname** | `localhost` | `n8n` (nome container Docker) |
+| **Database hostname** | `localhost` | `localhost` (MySQL nativo) |
+| **Ollama hostname** | `localhost` | `localhost` (nativo o configurabile) |
+| **Qdrant hostname** | `localhost` | `localhost` (nativo o configurabile) |
+| **n8n hostname** | `localhost` | `localhost` (nativo o configurabile) |
 | **Credenziali** | Hardcoded nei default | Variabili d'ambiente obbligatorie |
 | **DDL auto** | `create` (crea tabelle automaticamente) | `validate` (verifica schema esistente) |
 | **SQL logging** | `true` (mostra query nel log) | `false` (nessuna query nei log) |
@@ -64,7 +64,7 @@ Il profilo di produzione e' definito nel file `application-prod.yml`:
 # application-prod.yml
 spring:
   datasource:
-    url: jdbc:postgresql://postgres:5432/localmind
+    url: jdbc:mysql://localhost:3306/localmind?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
     username: ${DB_USERNAME}
     password: ${DB_PASSWORD}
     hikari:
@@ -90,14 +90,14 @@ logging:
 localmind:
   llm:
     ollama:
-      base-url: http://ollama:11434
+      base-url: http://localhost:11434
   vectorstore:
     qdrant:
-      host: qdrant
+      host: localhost
       port: 6334
   automation:
     n8n:
-      base-url: http://n8n:5678
+      base-url: http://localhost:5678
 
 server:
   tomcat:
@@ -118,7 +118,7 @@ management:
 
 | Property | Dev | Prod | Motivazione |
 |---|---|---|---|
-| `spring.datasource.url` | `jdbc:postgresql://localhost:5432/localmind` | `jdbc:postgresql://postgres:5432/localmind` | In Docker, i container si raggiungono tramite il nome del servizio |
+| `spring.datasource.url` | `jdbc:mysql://localhost:3306/localmind?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC` | `jdbc:mysql://localhost:3306/localmind?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC` | In produzione si puo' configurare un host diverso se necessario |
 | `spring.jpa.hibernate.ddl-auto` | `create` | `validate` | In produzione lo schema deve essere gestito tramite migration (Flyway/Liquibase) |
 | `spring.jpa.show-sql` | `true` | `false` | Le query SQL nei log consumano risorse e possono esporre dati sensibili |
 | `logging.level.root` | `DEBUG` | `INFO` | Riduzione del volume di log per performance e leggibilita' |
@@ -146,7 +146,7 @@ localmind-app/target/localmind-app-0.1.0-SNAPSHOT.jar
 Questo file e' un **fat JAR** (uber JAR) che contiene:
 
 - Tutte le classi compilate di tutti i moduli Maven.
-- Tutte le dipendenze (Spring Boot, Spring AI, driver PostgreSQL, ecc.).
+- Tutte le dipendenze (Spring Boot, Spring AI, driver MySQL, ecc.).
 - Il server Tomcat embedded.
 - I file di configurazione (`application.yml`, `application-prod.yml`).
 
@@ -264,8 +264,8 @@ Per eseguire LocalMind come servizio di sistema su Linux:
 # /etc/systemd/system/localmind.service
 [Unit]
 Description=LocalMind Backend
-After=docker.service
-Requires=docker.service
+After=mysql.service
+Requires=mysql.service
 
 [Service]
 Type=simple
@@ -320,8 +320,7 @@ journalctl -u localmind -f
 | Componente | RAM stimata (minimo) | RAM stimata (raccomandato) |
 |---|---|---|
 | Sistema operativo | 2 GB | 2 GB |
-| Docker engine | 0.5 GB | 0.5 GB |
-| PostgreSQL | 0.5 GB | 1 GB |
+| MySQL | 0.5 GB | 1 GB |
 | Qdrant | 0.5 GB | 1 GB |
 | Ollama + modello LLM | 3 GB | 8 GB |
 | Spring Boot (JVM) | 1 GB | 2 GB |
@@ -333,9 +332,9 @@ journalctl -u localmind -f
 
 | Componente | Spazio stimato | Note |
 |---|---|---|
-| Sistema operativo + Docker | 10 GB | Immagini Docker incluse |
+| Sistema operativo | 10 GB | - |
 | Modelli Ollama | 2-20 GB | Dipende dal numero e dimensione dei modelli |
-| Database PostgreSQL | 1-5 GB | Dipende dal volume di documenti e conversazioni |
+| Database MySQL | 1-5 GB | Dipende dal volume di documenti e conversazioni |
 | Vector store Qdrant | 1-5 GB | Dipende dal numero di embedding |
 | Documenti utente | Variabile | Dipende dall'utilizzo |
 | **Totale base** | **~20 GB** | Senza documenti utente e con un solo modello |
@@ -356,7 +355,6 @@ L'utilizzo di una GPU NVIDIA con supporto CUDA e' **opzionale** ma fortemente ra
 | VRAM minima | 4 GB |
 | VRAM raccomandata | 8+ GB |
 | Driver | NVIDIA Driver 525+ |
-| Toolkit | NVIDIA Container Toolkit |
 | CUDA | 11.8+ |
 
 ---
@@ -389,7 +387,7 @@ Risposta attesa:
     "db": {
       "status": "UP",
       "details": {
-        "database": "PostgreSQL",
+        "database": "MySQL",
         "validationQuery": "isValid()"
       }
     },
@@ -404,14 +402,14 @@ Risposta attesa:
     "ollama": {
       "status": "UP",
       "details": {
-        "url": "http://ollama:11434",
+        "url": "http://localhost:11434",
         "models": ["llama3.2", "nomic-embed-text"]
       }
     },
     "qdrant": {
       "status": "UP",
       "details": {
-        "url": "http://qdrant:6334",
+        "url": "http://localhost:6334",
         "collections": 1
       }
     }
@@ -435,25 +433,26 @@ curl http://localhost:8080/actuator/metrics/hikaricp.connections.active
 
 ### Integrazione con Grafana (opzionale)
 
-Per un monitoraggio visuale avanzato, e' possibile integrare Prometheus e Grafana:
+Per un monitoraggio visuale avanzato, e' possibile integrare Prometheus e Grafana. Questi servizi possono essere eseguiti tramite Docker (opzionale):
 
 ```yaml
-# Aggiunta a docker-compose.yml (opzionale)
-prometheus:
-  image: prom/prometheus:latest
-  container_name: localmind-prometheus
-  ports:
-    - "9090:9090"
-  volumes:
-    - ./prometheus.yml:/etc/prometheus/prometheus.yml
+# docker-compose.yml (opzionale, solo per monitoraggio)
+services:
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: localmind-prometheus
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
 
-grafana:
-  image: grafana/grafana:latest
-  container_name: localmind-grafana
-  ports:
-    - "3000:3000"
-  depends_on:
-    - prometheus
+  grafana:
+    image: grafana/grafana:latest
+    container_name: localmind-grafana
+    ports:
+      - "3000:3000"
+    depends_on:
+      - prometheus
 ```
 
 ---
@@ -521,35 +520,38 @@ server {
 
 ## 10. Backup e Restore
 
-### Backup PostgreSQL
+### Backup MySQL
 
 ```bash
 # Backup completo del database
-docker exec localmind-postgres pg_dump -U localmind localmind > backup_$(date +%Y%m%d_%H%M%S).sql
+mysqldump -u localmind -plocalmind localmind > backup_$(date +%Y%m%d_%H%M%S).sql
 
 # Backup compresso
-docker exec localmind-postgres pg_dump -U localmind localmind | gzip > backup_$(date +%Y%m%d_%H%M%S).sql.gz
+mysqldump -u localmind -plocalmind localmind | gzip > backup_$(date +%Y%m%d_%H%M%S).sql.gz
 ```
 
-### Restore PostgreSQL
+### Restore MySQL
 
 ```bash
 # Restore da file SQL
-cat backup_20260209_120000.sql | docker exec -i localmind-postgres psql -U localmind localmind
+mysql -u localmind -plocalmind localmind < backup_20260209_120000.sql
 
 # Restore da file compresso
-gunzip -c backup_20260209_120000.sql.gz | docker exec -i localmind-postgres psql -U localmind localmind
+gunzip -c backup_20260209_120000.sql.gz | mysql -u localmind -plocalmind localmind
 ```
 
 ### Backup Qdrant
 
 ```bash
-# I dati Qdrant sono nel volume Docker
+# Se Qdrant e' in Docker, i dati sono nel volume Docker
 docker run --rm -v localmind_localmind-qdrant-data:/source -v $(pwd)/backups:/backup \
     alpine tar czf /backup/qdrant_backup_$(date +%Y%m%d).tar.gz -C /source .
+
+# Se Qdrant e' nativo, i dati sono nella directory di storage locale
+tar czf backups/qdrant_backup_$(date +%Y%m%d).tar.gz -C /path/to/qdrant/storage .
 ```
 
-### Backup completo (tutti i volumi)
+### Backup completo
 
 ```bash
 #!/bin/bash
@@ -557,16 +559,17 @@ docker run --rm -v localmind_localmind-qdrant-data:/source -v $(pwd)/backups:/ba
 BACKUP_DIR="./backups/$(date +%Y%m%d_%H%M%S)"
 mkdir -p "$BACKUP_DIR"
 
-echo "Backup PostgreSQL..."
-docker exec localmind-postgres pg_dump -U localmind localmind | gzip > "$BACKUP_DIR/postgres.sql.gz"
+echo "Backup MySQL..."
+mysqldump -u localmind -plocalmind localmind | gzip > "$BACKUP_DIR/mysql.sql.gz"
 
 echo "Backup Qdrant..."
-docker run --rm -v localmind_localmind-qdrant-data:/source -v "$BACKUP_DIR":/backup \
-    alpine tar czf /backup/qdrant.tar.gz -C /source .
-
-echo "Backup n8n..."
-docker run --rm -v localmind_localmind-n8n-data:/source -v "$BACKUP_DIR":/backup \
-    alpine tar czf /backup/n8n.tar.gz -C /source .
+# Adattare il percorso in base all'installazione (Docker o nativa)
+if docker volume inspect localmind_localmind-qdrant-data > /dev/null 2>&1; then
+    docker run --rm -v localmind_localmind-qdrant-data:/source -v "$BACKUP_DIR":/backup \
+        alpine tar czf /backup/qdrant.tar.gz -C /source .
+else
+    echo "Qdrant non in Docker, eseguire backup manuale della directory di storage"
+fi
 
 echo "Backup completato in: $BACKUP_DIR"
 ls -lh "$BACKUP_DIR"
@@ -576,7 +579,7 @@ ls -lh "$BACKUP_DIR"
 
 | Dato | Frequenza | Motivazione |
 |---|---|---|
-| PostgreSQL | Giornaliero | Contiene conversazioni, metadati, configurazioni |
+| MySQL | Giornaliero | Contiene conversazioni, metadati, configurazioni |
 | Qdrant | Settimanale | Gli embedding possono essere rigenerati dai documenti |
 | n8n | Settimanale | I workflow cambiano raramente |
 | Modelli Ollama | Non necessario | Scaricabili nuovamente da `ollama pull` |

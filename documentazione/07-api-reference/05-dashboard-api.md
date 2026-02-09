@@ -69,7 +69,7 @@ Restituisce lo stato di salute complessivo del sistema e dei singoli servizi inf
 | Servizio      | Chiave          | Descrizione                              | Metodo di verifica                |
 |---------------|----------------|------------------------------------------|-----------------------------------|
 | API Backend   | `api`          | Applicazione Spring Boot                 | Sempre `UP` se l'endpoint risponde|
-| Database      | `database`     | PostgreSQL 16                            | Pianificato: JDBC health check    |
+| Database      | `database`     | MySQL 8.0                                | Pianificato: JDBC health check    |
 | Vector Store  | `vectorStore`  | Qdrant                                   | Pianificato: REST health endpoint |
 | LLM Provider  | `ollama`       | Ollama                                   | Pianificato: HTTP health check    |
 | Automazione   | `n8n`          | n8n workflow engine                      | Pianificato: HTTP health check    |

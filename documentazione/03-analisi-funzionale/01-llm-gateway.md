@@ -101,7 +101,7 @@ Il servizio `CostTrackingService` calcola automaticamente il costo di ogni richi
 
 Per ogni chiamata LLM vengono raccolte le seguenti metriche:
 
-| Metrica             | Tipo   | Descrizione                              |
+| Metrica            | Tipo   | Descrizione                              |
 |--------------------|--------|------------------------------------------|
 | `promptTokens`     | int    | Numero di token nel prompt (input)       |
 | `completionTokens` | int    | Numero di token nella risposta (output)  |
@@ -294,13 +294,13 @@ LlmGatewayService      LlmClient (Ollama)     LlmClient (OpenAI)
        |  ERRORE (timeout)     |                       |
        |<----------------------|                       |
        |                       |                       |
-       |  [retry 1 - 1000ms]  |                       |
+       |  [retry 1 - 1000ms]   |                       |
        |---------------------->|                       |
        |                       |                       |
        |  ERRORE (timeout)     |                       |
        |<----------------------|                       |
        |                       |                       |
-       |  [retry 2 - 2000ms]  |                       |
+       |  [retry 2 - 2000ms]   |                       |
        |---------------------->|                       |
        |                       |                       |
        |  ERRORE (timeout)     |                       |
@@ -321,19 +321,19 @@ LlmGatewayService      LlmClient (Ollama)     LlmClient (OpenAI)
 
 ### 7.1 ChatRequest (Value Object)
 
-| Campo           | Tipo          | Obbligatorio | Descrizione                         |
-|----------------|---------------|--------------|--------------------------------------|
-| `message`      | String        | Si           | Messaggio dell'utente                |
-| `provider`     | LlmProvider   | No           | Provider specifico (override default)|
-| `model`        | String        | No           | Modello specifico (override default) |
-| `temperature`  | Double        | No           | Temperatura (0.0-2.0, default 0.7)  |
-| `maxTokens`    | Integer       | No           | Max token in risposta (default 2048) |
-| `systemPrompt` | String        | No           | System prompt personalizzato        |
-| `conversationId`| UUID         | No           | ID conversazione per contesto       |
+| Campo           | Tipo          | Obbligatorio | Descrizione                          |
+|-----------------|---------------|--------------|--------------------------------------|
+| `message`       | String        | Si           | Messaggio dell'utente                |
+| `provider`      | LlmProvider   | No           | Provider specifico (override default)|
+| `model`         | String        | No           | Modello specifico (override default) |
+| `temperature`   | Double        | No           | Temperatura (0.0-2.0, default 0.7)   |
+| `maxTokens`     | Integer       | No           | Max token in risposta (default 2048) |
+| `systemPrompt`  | String        | No           | System prompt personalizzato         |
+| `conversationId`| UUID          | No           | ID conversazione per contesto        |
 
 ### 7.2 ChatResponse (Value Object)
 
-| Campo              | Tipo       | Descrizione                              |
+| Campo             | Tipo       | Descrizione                              |
 |-------------------|------------|------------------------------------------|
 | `content`         | String     | Contenuto della risposta                 |
 | `provider`        | LlmProvider| Provider che ha generato la risposta     |
@@ -364,12 +364,12 @@ public enum LlmProvider {
 
 | Codice | Scenario                      | Azione                                    |
 |--------|-------------------------------|-------------------------------------------|
-| 408    | Timeout provider              | Retry, poi fallback                        |
-| 429    | Rate limit raggiunto          | Attesa Retry-After, poi retry              |
-| 500    | Errore interno provider       | Retry, poi fallback                        |
-| 503    | Provider non disponibile      | Fallback immediato                         |
-| 401    | API key invalida              | Errore, no retry, no fallback              |
-| 403    | Accesso negato                | Errore, no retry, no fallback              |
+| 408    | Timeout provider              | Retry, poi fallback                       |
+| 429    | Rate limit raggiunto          | Attesa Retry-After, poi retry             |
+| 500    | Errore interno provider       | Retry, poi fallback                       |
+| 503    | Provider non disponibile      | Fallback immediato                        |
+| 401    | API key invalida              | Errore, no retry, no fallback             |
+| 403    | Accesso negato                | Errore, no retry, no fallback             |
 
 ### 8.2 Comportamento in caso di esaurimento fallback
 

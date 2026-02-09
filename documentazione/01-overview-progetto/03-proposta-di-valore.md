@@ -38,8 +38,8 @@ I dati dell'utente non abbandonano mai il computer locale. Ogni operazione di el
 ### 2.2 Implementazione Tecnica
 
 - **LLM locale**: Ollama esegue i modelli direttamente sulla macchina, senza chiamate di rete
-- **Vector store locale**: Qdrant viene eseguito in container Docker sulla macchina dell'utente
-- **Database locale**: PostgreSQL archivia metadati e configurazioni localmente
+- **Vector store locale**: Qdrant viene eseguito sulla macchina dell'utente (nativamente o tramite Docker)
+- **Database locale**: MySQL archivia metadati e configurazioni localmente
 - **Filesystem locale**: i documenti originali restano nella loro posizione sul filesystem
 
 ### 2.3 Vantaggio Competitivo
@@ -168,7 +168,7 @@ LocalMind e' costruito interamente su stack Java 17 / Spring Boot 3.4 / Angular 
 | Backend          | Java 17, Spring Boot 3.4 | Standard enterprise, vasto ecosistema          |
 | AI Integration   | Spring AI 1.0.0          | Integrazione AI nativa per Spring Boot         |
 | Frontend         | Angular 21               | Framework enterprise-grade, TypeScript         |
-| Database         | PostgreSQL 16            | Database relazionale open-source di riferimento|
+| Database         | MySQL 8.0                | Database relazionale open-source di riferimento|
 | Vector Store     | Qdrant                   | Vector database performante e open-source      |
 | Batch            | Spring Batch             | Framework batch processing consolidato         |
 | Build            | Maven                    | Gestione dipendenze e build standard           |
@@ -200,7 +200,7 @@ LocalMind e' l'unica piattaforma AI local-first su stack Java/Spring Boot, il ch
 |--------------------|----------------------------------------------------------|
 | **LocalMind**      | Open-source, gratuito                                    |
 | **Ollama**         | Gratuito (esecuzione locale)                             |
-| **PostgreSQL**     | Gratuito (open-source)                                   |
+| **MySQL**          | Gratuito (open-source)                                   |
 | **Qdrant**         | Gratuito (open-source, self-hosted)                      |
 | **n8n**            | Gratuito (open-source, self-hosted)                      |
 | **OpenAI API**     | Pay-per-use (es. GPT-4o: ~$5/$15 per 1M token)           |

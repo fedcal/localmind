@@ -3,7 +3,7 @@
 | Campo        | Valore                          |
 |--------------|---------------------------------|
 | **Documento**| Diagrammi di Flusso             |
-| **Versione** | 0.1.0                          |
+| **Versione** | 0.1.0                           |
 | **Data**     | 2026-02-09                      |
 | **Progetto** | LocalMind                       |
 
@@ -40,14 +40,14 @@ Il flusso Chat Request descrive il percorso completo di un messaggio dall'utente
 
 ### 2.2 Componenti Coinvolti
 
-| Componente            | Layer          | Responsabilita'                          |
+| Componente           | Layer          | Responsabilita'                          |
 |----------------------|----------------|------------------------------------------|
 | Utente               | Esterno        | Invio messaggio                          |
 | ChatController       | API            | Ricezione HTTP, validazione, mapping DTO |
 | ChatUseCase          | Domain (port)  | Interfaccia use case                     |
-| LlmGatewayService   | Domain         | Routing, fallback, orchestrazione        |
+| LlmGatewayService    | Domain         | Routing, fallback, orchestrazione        |
 | LlmClient            | Domain (port)  | Interfaccia provider LLM                 |
-| OllamaLlmAdapter    | Infrastructure | Comunicazione con Ollama                 |
+| OllamaLlmAdapter     | Infrastructure | Comunicazione con Ollama                 |
 | OpenAiLlmAdapter     | Infrastructure | Comunicazione con OpenAI (fallback)      |
 | CostTrackingService  | Domain         | Calcolo e registrazione costi            |
 | LlmUsageRepository   | Domain (port)  | Persistenza metriche                     |
@@ -82,7 +82,7 @@ Utente       ChatController    LlmGatewayService    OllamaLlmAdapter    OpenAiLl
   |               |                   | [provider da       |                    |                    |                   |
   |               |                   |  request o default]|                    |                    |                   |
   |               |                   |----+               |                    |                    |                   |
-  |               |                   |    | -> OLLAMA      |                    |                    |                   |
+  |               |                   |    | -> OLLAMA     |                    |                    |                   |
   |               |                   |<---+               |                    |                    |                   |
   |               |                   |                    |                    |                    |                   |
   |               |                   | isAvailable()      |                    |                    |                   |
@@ -105,7 +105,7 @@ Utente       ChatController    LlmGatewayService    OllamaLlmAdapter    OpenAiLl
   |               |                   |<-------------------|                    |                    |                   |
   |               |                   |                    |                    |                    |                   |
   |               |                   | trackCost(response)|                    |                    |                   |
-  |               |                   |------------------------------------------------------>|                   |
+  |               |                   |------------------------------------------------------------->|                   |
   |               |                   |                    |                    |                    |                   |
   |               |                   |                    |                    |                    | calculateCost()   |
   |               |                   |                    |                    |                    |----+              |
@@ -165,12 +165,12 @@ LlmGatewayService    OllamaLlmAdapter    OpenAiLlmAdapter    CostTrackingService
        | [next provider: OPENAI]                 |                    |
        |                    |                    |                    |
        | isAvailable()      |                    |                    |
-       |------------------------------------------->|                    |
+       |---------------------------------------->|                    |
        |                true|                    |                    |
-       |<-------------------------------------------|                    |
+       |<----------------------------------------|                    |
        |                    |                    |                    |
        | generate(request)  |                    |                    |
-       |------------------------------------------->|                    |
+       |---------------------------------------->|                    |
        |                    |                    |                    |
        |                    |                    | POST /v1/chat/     |
        |                    |                    | completions        |
@@ -181,11 +181,11 @@ LlmGatewayService    OllamaLlmAdapter    OpenAiLlmAdapter    CostTrackingService
        |                    |                    |                    |
        | ChatResponse       |                    |                    |
        | {fallbackUsed:true}|                    |                    |
-       |<-------------------------------------------|                    |
+       |<----------------------------------------|                    |
        |                    |                    |                    |
        | trackCost()        |                    |                    |
        | [provider: OPENAI] |                    |                    |
-       |------------------------------------------------------------>|
+       |------------------------------------------------------------->|
        |                    |                    |                    |
 ```
 
@@ -200,15 +200,15 @@ Il flusso Document Ingestion descrive il processo completo dall'upload di un doc
 ### 3.2 Componenti Coinvolti
 
 | Componente              | Layer          | Responsabilita'                          |
-|------------------------|----------------|------------------------------------------|
-| Utente                 | Esterno        | Upload del documento                     |
-| DocumentController     | API            | Ricezione multipart, validazione         |
-| DocumentService        | Domain         | Hash, dedup, salvataggio PENDING         |
-| DocumentRepository     | Domain (port)  | Persistenza metadati documento           |
-| Batch Job              | Batch          | Orchestrazione processing asincrono      |
-| TikaTextExtractor      | Infrastructure | Estrazione testo dal file                |
-| ChunkingService        | Domain         | Suddivisione in chunk                    |
-| QdrantVectorStoreAdapter| Infrastructure| Storage embedding in Qdrant              |
+|-------------------------|----------------|------------------------------------------|
+| Utente                  | Esterno        | Upload del documento                     |
+| DocumentController      | API            | Ricezione multipart, validazione         |
+| DocumentService         | Domain         | Hash, dedup, salvataggio PENDING         |
+| DocumentRepository      | Domain (port)  | Persistenza metadati documento           |
+| Batch Job               | Batch          | Orchestrazione processing asincrono      |
+| TikaTextExtractor       | Infrastructure | Estrazione testo dal file                |
+| ChunkingService         | Domain         | Suddivisione in chunk                    |
+| QdrantVectorStoreAdapter| Infrastructure | Storage embedding in Qdrant              |
 
 ### 3.3 Diagramma di Sequenza
 
@@ -239,7 +239,7 @@ Utente    DocController   DocumentService   DocRepository   BatchJob    TikaExtr
   |            |               | existsByHash   |              |              |                |               |
   |            |               | (hash)?        |              |              |                |               |
   |            |               |--------------->|              |              |                |               |
-  |            |               |    false        |              |              |                |               |
+  |            |               |    false       |              |              |                |               |
   |            |               |<---------------|              |              |                |               |
   |            |               |                |              |              |                |               |
   |            |               | doc = new      |              |              |                |               |
@@ -261,7 +261,7 @@ Utente    DocController   DocumentService   DocRepository   BatchJob    TikaExtr
   |  Accepted  |               |                |              |              |                |               |
   |<-----------|               |                |              |              |                |               |
   |            |               |                |              |              |                |               |
-  |            |               |                |  ======== ELABORAZIONE ASINCRONA ========   |               |
+  |            |               |                |  ======== ELABORAZIONE ASINCRONA ========    |               |
   |            |               |                |              |              |                |               |
   |            |               |                |  [Batch Job  |              |                |               |
   |            |               |                |   attivato   |              |                |               |
@@ -285,7 +285,7 @@ Utente    DocController   DocumentService   DocRepository   BatchJob    TikaExtr
   |            |               |                |              |              |                |               |
   |            |               |                |              |              | Apache Tika    |               |
   |            |               |                |              |              | parse(PDF/     |               |
-  |            |               |                |              |              | DOCX/TXT/EML) |               |
+  |            |               |                |              |              | DOCX/TXT/EML)  |               |
   |            |               |                |              |              |----+           |               |
   |            |               |                |              |              |    |           |               |
   |            |               |                |              |              |<---+           |               |
@@ -302,7 +302,7 @@ Utente    DocController   DocumentService   DocRepository   BatchJob    TikaExtr
   |            |               |                |              |              |  with overlap  |               |
   |            |               |                |              |              |                |               |
   |            |               |                |              | List<Chunk>  |                |               |
-  |            |               |                |              |<-----------------------------|               |
+  |            |               |                |              |<------------------------------|               |
   |            |               |                |              |              |                |               |
   |            |               |                |              | embed + store|                |               |
   |            |               |                |              | (chunks)     |                |               |
@@ -341,13 +341,13 @@ Il flusso Semantic Search descrive il processo di ricerca semantica nei document
 ### 4.2 Componenti Coinvolti
 
 | Componente              | Layer          | Responsabilita'                          |
-|------------------------|----------------|------------------------------------------|
-| Utente                 | Esterno        | Invio query di ricerca                   |
-| DocumentSearchController| API           | Ricezione query, validazione             |
-| DocumentSearchUseCase  | Domain (port)  | Interfaccia ricerca                      |
-| DocumentService        | Domain         | Orchestrazione ricerca                   |
-| VectorStorePort        | Domain (port)  | Interfaccia vector store                 |
-| QdrantVectorStoreAdapter| Infrastructure| Ricerca similarita' in Qdrant            |
+|-------------------------|----------------|------------------------------------------|
+| Utente                  | Esterno        | Invio query di ricerca                   |
+| DocumentSearchController| API            | Ricezione query, validazione             |
+| DocumentSearchUseCase   | Domain (port)  | Interfaccia ricerca                      |
+| DocumentService         | Domain         | Orchestrazione ricerca                   |
+| VectorStorePort         | Domain (port)  | Interfaccia vector store                 |
+| QdrantVectorStoreAdapter| Infrastructure| Ricerca similarita' in Qdrant             |
 
 ### 4.3 Diagramma di Sequenza
 
@@ -367,7 +367,7 @@ Utente    SearchController   DocumentService   QdrantAdapter        Qdrant      
   |            |                   |                |                   |                |
   |            |                   | embedQuery     |                   |                |
   |            |                   | (query)        |                   |                |
-  |            |                   |------------------------------------------------------------->|
+  |            |                   |---------------------------------------------------->|
   |            |                   |                |                   |                |
   |            |                   |                |                   |                | POST
   |            |                   |                |                   |                | /api/embeddings
@@ -380,7 +380,7 @@ Utente    SearchController   DocumentService   QdrantAdapter        Qdrant      
   |            |                   |                |                   |                |
   |            |                   | float[]        |                   |                |
   |            |                   | queryEmbedding |                   |                |
-  |            |                   |<--------------------------------------------------------------|
+  |            |                   |<----------------------------------------------------|
   |            |                   |                |                   |                |
   |            |                   | search         |                   |                |
   |            |                   | (embedding, 5) |                   |                |
@@ -393,12 +393,12 @@ Utente    SearchController   DocumentService   QdrantAdapter        Qdrant      
   |            |                   |                | limit: 5          |                |
   |            |                   |                |------------------>|                |
   |            |                   |                |                   |                |
-  |            |                   |                |                   | cosine          |
-  |            |                   |                |                   | similarity      |
-  |            |                   |                |                   | search          |
-  |            |                   |                |                   |----+            |
-  |            |                   |                |                   |    |            |
-  |            |                   |                |                   |<---+            |
+  |            |                   |                |                   | cosine         |
+  |            |                   |                |                   | similarity     |
+  |            |                   |                |                   | search         |
+  |            |                   |                |                   |----+           |
+  |            |                   |                |                   |    |           |
+  |            |                   |                |                   |<---+           |
   |            |                   |                |                   |                |
   |            |                   |                | ScoredPoints      |                |
   |            |                   |                | [{id, score,      |                |
@@ -438,7 +438,7 @@ Il flusso Folder Scan descrive il processo automatico di scansione delle cartell
 
 ### 5.2 Componenti Coinvolti
 
-| Componente              | Layer          | Responsabilita'                          |
+| Componente             | Layer          | Responsabilita'                          |
 |------------------------|----------------|------------------------------------------|
 | BatchScheduler         | Batch          | Trigger cron per scansione               |
 | FolderScanJobConfig    | Batch          | Configurazione job Spring Batch          |
@@ -497,31 +497,31 @@ Cron Scheduler    FolderScanJob    FileSystemScanner   DocumentService    DocRep
       |                |                  |                  |                 |                |
       |                |                  |                  | existsByHash    |                |
       |                |                  |                  | (hash)?         |                |
-      |                |-------------------------------------------------->|                |
+      |                |------------------------------------------------------>|                |
       |                |                  |                  |                 |                |
-      |                |                  |                  |   [Se false: nuovo file]        |
+      |                |                  |                  |   [Se false: nuovo file]         |
       |                |                  |                  |                 |                |
       |                | ingest(file)     |                  |                 |                |
-      |                |------------------------------------->|                 |                |
+      |                |------------------------------------>|                 |                |
       |                |                  |                  |                 |                |
       |                |                  |                  | save(PENDING)   |                |
       |                |                  |                  |---------------->|                |
       |                |                  |                  |                 |                |
       |                |                  |                  |   [Se true: file gia' indicizzato]
-      |                |                  |                  |   -> skip con log               |
+      |                |                  |                  |   -> skip con log                |
       |                |                  |                  |                 |                |
       |                | [Fine loop file] |                  |                 |                |
       |                |                  |                  |                 |                |
-      |                | [I documenti PENDING vengono processati            |                |
-      |                |  dal DocumentIngestionJob (Flusso 2)]              |                |
+      |                | [I documenti PENDING vengono processati               |                |
+      |                |  dal DocumentIngestionJob (Flusso 2)]                 |                |
       |                |                  |                  |                 |                |
       |                | triggerIngestionJob()               |                 |                |
-      |                |-------------------------------------------------------------------->|
+      |                |----------------------------------------------------------------------->|
       |                |                  |                  |                 |                |
       |                | jobCompleted     |                  |                 |                |
-      |                | (scanned: 42,   |                  |                 |                |
-      |                |  new: 3,        |                  |                 |                |
-      |                |  skipped: 39)   |                  |                 |                |
+      |                | (scanned: 42,    |                  |                 |                |
+      |                |  new: 3,         |                  |                 |                |
+      |                |  skipped: 39)    |                  |                 |                |
       |                |----+             |                  |                 |                |
       |                |    |             |                  |                 |                |
       |                |<---+             |                  |                 |                |
@@ -537,7 +537,7 @@ Il flusso Automation Trigger descrive il processo di generazione di un evento in
 
 ### 6.2 Componenti Coinvolti
 
-| Componente              | Layer          | Responsabilita'                          |
+| Componente             | Layer          | Responsabilita'                          |
 |------------------------|----------------|------------------------------------------|
 | Event Source           | Domain         | Componente che genera l'evento           |
 | AutomationService      | Domain         | Gestione eventi e dispatching            |
@@ -560,7 +560,7 @@ EventSource      AutomationService    WebhookRepository   N8nWebhookClient      
       | _INDEXED,|                   |                    |                         |                    |
       |  {docId, |                   |                    |                         |                    |
       |   name,  |                   |                    |                         |                    |
-      |   chunks})|                  |                    |                         |                    |
+      |  chunks})|                   |                    |                         |                    |
       |--------->|                   |                    |                         |                    |
       |          |                   |                    |                         |                    |
       |          | buildPayload      |                    |                         |                    |
@@ -582,7 +582,7 @@ EventSource      AutomationService    WebhookRepository   N8nWebhookClient      
       |          | [Per ogni webhook trovato (enabled)]   |                         |                    |
       |          |                   |                    |                         |                    |
       |          | send(url, payload)|                    |                         |                    |
-      |          |---------------------------------------->|                         |                    |
+      |          |--------------------------------------->|                         |                    |
       |          |                   |                    |                         |                    |
       |          |                   |                    | POST                    |                    |
       |          |                   |                    | http://n8n:5678/        |                    |
@@ -601,24 +601,24 @@ EventSource      AutomationService    WebhookRepository   N8nWebhookClient      
       |          |                   |                    | }                       |                    |
       |          |                   |                    |------------------------>|                    |
       |          |                   |                    |                         |                    |
-      |          |                   |                    |                         | [n8n workflow       |
-      |          |                   |                    |                         |  esecuzione]        |
+      |          |                   |                    |                         | [n8n workflow      |
+      |          |                   |                    |                         |  esecuzione]       |
       |          |                   |                    |                         |                    |
-      |          |                   |                    |                         | Azione 1:           |
-      |          |                   |                    |                         | GET /api/v1/        |
-      |          |                   |                    |                         | documents/{id}      |
-      |          |                   |                    |                         | -> LocalMind API    |
+      |          |                   |                    |                         | Azione 1:          |
+      |          |                   |                    |                         | GET /api/v1/       |
+      |          |                   |                    |                         | documents/{id}     |
+      |          |                   |                    |                         | -> LocalMind API   |
       |          |                   |                    |                         |                    |
-      |          |                   |                    |                         | Azione 2:           |
-      |          |                   |                    |                         | POST /api/v1/       |
-      |          |                   |                    |                         | agents/execute      |
-      |          |                   |                    |                         | {type: BUSINESS,    |
-      |          |                   |                    |                         |  query: "Genera     |
-      |          |                   |                    |                         |  una sintesi..."}   |
+      |          |                   |                    |                         | Azione 2:          |
+      |          |                   |                    |                         | POST /api/v1/      |
+      |          |                   |                    |                         | agents/execute     |
+      |          |                   |                    |                         | {type: BUSINESS,   |
+      |          |                   |                    |                         |  query: "Genera    |
+      |          |                   |                    |                         |  una sintesi..."}  |
       |          |                   |                    |                         |                    |
-      |          |                   |                    |                         | Azione 3:           |
-      |          |                   |                    |                         | Invio email         |
-      |          |                   |                    |                         | con sintesi         |
+      |          |                   |                    |                         | Azione 3:          |
+      |          |                   |                    |                         | Invio email        |
+      |          |                   |                    |                         | con sintesi        |
       |          |                   |                    |                         |------------------->|
       |          |                   |                    |                         |                    |
       |          |                   |                    |                         |           OK       |
@@ -628,7 +628,7 @@ EventSource      AutomationService    WebhookRepository   N8nWebhookClient      
       |          |                   |                    |<------------------------|                    |
       |          |                   |                    |                         |                    |
       |          |  webhookSent: OK  |                    |                         |                    |
-      |          |<----------------------------------------|                         |                    |
+      |          |<---------------------------------------|                         |                    |
       |          |                   |                    |                         |                    |
       |          | [Se errore: retry con backoff]         |                         |                    |
       |          | [Max 3 tentativi, backoff 2000ms]      |                         |                    |
@@ -639,12 +639,12 @@ EventSource      AutomationService    WebhookRepository   N8nWebhookClient      
 
 ### 6.4 Gestione Errori Webhook
 
-| Scenario                     | Azione                                          |
-|-----------------------------|--------------------------------------------------|
+| Scenario                    | Azione                                              |
+|-----------------------------|-----------------------------------------------------|
 | n8n non raggiungibile       | Retry (3 tentativi, backoff 2000ms), poi log errore |
-| n8n risponde 4xx            | Log errore, nessun retry (errore client)         |
-| n8n risponde 5xx            | Retry (3 tentativi, backoff 2000ms)              |
-| Timeout (30s)               | Retry (3 tentativi, backoff 2000ms)              |
-| Tutti i retry falliti       | Log errore, evento marcato come non consegnato   |
+| n8n risponde 4xx            | Log errore, nessun retry (errore client)            |
+| n8n risponde 5xx            | Retry (3 tentativi, backoff 2000ms)                 |
+| Timeout (30s)               | Retry (3 tentativi, backoff 2000ms)                 |
+| Tutti i retry falliti       | Log errore, evento marcato come non consegnato      |
 
 L'errore nella consegna del webhook non influisce sul flusso principale dell'applicazione. L'invio del webhook avviene in modo asincrono e non-blocking.

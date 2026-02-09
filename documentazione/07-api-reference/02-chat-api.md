@@ -37,11 +37,11 @@ Invia un messaggio al modello LLM configurato e restituisce la risposta generata
 
 ### Request
 
-| Proprieta'       | Valore                                |
-|------------------|---------------------------------------|
-| **URL**          | `POST /api/v1/chat`                  |
-| **Content-Type** | `application/json`                    |
-| **Autenticazione** | Nessuna                             |
+| Proprieta'         | Valore                                |
+|--------------------|---------------------------------------|
+| **URL**            | `POST /api/v1/chat`                   |
+| **Content-Type**   | `application/json`                    |
+| **Autenticazione** | Nessuna                               |
 
 ### Request Body - ChatRequestDto
 
@@ -56,14 +56,14 @@ Invia un messaggio al modello LLM configurato e restituisce la risposta generata
 }
 ```
 
-| Campo            | Tipo     | Obbligatorio | Default      | Descrizione                              |
-|------------------|----------|-------------|--------------|------------------------------------------|
-| `message`        | `String` | Si          | -            | Messaggio dell'utente (`@NotBlank`)      |
-| `provider`       | `String` | No          | Da config    | Provider LLM: `OLLAMA`, `OPENAI`, `ANTHROPIC`, `GOOGLE` |
-| `model`          | `String` | No          | Da config    | Nome del modello specifico               |
-| `conversationId` | `String` | No          | `null`       | UUID della conversazione esistente       |
-| `temperature`    | `double` | No          | `0.7`        | Temperatura di generazione (0.0 - 2.0)   |
-| `maxTokens`      | `int`    | No          | `0` (illimitato) | Numero massimo di token nella risposta |
+| Campo            | Tipo     | Obbligatorio | Default          | Descrizione                                             |
+|------------------|----------|--------------|------------------|---------------------------------------------------------|
+| `message`        | `String` | Si           | -                | Messaggio dell'utente (`@NotBlank`)                     |
+| `provider`       | `String` | No           | Da config        | Provider LLM: `OLLAMA`, `OPENAI`, `ANTHROPIC`, `GOOGLE` |
+| `model`          | `String` | No           | Da config        | Nome del modello specifico                              |
+| `conversationId` | `String` | No           | `null`           | UUID della conversazione esistente                      |
+| `temperature`    | `double` | No           | `0.7`            | Temperatura di generazione (0.0 - 2.0)                  |
+| `maxTokens`      | `int`    | No           | `0` (illimitato) | Numero massimo di token nella risposta                  |
 
 ### Validazione
 
@@ -86,13 +86,13 @@ Invia un messaggio al modello LLM configurato e restituisce la risposta generata
 }
 ```
 
-| Campo        | Tipo           | Descrizione                              |
-|-------------|----------------|------------------------------------------|
-| `content`   | `String`       | Testo della risposta generata            |
-| `model`     | `String`       | Nome del modello che ha generato la risposta |
-| `provider`  | `String`       | Provider utilizzato                      |
+| Campo       | Tipo           | Descrizione                                        |
+|-------------|----------------|----------------------------------------------------|
+| `content`   | `String`       | Testo della risposta generata                      |
+| `model`     | `String`       | Nome del modello che ha generato la risposta       |
+| `provider`  | `String`       | Provider utilizzato                                |
 | `tokenUsage`| `TokenUsageDto`| Statistiche di utilizzo token (puo' essere `null`) |
-| `latencyMs` | `long`         | Latenza della chiamata in millisecondi   |
+| `latencyMs` | `long`         | Latenza della chiamata in millisecondi             |
 
 ### TokenUsageDto
 

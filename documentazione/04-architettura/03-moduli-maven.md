@@ -3,7 +3,7 @@
 | Campo        | Valore                          |
 |--------------|---------------------------------|
 | **Documento**| Struttura Moduli Maven          |
-| **Versione** | 0.1.0                          |
+| **Versione** | 0.1.0                           |
 | **Data**     | 2026-02-09                      |
 | **Progetto** | LocalMind                       |
 
@@ -44,7 +44,7 @@ Il parent POM gestisce la configurazione comune a tutti i moduli:
 
 ### 2.1 Configurazione Principale
 
-| Proprieta'          | Valore                          |
+| Proprieta'         | Valore                          |
 |--------------------|---------------------------------|
 | GroupId            | com.localmind                   |
 | ArtifactId         | localmind-backend               |
@@ -57,15 +57,15 @@ Il parent POM gestisce la configurazione comune a tutti i moduli:
 
 Il parent POM importa i seguenti BOM per la gestione centralizzata delle versioni:
 
-| BOM                            | Versione | Scopo                               |
-|-------------------------------|----------|--------------------------------------|
+| BOM                           | Versione | Scopo                               |
+|-------------------------------|----------|-------------------------------------|
 | spring-ai-bom                 | 1.0.0    | Spring AI starters e dipendenze     |
 | spring-boot-dependencies      | 3.4.2    | Spring Boot (ereditato dal parent)  |
 
 ### 2.3 Plugin Comuni
 
-| Plugin                  | Versione | Scopo                               |
-|------------------------|----------|--------------------------------------|
+| Plugin                 | Versione | Scopo                               |
+|------------------------|----------|-------------------------------------|
 | maven-compiler-plugin  | 3.11.0   | Compilazione Java 17                |
 | maven-surefire-plugin  | 3.2.5    | Esecuzione test unitari             |
 | lombok-maven-plugin    | -        | Annotation processing Lombok        |
@@ -81,9 +81,9 @@ Il modulo domain contiene la logica di business pura dell'applicazione. Ogni ent
 
 ### 3.2 Dipendenze
 
-| Dipendenza      | Scope          | Motivazione                          |
-|----------------|----------------|--------------------------------------|
-| lombok          | provided       | Riduzione boilerplate (getter, setter, builder) |
+| Dipendenza     | Scope          | Motivazione                                     |
+|----------------|----------------|-------------------------------------------------|
+| lombok         | provided       | Riduzione boilerplate (getter, setter, builder) |
 
 **Nessuna dipendenza da framework**. Questo modulo compila e funziona senza Spring Boot, JPA, Spring AI o qualsiasi altra libreria infrastrutturale.
 
@@ -110,21 +110,21 @@ Il modulo infrastructure contiene tutte le implementazioni concrete delle porte 
 
 ### 4.2 Dipendenze
 
-| Dipendenza                          | Scope    | Motivazione                          |
-|------------------------------------|----------|--------------------------------------|
-| **localmind-domain**               | compile  | Implementazione delle porte          |
-| spring-boot-starter-data-jpa       | compile  | Persistenza relazionale              |
-| spring-boot-starter-security       | compile  | Autenticazione e autorizzazione      |
-| spring-ai-ollama-spring-boot-starter | compile | Integrazione Ollama                |
-| spring-ai-openai-spring-boot-starter | compile | Integrazione OpenAI                |
-| spring-ai-anthropic-spring-boot-starter | compile | Integrazione Anthropic           |
-| spring-ai-qdrant-store-spring-boot-starter | compile | Integrazione Qdrant            |
-| postgresql                         | runtime  | Driver JDBC PostgreSQL               |
-| spring-retry                       | compile  | Logica di retry con backoff          |
-| spring-boot-starter-aop            | compile  | AOP per retry annotations            |
-| tika-core                          | compile  | Estrazione testo (core)              |
-| tika-parsers-standard-package      | compile  | Parser per PDF, DOCX, etc.           |
-| lombok                             | provided | Riduzione boilerplate                |
+| Dipendenza                                 | Scope    | Motivazione                          |
+|--------------------------------------------|----------|--------------------------------------|
+| **localmind-domain**                       | compile  | Implementazione delle porte          |
+| spring-boot-starter-data-jpa               | compile  | Persistenza relazionale              |
+| spring-boot-starter-security               | compile  | Autenticazione e autorizzazione      |
+| spring-ai-ollama-spring-boot-starter       | compile  | Integrazione Ollama                  |
+| spring-ai-openai-spring-boot-starter       | compile  | Integrazione OpenAI                  |
+| spring-ai-anthropic-spring-boot-starter    | compile  | Integrazione Anthropic               |
+| spring-ai-qdrant-store-spring-boot-starter | compile  | Integrazione Qdrant                  |
+| mysql-connector-j                          | runtime  | Driver JDBC MySQL                    |
+| spring-retry                               | compile  | Logica di retry con backoff          |
+| spring-boot-starter-aop                    | compile  | AOP per retry annotations            |
+| tika-core                                  | compile  | Estrazione testo (core)              |
+| tika-parsers-standard-package              | compile  | Parser per PDF, DOCX, etc.           |
+| lombok                                     | provided | Riduzione boilerplate                |
 
 ### 4.3 Contenuto
 
@@ -154,7 +154,7 @@ Il modulo API contiene i controller REST, i DTO (Data Transfer Object) e i mappe
 
 ### 5.2 Dipendenze
 
-| Dipendenza                          | Scope    | Motivazione                          |
+| Dipendenza                         | Scope    | Motivazione                          |
 |------------------------------------|----------|--------------------------------------|
 | **localmind-domain**               | compile  | Accesso ai use case e modelli        |
 | spring-boot-starter-web            | compile  | REST controllers, Jackson            |
@@ -192,7 +192,7 @@ Il modulo batch contiene le configurazioni di Spring Batch per i job di elaboraz
 
 ### 6.2 Dipendenze
 
-| Dipendenza                          | Scope    | Motivazione                          |
+| Dipendenza                         | Scope    | Motivazione                          |
 |------------------------------------|----------|--------------------------------------|
 | **localmind-domain**               | compile  | Accesso ai servizi di dominio        |
 | **localmind-infrastructure**       | compile  | Accesso agli adapter per l'esecuzione|
@@ -226,15 +226,15 @@ Il modulo app e' il modulo bootstrap dell'applicazione. Dipende da tutti gli alt
 
 ### 7.2 Dipendenze
 
-| Dipendenza                          | Scope    | Motivazione                          |
+| Dipendenza                         | Scope    | Motivazione                          |
 |------------------------------------|----------|--------------------------------------|
 | **localmind-domain**               | compile  | Modelli e servizi di dominio         |
 | **localmind-infrastructure**       | compile  | Adapter e persistenza                |
-| **localmind-api**                  | compile  | Controller REST                     |
+| **localmind-api**                  | compile  | Controller REST                      |
 | **localmind-batch**                | compile  | Job batch                            |
 | spring-boot-starter-actuator       | compile  | Health check e metriche              |
 | flyway-core                        | compile  | Migrazioni database                  |
-| flyway-database-postgresql         | compile  | Supporto PostgreSQL per Flyway       |
+| flyway-mysql                       | compile  | Supporto MySQL per Flyway            |
 | spring-boot-starter-test           | test     | Testing framework                    |
 
 ### 7.3 Contenuto
@@ -289,22 +289,22 @@ Il risultato e' un file `localmind-app/target/localmind-app-0.1.0-SNAPSHOT.jar` 
                     |  localmind-app    |
                     |  (bootstrap)      |
                     |                   |
-                    +--+--+--+--+------+
+                    +--+--+--+--+-------+
                        |  |  |  |
           +------------+  |  |  +------------+
           |               |  |               |
           v               v  v               v
-+---------+---+ +---------+--+---+ +---------+---+
-|             | |                | |             |
-|localmind-api| | localmind-batch| |localmind-   |
++---------+---+ +---------+--+---+ +---------+----+
+|             | |                | |              |
+|localmind-api| | localmind-batch| |localmind-    |
 |(controllers)| | (Spring Batch) | |infrastructure|
-|             | |                | |(adapters)   |
-+------+------+ +----+-----+---+ +------+------+
+|             | |                | |(adapters)    |
++------+------+ +----+-----+-----+ +------+-------+
        |              |     |            |
        |              |     +-----+------+
        |              |           |
        v              v           v
-  +----+--------------+-----------+----+
+  +----+--------------+-----------+-----+
   |                                     |
   |        localmind-domain             |
   |        (entities, services, ports)  |
@@ -315,13 +315,13 @@ Il risultato e' un file `localmind-app/target/localmind-app-0.1.0-SNAPSHOT.jar` 
 
 ### 8.1 Regole di Dipendenza
 
-| Modulo                | Dipende da                                |
-|----------------------|-------------------------------------------|
-| localmind-domain     | (nessuno)                                 |
-| localmind-infrastructure | localmind-domain                      |
-| localmind-api        | localmind-domain                          |
-| localmind-batch      | localmind-domain, localmind-infrastructure |
-| localmind-app        | TUTTI                                     |
+| Modulo                   | Dipende da                                |
+|--------------------------|-------------------------------------------|
+| localmind-domain         | (nessuno)                                 |
+| localmind-infrastructure | localmind-domain                          |
+| localmind-api            | localmind-domain                          |
+| localmind-batch          | localmind-domain, localmind-infrastructure|
+| localmind-app            | TUTTI                                     |
 
 ### 8.2 Direzione delle Dipendenze
 
@@ -333,22 +333,22 @@ Tutte le frecce puntano verso il basso, verso il dominio. Nessuna dipendenza ris
 
 ### 9.1 Dipendenze Principali
 
-| Dipendenza              | Versione    | Gestita da              |
-|------------------------|-------------|--------------------------|
-| Java                   | 17          | maven-compiler-plugin    |
+| Dipendenza             | Versione    | Gestita da                 |
+|------------------------|-------------|----------------------------|
+| Java                   | 17          | maven-compiler-plugin      |
 | Spring Boot            | 3.4.2       | spring-boot-starter-parent |
-| Spring AI              | 1.0.0       | spring-ai-bom            |
-| Spring Batch           | 5.1.x       | spring-boot-dependencies |
-| Spring Security        | 6.4.x       | spring-boot-dependencies |
-| Spring Data JPA        | 3.4.x       | spring-boot-dependencies |
-| PostgreSQL Driver      | 42.7.x      | spring-boot-dependencies |
-| Flyway                 | 10.x        | spring-boot-dependencies |
-| Jackson                | 2.17.x      | spring-boot-dependencies |
-| Hibernate              | 6.6.x       | spring-boot-dependencies |
+| Spring AI              | 1.0.0       | spring-ai-bom              |
+| Spring Batch           | 5.1.x       | spring-boot-dependencies   |
+| Spring Security        | 6.4.x       | spring-boot-dependencies   |
+| Spring Data JPA        | 3.4.x       | spring-boot-dependencies   |
+| MySQL Connector/J      | 8.x         | spring-boot-dependencies   |
+| Flyway                 | 10.x        | spring-boot-dependencies   |
+| Jackson                | 2.17.x      | spring-boot-dependencies   |
+| Hibernate              | 6.6.x       | spring-boot-dependencies   |
 
 ### 9.2 Dipendenze Esplicite
 
-| Dipendenza              | Versione    | Motivazione              |
+| Dipendenza             | Versione    | Motivazione              |
 |------------------------|-------------|--------------------------|
 | MapStruct              | 1.6.3       | Mapping DTO <-> Domain   |
 | Lombok                 | 1.18.36     | Riduzione boilerplate    |
@@ -357,7 +357,7 @@ Tutte le frecce puntano verso il basso, verso il dominio. Nessuna dipendenza ris
 
 ### 9.3 Dipendenze di Test
 
-| Dipendenza              | Versione    | Scope    |
+| Dipendenza             | Versione    | Scope    |
 |------------------------|-------------|----------|
 | JUnit 5                | 5.10.x      | test     |
 | Mockito                | 5.x         | test     |

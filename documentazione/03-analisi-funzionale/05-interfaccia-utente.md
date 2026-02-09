@@ -3,7 +3,7 @@
 | Campo        | Valore                          |
 |--------------|---------------------------------|
 | **Documento**| Interfaccia Utente              |
-| **Versione** | 0.1.0                          |
+| **Versione** | 0.1.0                           |
 | **Data**     | 2026-02-09                      |
 | **Progetto** | LocalMind                       |
 
@@ -28,7 +28,7 @@
 L'interfaccia utente di LocalMind e' costruita con le seguenti tecnologie:
 
 | Componente          | Tecnologia                        |
-|--------------------|-----------------------------------|
+|---------------------|-----------------------------------|
 | Framework           | Angular 21                        |
 | Linguaggio          | TypeScript (strict mode)          |
 | Architettura        | Standalone components             |
@@ -101,39 +101,39 @@ La sezione Chat e' l'interfaccia principale per l'interazione con gli LLM e gli 
 ### 3.1 Layout
 
 ```
-+----------------------------------------------+
-| Chat                         [Provider: Ollama v] [Modello: llama3.2 v] |
-+----------------------------------------------+
-|                                              |
-|  +----------------------------------------+  |
-|  | [Sistema] Ciao! Come posso aiutarti?   |  |
-|  +----------------------------------------+  |
-|                                              |
-|  +----------------------------------------+  |
-|  | [Utente] Spiega l'architettura         |  |
-|  | esagonale                               |  |
-|  +----------------------------------------+  |
-|                                              |
-|  +----------------------------------------+  |
-|  | [Assistente] L'architettura esagonale  |  |
-|  | e' un pattern architetturale...        |  |
-|  |                                        |  |
-|  | Fonti: doc1.pdf (p.12), doc2.pdf (p.3) |  |
-|  +----------------------------------------+  |
-|                                              |
-|  +----------------------------------------+  |
-|  | [Loading...]                ///         |  |
-|  +----------------------------------------+  |
-|                                              |
-+----------------------------------------------+
-| [Agente: Tech v]  [Messaggio...        ] [>] |
-+----------------------------------------------+
++-------------------------------------------------+
+| Chat [Provider: Ollama v] [Modello: llama3.2 v] |
++-------------------------------------------------+
+|                                                 |
+|    +----------------------------------------+   |
+|    | [Sistema] Ciao! Come posso aiutarti?   |   |
+|    +----------------------------------------+   |
+|                                                 |
+|    +----------------------------------------+   |
+|    | [Utente] Spiega l'architettura         |   |
+|    | esagonale                              |   |
+|    +----------------------------------------+   |
+|                                                 |
+|    +----------------------------------------+   |
+|    | [Assistente] L'architettura esagonale  |   |
+|    | e' un pattern architetturale...        |   |
+|    |                                        |   |
+|    | Fonti: doc1.pdf (p.12), doc2.pdf (p.3) |   |
+|    +----------------------------------------+   |
+|                                                 |
+|    +----------------------------------------+   |
+|    | [Loading...]                ///         |  |
+|    +----------------------------------------+   |
+|                                                 |
++-------------------------------------------------+
+| [Agente: Tech v]  [Messaggio...        ] [>]    |
++-------------------------------------------------+
 ```
 
 ### 3.2 Componenti
 
 | Componente              | Descrizione                                          |
-|------------------------|------------------------------------------------------|
+|-------------------------|------------------------------------------------------|
 | **Header**              | Selezione provider e modello (dropdown)              |
 | **Message list**        | Lista scrollabile di messaggi (utente/assistente)    |
 | **Message bubble**      | Singolo messaggio con avatar, testo, timestamp       |
@@ -164,33 +164,33 @@ La sezione Documents mostra i documenti caricati e il loro stato di indicizzazio
 | Documents                    [Upload +]      |
 +----------------------------------------------+
 |                                              |
-|  +----------+  +----------+  +----------+   |
-|  | report   |  | contratto|  | email    |   |
-|  | .pdf     |  | .docx    |  | .eml     |   |
-|  |          |  |          |  |          |   |
-|  | 2.3 MB   |  | 156 KB   |  | 45 KB    |   |
-|  | 12 chunks|  | 8 chunks |  | 3 chunks |   |
-|  |          |  |          |  |          |   |
-|  | [INDEXED]|  | [PENDING]|  | [FAILED] |   |
-|  +----------+  +----------+  +----------+   |
+|   +----------+  +----------+  +----------+   |
+|   | report   |  | contratto|  | email    |   |
+|   | .pdf     |  | .docx    |  | .eml     |   |
+|   |          |  |          |  |          |   |
+|   | 2.3 MB   |  | 156 KB   |  | 45 KB    |   |
+|   | 12 chunks|  | 8 chunks |  | 3 chunks |   |
+|   |          |  |          |  |          |   |
+|   | [INDEXED]|  | [PENDING]|  | [FAILED] |   |
+|   +----------+  +----------+  +----------+   |
 |                                              |
-|  +----------+  +----------+                  |
-|  | manuale  |  | slides   |                  |
-|  | .txt     |  | .pdf     |                  |
-|  |          |  |          |                  |
-|  | 89 KB    |  | 5.1 MB   |                  |
-|  | 15 chunks|  | PROCESSING|                  |
-|  |          |  |          |                  |
-|  | [INDEXED]|  | [...]    |                  |
-|  +----------+  +----------+                  |
+|   +----------+  +----------+                 |
+|   | manuale  |  | slides   |                 |
+|   | .txt     |  | .pdf     |                 |
+|   |          |  |          |                 |
+|   | 89 KB    |  | 5.1 MB   |                 |
+|   | 15 chunks|  | PROCESSING|                |
+|   |          |  |          |                 |
+|   | [INDEXED]|  | [...]    |                 |
+|   +----------+  +----------+                 |
 |                                              |
 +----------------------------------------------+
 ```
 
 ### 4.2 Status Badge
 
-| Stato        | Colore     | Codice Hex  | Icona        |
-|-------------|------------|-------------|--------------|
+| Stato       | Colore     | Codice Hex    | Icona        |
+|-------------|------------|---------------|--------------|
 | `PENDING`   | Giallo     | #f59e0b     | Clock        |
 | `PROCESSING`| Blu        | #3b82f6     | Spinner      |
 | `INDEXED`   | Verde      | #10b981     | Checkmark    |
@@ -219,26 +219,26 @@ La sezione Search offre un'interfaccia per la ricerca semantica nei documenti in
 +----------------------------------------------+
 |                                              |
 | +------------------------------------------+ |
-| | Cerca nei tuoi documenti...        [Cerca]| |
+| | Cerca nei tuoi documenti...       [Cerca]| |
 | +------------------------------------------+ |
 |                                              |
 | Risultati per: "clausola di recesso"         |
 |                                              |
 | +------------------------------------------+ |
 | | contratto.docx - Chunk 4 - Score: 0.92   | |
-| | "...la parte puo' recedere dal contratto  | |
-| | con preavviso di 30 giorni..."            | |
+| | "...la parte puo' recedere dal contratto | |
+| | con preavviso di 30 giorni..."           | |
 | +------------------------------------------+ |
 |                                              |
 | +------------------------------------------+ |
 | | accordo.pdf - Chunk 12 - Score: 0.87     | |
-| | "...il recesso unilaterale e' consentito  | |
-| | nei seguenti casi..."                     | |
+| | "...il recesso unilaterale e' consentito | |
+| | nei seguenti casi..."                    | |
 | +------------------------------------------+ |
 |                                              |
 | +------------------------------------------+ |
 | | policy.docx - Chunk 7 - Score: 0.74      | |
-| | "...modalita' di recesso anticipato..."   | |
+| | "...modalita' di recesso anticipato..."  | |
 | +------------------------------------------+ |
 |                                              |
 +----------------------------------------------+
@@ -265,7 +265,7 @@ La sezione Folders consente la configurazione delle cartelle del filesystem da i
 +----------------------------------------------+
 |                                              |
 | +------------------------------------------+ |
-| | /home/utente/documenti/lavoro             | |
+| | /home/utente/documenti/lavoro            | |
 | | Ricorsivo: Si | Abilitato: Si            | |
 | | Ultimo scan: 2026-02-09 15:30            | |
 | | File trovati: 42 | Indicizzati: 38       | |
@@ -273,7 +273,7 @@ La sezione Folders consente la configurazione delle cartelle del filesystem da i
 | +------------------------------------------+ |
 |                                              |
 | +------------------------------------------+ |
-| | /home/utente/documenti/personali          | |
+| | /home/utente/documenti/personali         | |
 | | Ricorsivo: No | Abilitato: Si            | |
 | | Ultimo scan: 2026-02-09 15:15            | |
 | | File trovati: 15 | Indicizzati: 15       | |
@@ -327,8 +327,8 @@ La sezione Settings permette la configurazione dei provider LLM e delle API key.
 | +------------------------------------------+ |
 |                                              |
 | Provider Default: [Ollama v]                 |
-| Fallback abilitato: [Si]                    |
-| Ordine fallback: [OLLAMA, OPENAI, ...]      |
+| Fallback abilitato: [Si]                     |
+| Ordine fallback: [OLLAMA, OPENAI, ...]       |
 |                                              |
 | [Salva configurazione]                       |
 +----------------------------------------------+
@@ -356,11 +356,11 @@ La sezione Dashboard fornisce una panoramica dello stato del sistema e delle met
 | Dashboard                                    |
 +----------------------------------------------+
 |                                              |
-| +--------+ +--------+ +--------+ +--------+ |
-| |Postgres| |Qdrant  | |Ollama  | |n8n     | |
-| | UP     | | UP     | | UP     | | DOWN   | |
-| | 23ms   | | 15ms   | | 45ms   | | --     | |
-| +--------+ +--------+ +--------+ +--------+ |
+| +--------+ +--------+ +--------+ +--------+  |
+| |Postgres| |Qdrant  | |Ollama  | |n8n     |  |
+| | UP     | | UP     | | UP     | | DOWN   |  |
+| | 23ms   | | 15ms   | | 45ms   | | --     |  |
+| +--------+ +--------+ +--------+ +--------+  |
 |                                              |
 | Statistiche Utilizzo                         |
 | +------------------------------------------+ |
@@ -373,13 +373,13 @@ La sezione Dashboard fornisce una panoramica dello stato del sistema e delle met
 | Documenti                                    |
 | +------------------------------------------+ |
 | | Totale: 156                              | |
-| | Indicizzati: 142 | Pending: 8           | |
-| | Failed: 4 | Archived: 2                 | |
+| | Indicizzati: 142 | Pending: 8            | |
+| | Failed: 4 | Archived: 2                  | |
 | +------------------------------------------+ |
 |                                              |
 | Batch Jobs                                   |
 | +------------------------------------------+ |
-| | Completati: 45 | Falliti: 2             | |
+| | Completati: 45 | Falliti: 2              | |
 | | In corso: 1                              | |
 | | Ultimo job: 2026-02-09 15:30             | |
 | +------------------------------------------+ |
@@ -419,9 +419,9 @@ Interfaccia completa con tutti i parametri configurabili:
 
 Configurazioni predefinite che attivano l'agente e i parametri ottimali per il ruolo:
 
-| Preset       | Agente   | Temperatura | Max Tokens | Modalita' UI |
-|-------------|----------|-------------|------------|-------------|
-| Developer   | Tech     | 0.2         | 4096       | Avanzata    |
-| Business    | Business | 0.5         | 4096       | Semplice    |
-| Legal       | Legal    | 0.1         | 4096       | Semplice    |
-| Personal    | Personal | 0.7         | 2048       | Semplice    |
+| Preset      | Agente   | Temperatura | Max Tokens | Modalita' UI |
+|-------------|----------|-------------|------------|--------------|
+| Developer   | Tech     | 0.2         | 4096       | Avanzata     |
+| Business    | Business | 0.5         | 4096       | Semplice     |
+| Legal       | Legal    | 0.1         | 4096       | Semplice     |
+| Personal    | Personal | 0.7         | 2048       | Semplice     |

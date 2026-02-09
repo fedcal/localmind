@@ -78,7 +78,7 @@ La scelta di Java 17, Spring Boot e Angular non e' casuale: queste tecnologie ra
 
 ### 4.1 Privacy by Design
 
-La privacy non e' una feature aggiunta a posteriori, ma un principio architetturale fondante. I dati vengono processati localmente tramite Ollama e archiviati in database locali (PostgreSQL, Qdrant). L'utilizzo di provider cloud e' opzionale e configurabile dall'utente.
+La privacy non e' una feature aggiunta a posteriori, ma un principio architetturale fondante. I dati vengono processati localmente tramite Ollama e archiviati in database locali (MySQL, Qdrant). L'utilizzo di provider cloud e' opzionale e configurabile dall'utente.
 
 ### 4.2 Zero Vendor Lock-in
 

@@ -22,6 +22,7 @@ public class DocumentEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
+    @JdbcTypeCode(SqlTypes.CHAR)
     private UUID id;
 
     @Column(nullable = false, length = 500)

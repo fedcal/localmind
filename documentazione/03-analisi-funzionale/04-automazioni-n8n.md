@@ -3,7 +3,7 @@
 | Campo        | Valore                          |
 |--------------|---------------------------------|
 | **Documento**| Automazioni n8n                 |
-| **Versione** | 0.1.0                          |
+| **Versione** | 0.1.0                           |
 | **Data**     | 2026-02-09                      |
 | **Progetto** | LocalMind                       |
 
@@ -34,21 +34,21 @@ L'integrazione avviene tramite meccanismo di webhook HTTP: LocalMind genera even
 
 ```
 +------------------+         HTTP POST          +------------------+
-|                  |  (webhook)                  |                  |
+|                  |  (webhook)                 |                  |
 |    LocalMind     |--------------------------->|       n8n        |
 |    Backend       |                            |    (self-hosted) |
 |                  |                            |                  |
-|  - Evento interno|                            |  - Riceve evento |
-|  - AutomationSvc |                            |  - Esegue workflow|
-|  - WebhookClient |                            |  - Azioni esterne|
-|                  |         HTTP REST           |                  |
+|  - Evento interno|                            | - Riceve evento  |
+|  - AutomationSvc |                            | - Esegue workflow|
+|  - WebhookClient |                              - Azioni esterne |
+|                  |         HTTP REST          |                  |
 |    (API REST)    |<---------------------------|  (callback)      |
 |                  |                            |                  |
 +------------------+                            +------------------+
        ^                                               |
        |                                               v
-+------+------+                               +-------+--------+
-|  PostgreSQL  |                               |  Servizi       |
++------+-------+                               +-------+--------+
+|    MySQL     |                               |  Servizi       |
 |  (config     |                               |  Esterni       |
 |   webhook)   |                               |  (Email, Slack,|
 +--------------+                               |   Drive, etc.) |
@@ -66,7 +66,7 @@ Il flusso bidirezionale consente:
 
 LocalMind genera i seguenti tipi di evento che possono attivare workflow n8n:
 
-| Trigger            | Descrizione                                      | Payload                          |
+| Trigger           | Descrizione                                      | Payload                          |
 |-------------------|--------------------------------------------------|----------------------------------|
 | `NEW_FILE`        | Nuovo file rilevato nel filesystem               | filePath, filename, size, hash   |
 | `DOCUMENT_INDEXED`| Documento indicizzato con successo nel RAG       | documentId, filename, chunkCount |
@@ -158,15 +158,15 @@ n8n invia il report via email al destinatario configurato
 ### 5.1 Webhook (Entity)
 
 | Campo         | Tipo             | Descrizione                              |
-|--------------|------------------|------------------------------------------|
-| `id`         | UUID             | Identificativo univoco del webhook       |
-| `name`       | String           | Nome descrittivo del webhook             |
-| `url`        | String           | URL completo del webhook n8n             |
-| `eventType`  | AutomationEvent  | Tipo di evento che attiva il webhook     |
-| `enabled`    | boolean          | Webhook abilitato/disabilitato           |
-| `headers`    | Map<String,String>| Header HTTP aggiuntivi                  |
-| `createdAt`  | LocalDateTime    | Data di creazione                        |
-| `updatedAt`  | LocalDateTime    | Data ultimo aggiornamento                |
+|--------------|-------------------|------------------------------------------|
+| `id`         | UUID              | Identificativo univoco del webhook       |
+| `name`       | String            | Nome descrittivo del webhook             |
+| `url`        | String            | URL completo del webhook n8n             |
+| `eventType`  | AutomationEvent   | Tipo di evento che attiva il webhook     |
+| `enabled`    | boolean           | Webhook abilitato/disabilitato           |
+| `headers`    | Map<String,String>| Header HTTP aggiuntivi                   |
+| `createdAt`  | LocalDateTime     | Data di creazione                        |
+| `updatedAt`  | LocalDateTime     | Data ultimo aggiornamento                |
 
 ### 5.2 AutomationEvent (Enum)
 
@@ -183,11 +183,11 @@ public enum AutomationEvent {
 
 ### 5.3 WebhookPayload (Value Object)
 
-| Campo         | Tipo              | Descrizione                              |
-|--------------|-------------------|------------------------------------------|
-| `eventType`  | AutomationEvent   | Tipo di evento                           |
-| `timestamp`  | LocalDateTime     | Timestamp dell'evento                    |
-| `data`       | Map<String,Object>| Dati specifici dell'evento               |
+| Campo        | Tipo              | Descrizione                                  |
+|--------------|-------------------|----------------------------------------------|
+| `eventType`  | AutomationEvent   | Tipo di evento                               |
+| `timestamp`  | LocalDateTime     | Timestamp dell'evento                        |
+| `data`       | Map<String,Object>| Dati specifici dell'evento                   |
 | `source`     | String            | Componente sorgente (es. "document-service") |
 
 ---
@@ -261,41 +261,41 @@ localmind:
 
 ---
 
-## 8. Deployment Docker
+## 8. Deployment n8n
 
-n8n viene deployato come servizio Docker all'interno dello stack LocalMind:
+n8n e' un servizio infrastrutturale opzionale che puo' essere eseguito nativamente o tramite Docker:
 
-```yaml
-# docker-compose.yml (estratto)
-services:
-  n8n:
-    image: n8nio/n8n:latest
-    container_name: localmind-n8n
-    restart: unless-stopped
-    ports:
-      - "5678:5678"
-    environment:
-      - N8N_BASIC_AUTH_ACTIVE=true
-      - N8N_BASIC_AUTH_USER=${N8N_USERNAME:-localmind}
-      - N8N_BASIC_AUTH_PASSWORD=${N8N_PASSWORD:-localmind}
-      - N8N_HOST=localhost
-      - N8N_PORT=5678
-      - N8N_PROTOCOL=http
-      - WEBHOOK_URL=http://localhost:5678
-    volumes:
-      - n8n_data:/home/node/.n8n
-    networks:
-      - localmind-network
+### 8.1 Esecuzione nativa
 
-volumes:
-  n8n_data:
+```bash
+# Installazione globale via npm
+npm install -g n8n
 
-networks:
-  localmind-network:
-    driver: bridge
+# Avvio con variabili d'ambiente
+N8N_BASIC_AUTH_ACTIVE=true \
+N8N_BASIC_AUTH_USER=${N8N_USERNAME:-localmind} \
+N8N_BASIC_AUTH_PASSWORD=${N8N_PASSWORD:-localmind} \
+n8n start
 ```
 
-### 8.1 Accesso
+### 8.2 Esecuzione tramite Docker (opzionale)
+
+```bash
+docker run -d \
+  --name localmind-n8n \
+  -p 5678:5678 \
+  -e N8N_BASIC_AUTH_ACTIVE=true \
+  -e N8N_BASIC_AUTH_USER=${N8N_USERNAME:-localmind} \
+  -e N8N_BASIC_AUTH_PASSWORD=${N8N_PASSWORD:-localmind} \
+  -e N8N_HOST=localhost \
+  -e N8N_PORT=5678 \
+  -e N8N_PROTOCOL=http \
+  -e WEBHOOK_URL=http://localhost:5678 \
+  -v n8n_data:/home/node/.n8n \
+  n8nio/n8n:latest
+```
+
+### 8.3 Accesso
 
 - **URL**: http://localhost:5678
 - **Autenticazione**: Basic Auth (username/password configurabili)

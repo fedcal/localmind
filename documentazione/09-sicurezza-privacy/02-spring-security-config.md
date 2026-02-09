@@ -348,7 +348,7 @@ Caratteristiche pianificate:
 - JWT firmato con chiave asimmetrica (RS256).
 - Token expiry configurabile (default: 1 ora access, 7 giorni refresh).
 - `JwtAuthenticationFilter` custom nel filter chain di Spring Security.
-- Blacklist token su logout (memorizzata in PostgreSQL).
+- Blacklist token su logout (memorizzata in MySQL).
 
 ### 7.3 v0.4.0 - RBAC
 
@@ -365,7 +365,7 @@ Ruoli pianificati:
 Implementazione:
 
 - `@PreAuthorize("hasRole('ADMIN')")` su endpoint sensibili.
-- Tabelle `users`, `roles`, `user_roles` in PostgreSQL.
+- Tabelle `users`, `roles`, `user_roles` in MySQL.
 - `JpaUserDetailsService` per caricamento utenti dal database.
 
 ### 7.4 v1.0.0 - OAuth2 / OIDC
