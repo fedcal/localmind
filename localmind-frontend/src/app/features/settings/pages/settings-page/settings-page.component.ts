@@ -2,32 +2,34 @@ import { Component, inject, OnInit, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { SettingsService } from '../../services/settings.service';
 import { LlmProviderConfig, CreateProviderRequest } from '../../models/settings.model';
+import { TranslatePipe } from '../../../../core/i18n/translate.pipe';
+import { TranslationService } from '../../../../core/i18n/translation.service';
 
 @Component({
   selector: 'app-settings-page',
-  imports: [FormsModule],
+  imports: [FormsModule, TranslatePipe],
   template: `
     <div class="settings-page">
       <div class="page-header">
         <div>
-          <h1>Impostazioni</h1>
-          <p class="subtitle">Configurazione provider LLM e preferenze</p>
+          <h1>{{ 'SETTINGS.TITLE' | translate }}</h1>
+          <p class="subtitle">{{ 'SETTINGS.SUBTITLE' | translate }}</p>
         </div>
         <button class="btn btn-primary" (click)="toggleForm()">
-          {{ showForm ? 'Annulla' : '+ Aggiungi Provider' }}
+          {{ showForm ? ('COMMON.CANCEL' | translate) : ('SETTINGS.ADD_PROVIDER' | translate) }}
         </button>
       </div>
 
       @if (showForm) {
         <div class="add-form card">
-          <h3>Nuovo Provider LLM</h3>
+          <h3>{{ 'SETTINGS.FORM_TITLE' | translate }}</h3>
           <div class="form-grid">
             <div class="form-group">
-              <label>Nome *</label>
-              <input type="text" [(ngModel)]="newProvider.name" placeholder="Es: Ollama Locale">
+              <label>{{ 'SETTINGS.FORM_NAME' | translate }}</label>
+              <input type="text" [(ngModel)]="newProvider.name" [placeholder]="'SETTINGS.FORM_NAME_PLACEHOLDER' | translate">
             </div>
             <div class="form-group">
-              <label>Tipo *</label>
+              <label>{{ 'SETTINGS.FORM_TYPE' | translate }}</label>
               <select [(ngModel)]="newProvider.type" (ngModelChange)="onTypeChange($event)">
                 <option value="OLLAMA">Ollama</option>
                 <option value="OPENAI">OpenAI</option>
@@ -36,30 +38,30 @@ import { LlmProviderConfig, CreateProviderRequest } from '../../models/settings.
               </select>
             </div>
             <div class="form-group">
-              <label>URL Base *</label>
+              <label>{{ 'SETTINGS.FORM_URL' | translate }}</label>
               <input type="text" [(ngModel)]="newProvider.baseUrl"
                      (blur)="onBaseUrlBlur()"
                      [placeholder]="getUrlPlaceholder()">
             </div>
             @if (newProvider.type !== 'OLLAMA') {
               <div class="form-group">
-                <label>API Key *</label>
+                <label>{{ 'SETTINGS.FORM_APIKEY' | translate }}</label>
                 <input type="password" [(ngModel)]="newProvider.apiKey"
                        [placeholder]="getApiKeyPlaceholder()">
               </div>
             }
             <div class="form-group">
-              <label>Modello Predefinito</label>
+              <label>{{ 'SETTINGS.FORM_MODEL' | translate }}</label>
               @if (newProvider.type === 'OLLAMA') {
                 <div class="select-with-refresh">
                   <select [(ngModel)]="newProvider.defaultModel" [disabled]="loadingModels()">
-                    <option value="">-- Seleziona modello --</option>
+                    <option value="">{{ 'SETTINGS.FORM_MODEL_SELECT' | translate }}</option>
                     @for (model of ollamaModels(); track model) {
                       <option [value]="model">{{ model }}</option>
                     }
                   </select>
                   <button class="btn-icon" (click)="fetchOllamaModels()" [disabled]="loadingModels()"
-                          title="Aggiorna lista modelli">
+                          [title]="'SETTINGS.FORM_MODEL_REFRESH' | translate">
                     @if (loadingModels()) {
                       <span class="spinner-sm"></span>
                     } @else {
@@ -68,7 +70,7 @@ import { LlmProviderConfig, CreateProviderRequest } from '../../models/settings.
                   </button>
                 </div>
                 @if (ollamaModels().length === 0 && !loadingModels() && ollamaModelsFetched()) {
-                  <span class="hint error">Nessun modello trovato. Verifica URL e che Ollama sia in esecuzione.</span>
+                  <span class="hint error">{{ 'SETTINGS.FORM_OLLAMA_NO_MODELS' | translate }}</span>
                 }
               } @else {
                 <input type="text" [(ngModel)]="newProvider.defaultModel"
@@ -78,7 +80,7 @@ import { LlmProviderConfig, CreateProviderRequest } from '../../models/settings.
           </div>
           <button class="btn btn-primary" (click)="addProvider()"
                   [disabled]="!isFormValid()">
-            Salva Provider
+            {{ 'SETTINGS.SAVE_PROVIDER' | translate }}
           </button>
         </div>
       }
@@ -92,7 +94,7 @@ import { LlmProviderConfig, CreateProviderRequest } from '../../models/settings.
       @if (loading()) {
         <div class="loading-state">
           <span class="spinner"></span>
-          Caricamento provider...
+          {{ 'SETTINGS.LOADING' | translate }}
         </div>
       } @else if (providers().length === 0) {
         <div class="empty-state card">
@@ -100,8 +102,8 @@ import { LlmProviderConfig, CreateProviderRequest } from '../../models/settings.
             <circle cx="12" cy="12" r="3"/>
             <path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 01-2.83 2.83l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4"/>
           </svg>
-          <h3>Nessun provider configurato</h3>
-          <p>Aggiungi un provider LLM per iniziare a usare la chat.</p>
+          <h3>{{ 'SETTINGS.EMPTY_TITLE' | translate }}</h3>
+          <p>{{ 'SETTINGS.EMPTY_DESC' | translate }}</p>
         </div>
       } @else {
         <div class="provider-list">
@@ -118,23 +120,23 @@ import { LlmProviderConfig, CreateProviderRequest } from '../../models/settings.
                   </div>
                 </div>
                 <span class="badge" [class]="provider.enabled ? 'badge-success' : 'badge-neutral'">
-                  {{ provider.enabled ? 'Attivo' : 'Disattivato' }}
+                  {{ provider.enabled ? ('SETTINGS.PROVIDER_ACTIVE' | translate) : ('SETTINGS.PROVIDER_DISABLED' | translate) }}
                 </span>
               </div>
               <div class="provider-details">
                 <div class="detail-row">
-                  <span class="detail-label">Tipo:</span>
+                  <span class="detail-label">{{ 'SETTINGS.PROVIDER_TYPE' | translate }}</span>
                   <span class="badge badge-primary">{{ provider.type }}</span>
                 </div>
                 @if (provider.defaultModel) {
                   <div class="detail-row">
-                    <span class="detail-label">Modello default:</span>
+                    <span class="detail-label">{{ 'SETTINGS.PROVIDER_DEFAULT_MODEL' | translate }}</span>
                     <span class="mono">{{ provider.defaultModel }}</span>
                   </div>
                 }
                 @if (provider.models.length > 0) {
                   <div class="detail-row">
-                    <span class="detail-label">Modelli:</span>
+                    <span class="detail-label">{{ 'SETTINGS.PROVIDER_MODELS' | translate }}</span>
                     <span class="models-list">
                       @for (model of provider.models; track model) {
                         <span class="model-tag">{{ model }}</span>
@@ -149,10 +151,10 @@ import { LlmProviderConfig, CreateProviderRequest } from '../../models/settings.
                   @if (testingId() === provider.id) {
                     <span class="spinner-sm"></span>
                   }
-                  Test Connessione
+                  {{ 'SETTINGS.TEST_CONNECTION' | translate }}
                 </button>
                 <button class="btn btn-sm btn-danger" (click)="deleteProvider(provider.id)">
-                  Rimuovi
+                  {{ 'COMMON.REMOVE' | translate }}
                 </button>
               </div>
             </div>
@@ -243,6 +245,7 @@ import { LlmProviderConfig, CreateProviderRequest } from '../../models/settings.
 })
 export class SettingsPageComponent implements OnInit {
   private settingsService = inject(SettingsService);
+  private i18n = inject(TranslationService);
 
   providers = signal<LlmProviderConfig[]>([]);
   loading = signal(false);
@@ -361,10 +364,10 @@ export class SettingsPageComponent implements OnInit {
       next: () => {
         this.showForm = false;
         this.resetForm();
-        this.showNotify('success', 'Provider aggiunto');
+        this.showNotify('success', this.i18n.instant('SETTINGS.ADD_SUCCESS'));
         this.loadProviders();
       },
-      error: () => this.showNotify('error', 'Errore nel salvataggio del provider')
+      error: () => this.showNotify('error', this.i18n.instant('SETTINGS.ADD_ERROR'))
     });
   }
 
@@ -374,19 +377,19 @@ export class SettingsPageComponent implements OnInit {
       next: (res) => {
         this.testingId.set(null);
         this.showNotify(res.status === 'OK' ? 'success' : 'error',
-          res.status === 'OK' ? `${provider.name}: Connessione riuscita` : `${provider.name}: ${res.message}`);
+          res.status === 'OK' ? this.i18n.instant('SETTINGS.TEST_SUCCESS', { name: provider.name }) : `${provider.name}: ${res.message}`);
       },
       error: () => {
         this.testingId.set(null);
-        this.showNotify('error', `${provider.name}: Connessione fallita`);
+        this.showNotify('error', this.i18n.instant('SETTINGS.TEST_FAILURE', { name: provider.name }));
       }
     });
   }
 
   deleteProvider(id: string) {
     this.settingsService.deleteProvider(id).subscribe({
-      next: () => { this.showNotify('success', 'Provider rimosso'); this.loadProviders(); },
-      error: () => this.showNotify('error', 'Errore nella rimozione')
+      next: () => { this.showNotify('success', this.i18n.instant('SETTINGS.DELETE_SUCCESS')); this.loadProviders(); },
+      error: () => this.showNotify('error', this.i18n.instant('SETTINGS.DELETE_ERROR'))
     });
   }
 

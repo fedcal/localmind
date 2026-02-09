@@ -1,18 +1,19 @@
 import { Component } from '@angular/core';
 import { RouterOutlet, RouterLink, RouterLinkActive } from '@angular/router';
+import { TranslatePipe } from '../../../core/i18n/translate.pipe';
 
 @Component({
   selector: 'app-mcp-dashboard',
   standalone: true,
-  imports: [RouterOutlet, RouterLink, RouterLinkActive],
+  imports: [RouterOutlet, RouterLink, RouterLinkActive, TranslatePipe],
   template: `
     <div class="mcp-dashboard">
-      <h1>MCP Integration</h1>
-      <p class="subtitle">Model Context Protocol - Gestione Server e Tool</p>
+      <h1>{{ 'MCP.TITLE' | translate }}</h1>
+      <p class="subtitle">{{ 'MCP.SUBTITLE' | translate }}</p>
 
       <div class="tab-nav">
-        <a routerLink="servers" routerLinkActive="active" class="tab">Server Esterni</a>
-        <a routerLink="tools" routerLinkActive="active" class="tab">Tool Disponibili</a>
+        <a routerLink="servers" routerLinkActive="active" class="tab">{{ 'MCP.TAB_SERVERS' | translate }}</a>
+        <a routerLink="tools" routerLinkActive="active" class="tab">{{ 'MCP.TAB_TOOLS' | translate }}</a>
       </div>
 
       <div class="tab-content">

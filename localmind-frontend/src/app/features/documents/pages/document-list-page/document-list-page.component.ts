@@ -2,16 +2,18 @@ import { Component, inject, OnInit, signal, computed } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { DocumentService } from '../../services/document.service';
 import { Document } from '../../models/document.model';
+import { TranslatePipe } from '../../../../core/i18n/translate.pipe';
+import { TranslationService } from '../../../../core/i18n/translation.service';
 
 @Component({
   selector: 'app-document-list-page',
-  imports: [FormsModule],
+  imports: [FormsModule, TranslatePipe],
   template: `
     <div class="documents-page">
       <div class="page-header">
         <div>
-          <h1>Documenti</h1>
-          <span class="subtitle">{{ filteredDocuments().length }} documenti</span>
+          <h1>{{ 'DOCUMENTS.TITLE' | translate }}</h1>
+          <span class="subtitle">{{ 'DOCUMENTS.COUNT' | translate:{ count: filteredDocuments().length } }}</span>
         </div>
         <div class="header-actions">
           <button class="btn btn-secondary btn-sm" (click)="loadDocuments()">
@@ -19,13 +21,13 @@ import { Document } from '../../models/document.model';
               <path d="M23 4v6h-6M1 20v-6h6"/>
               <path d="M3.51 9a9 9 0 0114.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0020.49 15"/>
             </svg>
-            Aggiorna
+            {{ 'COMMON.REFRESH' | translate }}
           </button>
           <button class="btn btn-primary" (click)="triggerUpload()">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M17 8l-5-5-5 5M12 3v12"/>
             </svg>
-            Carica Documento
+            {{ 'DOCUMENTS.UPLOAD' | translate }}
           </button>
           <input type="file" #fileInput (change)="onFileSelected($event)" style="display:none"
                  accept=".pdf,.txt,.md,.doc,.docx,.csv,.json">
@@ -43,33 +45,33 @@ import { Document } from '../../models/document.model';
         <div class="upload-bar">
           <div class="upload-info">
             <span class="loading-spinner"></span>
-            Caricamento {{ uploadFileName() }} in corso...
+            {{ 'DOCUMENTS.UPLOADING' | translate:{ filename: uploadFileName() } }}
           </div>
         </div>
       }
 
       <div class="filter-tabs">
         <button [class.active]="activeFilter() === 'ALL'" (click)="activeFilter.set('ALL')">
-          Tutti ({{ documents().length }})
+          {{ 'DOCUMENTS.FILTER_ALL' | translate }} ({{ documents().length }})
         </button>
         <button [class.active]="activeFilter() === 'INDEXED'" (click)="activeFilter.set('INDEXED')">
-          Indicizzati ({{ countByStatus('INDEXED') }})
+          {{ 'DOCUMENTS.FILTER_INDEXED' | translate }} ({{ countByStatus('INDEXED') }})
         </button>
         <button [class.active]="activeFilter() === 'PENDING'" (click)="activeFilter.set('PENDING')">
-          In attesa ({{ countByStatus('PENDING') }})
+          {{ 'DOCUMENTS.FILTER_PENDING' | translate }} ({{ countByStatus('PENDING') }})
         </button>
         <button [class.active]="activeFilter() === 'PROCESSING'" (click)="activeFilter.set('PROCESSING')">
-          In elaborazione ({{ countByStatus('PROCESSING') }})
+          {{ 'DOCUMENTS.FILTER_PROCESSING' | translate }} ({{ countByStatus('PROCESSING') }})
         </button>
         <button [class.active]="activeFilter() === 'FAILED'" (click)="activeFilter.set('FAILED')">
-          Falliti ({{ countByStatus('FAILED') }})
+          {{ 'DOCUMENTS.FILTER_FAILED' | translate }} ({{ countByStatus('FAILED') }})
         </button>
       </div>
 
       @if (loading()) {
         <div class="loading-state">
           <span class="loading-spinner"></span>
-          <span>Caricamento documenti...</span>
+          <span>{{ 'DOCUMENTS.LOADING' | translate }}</span>
         </div>
       } @else if (filteredDocuments().length === 0) {
         <div class="empty-state card">
@@ -77,8 +79,8 @@ import { Document } from '../../models/document.model';
             <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/>
             <polyline points="14 2 14 8 20 8"/>
           </svg>
-          <h3>Nessun documento</h3>
-          <p>Carica un documento per iniziare a costruire la tua knowledge base.</p>
+          <h3>{{ 'DOCUMENTS.EMPTY_TITLE' | translate }}</h3>
+          <p>{{ 'DOCUMENTS.EMPTY_DESC' | translate }}</p>
         </div>
       } @else {
         <div class="doc-grid">
@@ -93,11 +95,11 @@ import { Document } from '../../models/document.model';
               <div class="doc-info">
                 <div class="doc-name">{{ doc.filename }}</div>
                 <div class="doc-meta">
-                  <span class="badge" [class]="getStatusClass(doc.status)">{{ getStatusLabel(doc.status) }}</span>
+                  <span class="badge" [class]="getStatusClass(doc.status)">{{ 'ENUM.DOCUMENT_STATUS.' + doc.status | translate }}</span>
                   <span class="doc-size">{{ formatSize(doc.fileSize) }}</span>
                   <span class="doc-type">{{ doc.mimeType }}</span>
                 </div>
-                <div class="doc-date">Caricato: {{ formatDate(doc.createdAt) }}</div>
+                <div class="doc-date">{{ 'DOCUMENTS.UPLOADED_LABEL' | translate }} {{ formatDate(doc.createdAt) }}</div>
               </div>
               <div class="doc-actions">
                 <button class="btn-icon" title="Elimina" (click)="deleteDoc(doc)">
@@ -114,11 +116,11 @@ import { Document } from '../../models/document.model';
       @if (confirmDelete()) {
         <div class="modal-overlay" (click)="confirmDelete.set(null)">
           <div class="modal" (click)="$event.stopPropagation()">
-            <h3>Conferma eliminazione</h3>
-            <p>Eliminare il documento <strong>{{ confirmDelete()!.filename }}</strong>?</p>
+            <h3>{{ 'DOCUMENTS.CONFIRM_DELETE_TITLE' | translate }}</h3>
+            <p [innerHTML]="'DOCUMENTS.CONFIRM_DELETE_MSG' | translate:{ filename: confirmDelete()!.filename }"></p>
             <div class="modal-actions">
-              <button class="btn btn-secondary" (click)="confirmDelete.set(null)">Annulla</button>
-              <button class="btn btn-danger" (click)="confirmDeleteAction()">Elimina</button>
+              <button class="btn btn-secondary" (click)="confirmDelete.set(null)">{{ 'COMMON.CANCEL' | translate }}</button>
+              <button class="btn btn-danger" (click)="confirmDeleteAction()">{{ 'COMMON.DELETE' | translate }}</button>
             </div>
           </div>
         </div>
@@ -231,6 +233,7 @@ import { Document } from '../../models/document.model';
 })
 export class DocumentListPageComponent implements OnInit {
   private documentService = inject(DocumentService);
+  private i18n = inject(TranslationService);
 
   documents = signal<Document[]>([]);
   loading = signal(false);
@@ -255,7 +258,7 @@ export class DocumentListPageComponent implements OnInit {
     this.loading.set(true);
     this.documentService.listDocuments().subscribe({
       next: (docs) => { this.documents.set(docs); this.loading.set(false); },
-      error: () => { this.loading.set(false); this.showNotification('error', 'Errore nel caricamento dei documenti'); }
+      error: () => { this.loading.set(false); this.showNotification('error', this.i18n.instant('DOCUMENTS.LOAD_ERROR')); }
     });
   }
 
@@ -274,13 +277,13 @@ export class DocumentListPageComponent implements OnInit {
     this.documentService.uploadDocument(file).subscribe({
       next: () => {
         this.uploading.set(false);
-        this.showNotification('success', `Documento "${file.name}" caricato con successo`);
+        this.showNotification('success', this.i18n.instant('DOCUMENTS.UPLOAD_SUCCESS', { filename: file.name }));
         this.loadDocuments();
         input.value = '';
       },
       error: () => {
         this.uploading.set(false);
-        this.showNotification('error', `Errore nel caricamento di "${file.name}"`);
+        this.showNotification('error', this.i18n.instant('DOCUMENTS.UPLOAD_ERROR', { filename: file.name }));
         input.value = '';
       }
     });
@@ -296,12 +299,12 @@ export class DocumentListPageComponent implements OnInit {
     this.documentService.deleteDocument(doc.id).subscribe({
       next: () => {
         this.confirmDelete.set(null);
-        this.showNotification('success', `Documento "${doc.filename}" eliminato`);
+        this.showNotification('success', this.i18n.instant('DOCUMENTS.DELETE_SUCCESS', { filename: doc.filename }));
         this.loadDocuments();
       },
       error: () => {
         this.confirmDelete.set(null);
-        this.showNotification('error', 'Errore durante l\'eliminazione');
+        this.showNotification('error', this.i18n.instant('DOCUMENTS.DELETE_ERROR'));
       }
     });
   }
@@ -341,7 +344,8 @@ export class DocumentListPageComponent implements OnInit {
   formatDate(dateStr: string): string {
     if (!dateStr) return '';
     const d = new Date(dateStr);
-    return d.toLocaleDateString('it-IT', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' });
+    const locale = this.i18n.currentLang() === 'it' ? 'it-IT' : 'en-US';
+    return d.toLocaleDateString(locale, { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' });
   }
 
   private showNotification(type: string, message: string) {

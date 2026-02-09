@@ -38,14 +38,14 @@ features/{feature-name}/
 
 ### Livello di completezza
 
-| Feature    | Stato           | Descrizione                          |
-|------------|-----------------|--------------------------------------|
+| Feature    | Stato           | Descrizione                              |
+|------------|-----------------|------------------------------------------|
 | Chat       | Implementata    | Feature piu' completa, con store Signals |
-| Documents  | Implementata    | CRUD con status badge                |
-| Search     | Placeholder     | UI base, pipeline RAG in sviluppo    |
-| Folders    | Placeholder     | UI base, CRUD pianificato            |
-| Settings   | Placeholder     | UI base, configurazione pianificata  |
-| Dashboard  | Implementata    | Health check con Signals reattivi    |
+| Documents  | Implementata    | CRUD con status badge                    |
+| Search     | Placeholder     | UI base, pipeline RAG in sviluppo        |
+| Folders    | Placeholder     | UI base, CRUD pianificato                |
+| Settings   | Placeholder     | UI base, configurazione pianificata      |
+| Dashboard  | Implementata    | Health check con Signals reattivi        |
 
 ---
 
@@ -130,8 +130,8 @@ export class ChatService {
 }
 ```
 
-| Metodo | Endpoint          | Descrizione                    |
-|--------|-------------------|--------------------------------|
+| Metodo | Endpoint            | Descrizione                             |
+|--------|---------------------|-----------------------------------------|
 | `chat` | `POST /api/v1/chat` | Invia un messaggio e riceve la risposta |
 
 ### ChatStore
@@ -280,8 +280,8 @@ export class DocumentService {
 ```
 
 | Metodo            | Endpoint                       | Descrizione                    |
-|-------------------|-------------------------------|--------------------------------|
-| `getDocuments`    | `GET /api/v1/documents`       | Lista tutti i documenti        |
+|-------------------|--------------------------------|--------------------------------|
+| `getDocuments`    | `GET /api/v1/documents`        | Lista tutti i documenti        |
 | `deleteDocument`  | `DELETE /api/v1/documents/{id}`| Elimina un documento           |
 
 ### DocumentListPageComponent
@@ -294,9 +294,9 @@ export class DocumentService {
 #### Status badge
 
 | Stato        | Colore   | Descrizione                    |
-|-------------|----------|--------------------------------|
+|--------------|----------|--------------------------------|
 | `PENDING`    | Giallo   | In attesa di elaborazione      |
-| `PROCESSING` | Blu     | Elaborazione in corso          |
+| `PROCESSING` | Blu      | Elaborazione in corso          |
 | `INDEXED`    | Verde    | Indicizzato con successo       |
 | `ERROR`      | Rosso    | Errore durante l'elaborazione  |
 
@@ -493,11 +493,11 @@ interface HealthStatus {
 
 ## 8. Riepilogo Feature
 
-| Feature    | Path         | Componente principale          | Servizio            | Store        | API Endpoint          |
-|------------|-------------|-------------------------------|---------------------|--------------|----------------------|
-| Chat       | `/chat`     | `ChatPageComponent`           | `ChatService`       | `ChatStore`  | `POST /chat`         |
-| Documents  | `/documents`| `DocumentListPageComponent`   | `DocumentService`   | -            | `GET/DELETE /documents` |
+| Feature    | Path        | Componente principale         | Servizio            | Store        | API Endpoint             |
+|------------|-------------|-------------------------------|---------------------|--------------|--------------------------|
+| Chat       | `/chat`     | `ChatPageComponent`           | `ChatService`       | `ChatStore`  | `POST /chat`             |
+| Documents  | `/documents`| `DocumentListPageComponent`   | `DocumentService`   | -            | `GET/DELETE /documents`  |
 | Search     | `/search`   | `SearchPageComponent`         | -                   | -            | `POST /documents/search` |
-| Folders    | `/folders`  | `FolderConfigPageComponent`   | -                   | -            | (pianificato)        |
-| Settings   | `/settings` | `SettingsPageComponent`       | -                   | -            | (pianificato)        |
-| Dashboard  | `/dashboard`| `DashboardPageComponent`      | -                   | -            | `GET /dashboard/health` |
+| Folders    | `/folders`  | `FolderConfigPageComponent`   | -                   | -            | (pianificato)            |
+| Settings   | `/settings` | `SettingsPageComponent`       | -                   | -            | (pianificato)            |
+| Dashboard  | `/dashboard`| `DashboardPageComponent`      | -                   | -            | `GET /dashboard/health`  |

@@ -23,11 +23,11 @@
 
 L'API Documents gestisce il ciclo di vita dei documenti nel sistema LocalMind: caricamento, consultazione, eliminazione e ricerca semantica. I documenti caricati vengono elaborati dalla pipeline batch (estrazione testo, chunking, embedding) e indicizzati nel vector store per la ricerca semantica.
 
-| Proprieta'       | Valore                                        |
-|------------------|-----------------------------------------------|
-| **Controller**   | `DocumentController`, `DocumentSearchController` |
-| **Package**      | `com.localmind.api.document.controller`       |
-| **Base path**    | `/api/v1/documents`                           |
+| Proprieta'       | Valore                                                                 |
+|------------------|------------------------------------------------------------------------|
+| **Controller**   | `DocumentController`, `DocumentSearchController`                       |
+| **Package**      | `com.localmind.api.document.controller`                                |
+| **Base path**    | `/api/v1/documents`                                                    |
 | **Use cases**    | `DocumentIngestionUseCase`, `DocumentSearchUseCase`, `DocumentService` |
 
 ---
@@ -40,31 +40,31 @@ Carica un nuovo documento nel sistema. Il file viene salvato su filesystem e i r
 
 | Proprieta'       | Valore                                |
 |------------------|---------------------------------------|
-| **URL**          | `POST /api/v1/documents/upload`      |
-| **Content-Type** | `multipart/form-data`                |
+| **URL**          | `POST /api/v1/documents/upload`       |
+| **Content-Type** | `multipart/form-data`                 |
 | **Autenticazione** | Nessuna                             |
 
 ### Parametri
 
 | Parametro | Tipo           | Obbligatorio | Descrizione                    |
-|-----------|----------------|-------------|--------------------------------|
-| `file`    | `MultipartFile`| Si          | File da caricare (max 50MB)   |
+|-----------|----------------|--------------|--------------------------------|
+| `file`    | `MultipartFile`| Si           | File da caricare (max 50MB)    |
 
 ### Limiti
 
-| Parametro                        | Valore | Descrizione                    |
-|----------------------------------|--------|--------------------------------|
-| `spring.servlet.multipart.max-file-size` | 50MB   | Dimensione massima per singolo file |
-| `spring.servlet.multipart.max-request-size` | 50MB   | Dimensione massima della richiesta |
+| Parametro                                   | Valore | Descrizione                         |
+|---------------------------------------------|--------|-------------------------------------|
+| `spring.servlet.multipart.max-file-size`    | 50MB   | Dimensione massima per singolo file |
+| `spring.servlet.multipart.max-request-size` | 50MB   | Dimensione massima della richiesta  |
 
 ### Formati supportati
 
-| Formato | Estensione | MIME Type                                                     |
-|---------|-----------|---------------------------------------------------------------|
-| PDF     | `.pdf`    | `application/pdf`                                             |
-| DOCX    | `.docx`   | `application/vnd.openxmlformats-officedocument.wordprocessingml.document` |
-| TXT     | `.txt`    | `text/plain`                                                  |
-| EML     | `.eml`    | `message/rfc822`                                              |
+| Formato | Estensione | MIME Type                                                                 |
+|---------|------------|---------------------------------------------------------------------------|
+| PDF     | `.pdf`     | `application/pdf`                                                         |
+| DOCX    | `.docx`    | `application/vnd.openxmlformats-officedocument.wordprocessingml.document` |
+| TXT     | `.txt`     | `text/plain`                                                              |
+| EML     | `.eml`     | `message/rfc822`                                                          |
 
 ### Response (200 OK)
 
@@ -83,10 +83,10 @@ Carica un nuovo documento nel sistema. Il file viene salvato su filesystem e i r
 
 ### Status Codes
 
-| Codice | Descrizione                                    |
-|--------|------------------------------------------------|
-| 200    | OK - Documento caricato con successo           |
-| 400    | Bad Request - File mancante o formato non supportato |
+| Codice | Descrizione                                           |
+|--------|-------------------------------------------------------|
+| 200    | OK - Documento caricato con successo                  |
+| 400    | Bad Request - File mancante o formato non supportato  |
 | 500    | Internal Server Error - Errore durante il salvataggio |
 
 ### Esempio
@@ -104,11 +104,11 @@ Restituisce la lista di tutti i documenti presenti nel sistema.
 
 ### Request
 
-| Proprieta'       | Valore                                |
-|------------------|---------------------------------------|
-| **URL**          | `GET /api/v1/documents`              |
-| **Content-Type** | -                                    |
-| **Autenticazione** | Nessuna                             |
+| Proprieta'         | Valore                                |
+|--------------------|---------------------------------------|
+| **URL**            | `GET /api/v1/documents`               |
+| **Content-Type**   | -                                     |
+| **Autenticazione** | Nessuna                               |
 
 ### Response (200 OK)
 
@@ -139,8 +139,8 @@ Restituisce la lista di tutti i documenti presenti nel sistema.
 
 ### Status Codes
 
-| Codice | Descrizione                    |
-|--------|--------------------------------|
+| Codice | Descrizione                               |
+|--------|-------------------------------------------|
 | 200    | OK - Lista restituita (puo' essere vuota) |
 
 ### Esempio
@@ -157,11 +157,11 @@ Restituisce i dettagli di un singolo documento identificato dal suo UUID.
 
 ### Request
 
-| Proprieta'       | Valore                                |
-|------------------|---------------------------------------|
-| **URL**          | `GET /api/v1/documents/{id}`         |
-| **Content-Type** | -                                    |
-| **Autenticazione** | Nessuna                             |
+| Proprieta'         | Valore                                |
+|--------------------|---------------------------------------|
+| **URL**            | `GET /api/v1/documents/{id}`          |
+| **Content-Type**   | -                                     |
+| **Autenticazione** | Nessuna                               |
 
 ### Path Parameters
 
@@ -186,9 +186,9 @@ Restituisce i dettagli di un singolo documento identificato dal suo UUID.
 
 ### Status Codes
 
-| Codice | Descrizione                    |
-|--------|--------------------------------|
-| 200    | OK - Documento trovato         |
+| Codice | Descrizione                       |
+|--------|-----------------------------------|
+| 200    | OK - Documento trovato            |
 | 404    | Not Found - Documento non trovato |
 
 ### Esempio di errore (404)
@@ -216,11 +216,11 @@ Elimina un documento dal sistema. Rimuove sia i metadati dal database sia il fil
 
 ### Request
 
-| Proprieta'       | Valore                                |
-|------------------|---------------------------------------|
-| **URL**          | `DELETE /api/v1/documents/{id}`      |
-| **Content-Type** | -                                    |
-| **Autenticazione** | Nessuna                             |
+| Proprieta'         | Valore                                |
+|--------------------|---------------------------------------|
+| **URL**            | `DELETE /api/v1/documents/{id}`       |
+| **Content-Type**   | -                                     |
+| **Autenticazione** | Nessuna                               |
 
 ### Path Parameters
 
@@ -234,9 +234,9 @@ Elimina un documento dal sistema. Rimuove sia i metadati dal database sia il fil
 
 ### Status Codes
 
-| Codice | Descrizione                    |
-|--------|--------------------------------|
-| 204    | No Content - Documento eliminato |
+| Codice | Descrizione                       |
+|--------|-----------------------------------|
+| 204    | No Content - Documento eliminato  |
 | 404    | Not Found - Documento non trovato |
 
 ### Esempio
@@ -255,9 +255,9 @@ Esegue una ricerca semantica nei documenti indicizzati tramite il vector store (
 
 | Proprieta'       | Valore                                |
 |------------------|---------------------------------------|
-| **URL**          | `POST /api/v1/documents/search`      |
-| **Content-Type** | `application/json`                   |
-| **Controller**   | `DocumentSearchController`           |
+| **URL**          | `POST /api/v1/documents/search`       |
+| **Content-Type** | `application/json`                    |
+| **Controller**   | `DocumentSearchController`            |
 | **Autenticazione** | Nessuna                             |
 
 ### Request Body - SearchRequestDto
@@ -269,10 +269,10 @@ Esegue una ricerca semantica nei documenti indicizzati tramite il vector store (
 }
 ```
 
-| Campo  | Tipo     | Obbligatorio | Default | Descrizione                              |
-|--------|----------|-------------|---------|------------------------------------------|
-| `query`| `String` | Si          | -       | Testo della query di ricerca (`@NotBlank`)|
-| `topK` | `int`    | No          | `5`     | Numero massimo di risultati da restituire |
+| Campo  | Tipo     | Obbligatorio | Default | Descrizione                               |
+|--------|----------|--------------|---------|-------------------------------------------|
+| `query`| `String` | Si           | -       | Testo della query di ricerca (`@NotBlank`)|
+| `topK` | `int`    | No           | `5`     | Numero massimo di risultati da restituire |
 
 ### Response (200 OK)
 
@@ -297,20 +297,20 @@ Esegue una ricerca semantica nei documenti indicizzati tramite il vector store (
 
 ### SearchResultDto
 
-| Campo        | Tipo     | Descrizione                              |
+| Campo       | Tipo     | Descrizione                              |
 |-------------|----------|------------------------------------------|
 | `documentId`| `String` | UUID del documento sorgente              |
 | `filename`  | `String` | Nome del file sorgente                   |
 | `content`   | `String` | Testo del chunk che ha prodotto il match |
-| `score`     | `double` | Punteggio di similarita' (0.0 - 1.0)    |
+| `score`     | `double` | Punteggio di similarita' (0.0 - 1.0)     |
 | `chunkIndex`| `int`    | Indice del chunk nel documento originale |
 
 ### Status Codes
 
-| Codice | Descrizione                                    |
-|--------|------------------------------------------------|
+| Codice | Descrizione                                             |
+|--------|---------------------------------------------------------|
 | 200    | OK - Risultati restituiti (puo' essere una lista vuota) |
-| 400    | Bad Request - Query vuota                      |
+| 400    | Bad Request - Query vuota                               |
 
 ### Esempio
 
@@ -348,15 +348,15 @@ public class DocumentDto {
 }
 ```
 
-| Campo       | Tipo      | Descrizione                              |
-|-------------|-----------|------------------------------------------|
-| `id`        | `String`  | UUID del documento                       |
-| `filename`  | `String`  | Nome originale del file                  |
-| `filePath`  | `String`  | Percorso di storage su filesystem        |
-| `mimeType`  | `String`  | Tipo MIME del file                       |
-| `fileSize`  | `long`    | Dimensione in byte                       |
-| `status`    | `String`  | Stato: `PENDING`, `PROCESSING`, `INDEXED`, `ERROR` |
-| `createdAt` | `Instant` | Data/ora di caricamento                  |
+| Campo        | Tipo      | Descrizione                                          |
+|--------------|-----------|------------------------------------------------------|
+| `id`         | `String`  | UUID del documento                                   |
+| `filename`   | `String`  | Nome originale del file                              |
+| `filePath`   | `String`  | Percorso di storage su filesystem                    |
+| `mimeType`   | `String`  | Tipo MIME del file                                   |
+| `fileSize`   | `long`    | Dimensione in byte                                   |
+| `status`     | `String`  | Stato: `PENDING`, `PROCESSING`, `INDEXED`, `ERROR`   |
+| `createdAt`  | `Instant` | Data/ora di caricamento                              |
 | `indexedAt`  | `Instant` | Data/ora di indicizzazione (null se non indicizzato) |
 
 ### SearchRequestDto

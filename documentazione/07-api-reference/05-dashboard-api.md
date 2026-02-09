@@ -21,12 +21,12 @@
 
 L'API Dashboard fornisce informazioni sullo stato di salute dei servizi che compongono l'infrastruttura di LocalMind. Nella versione 0.1.0, l'unico endpoint implementato e' l'health check.
 
-| Proprieta'       | Valore                                |
-|------------------|---------------------------------------|
-| **Controller**   | `DashboardController`                 |
+| Proprieta'       | Valore                                   |
+|------------------|------------------------------------------|
+| **Controller**   | `DashboardController`                    |
 | **Package**      | `com.localmind.api.dashboard.controller` |
-| **Base path**    | `/api/v1/dashboard`                   |
-| **Content-Type** | `application/json`                    |
+| **Base path**    | `/api/v1/dashboard`                      |
+| **Content-Type** | `application/json`                       |
 
 ---
 
@@ -36,11 +36,11 @@ Restituisce lo stato di salute complessivo del sistema e dei singoli servizi inf
 
 ### Request
 
-| Proprieta'       | Valore                                |
-|------------------|---------------------------------------|
-| **URL**          | `GET /api/v1/dashboard/health`       |
-| **Content-Type** | -                                    |
-| **Autenticazione** | Nessuna                             |
+| Proprieta'         | Valore                                |
+|--------------------|---------------------------------------|
+| **URL**            | `GET /api/v1/dashboard/health`        |
+| **Content-Type**   | -                                     |
+| **Autenticazione** | Nessuna                               |
 
 ### Response (200 OK)
 
@@ -60,13 +60,13 @@ Restituisce lo stato di salute complessivo del sistema e dei singoli servizi inf
 ### Campi della risposta
 
 | Campo      | Tipo                  | Descrizione                                |
-|------------|----------------------|--------------------------------------------|
-| `status`   | `String`             | Stato complessivo del sistema              |
+|------------|-----------------------|--------------------------------------------|
+| `status`   | `String`              | Stato complessivo del sistema              |
 | `services` | `Map<String, String>` | Mappa dei servizi con il relativo stato    |
 
 ### Servizi monitorati
 
-| Servizio      | Chiave          | Descrizione                              | Metodo di verifica                |
+| Servizio      | Chiave         | Descrizione                              | Metodo di verifica                |
 |---------------|----------------|------------------------------------------|-----------------------------------|
 | API Backend   | `api`          | Applicazione Spring Boot                 | Sempre `UP` se l'endpoint risponde|
 | Database      | `database`     | MySQL 8.0                                | Pianificato: JDBC health check    |
@@ -127,9 +127,9 @@ public class HealthStatusDto {
 }
 ```
 
-| Campo      | Tipo                  | Descrizione                              |
-|------------|----------------------|--------------------------------------------|
-| `status`   | `String`             | Stato complessivo: `UP` o `DOWN`          |
+| Campo      | Tipo                  | Descrizione                               |
+|------------|-----------------------|-------------------------------------------|
+| `status`   | `String`              | Stato complessivo: `UP` o `DOWN`          |
 | `services` | `Map<String, String>` | Mappa servizio -> stato                   |
 
 ---

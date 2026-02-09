@@ -9,16 +9,31 @@
 
 ## Indice
 
-1. [Panoramica](#1-panoramica)
-2. [Configurazione del Router](#2-configurazione-del-router)
-3. [Root Routes](#3-root-routes)
-4. [Layout Component come Shell](#4-layout-component-come-shell)
-5. [Lazy Loading per Feature](#5-lazy-loading-per-feature)
-6. [Albero di Routing](#6-albero-di-routing)
-7. [Pattern di Configurazione Feature Routes](#7-pattern-di-configurazione-feature-routes)
-8. [Component Input Binding](#8-component-input-binding)
-9. [Wildcard e Redirect](#9-wildcard-e-redirect)
-10. [Verifica del Bundle Splitting](#10-verifica-del-bundle-splitting)
+- [Routing e Lazy Loading](#routing-e-lazy-loading)
+  - [Indice](#indice)
+  - [1. Panoramica](#1-panoramica)
+  - [2. Configurazione del Router](#2-configurazione-del-router)
+    - [provideRouter()](#providerouter)
+  - [3. Root Routes](#3-root-routes)
+    - [Struttura delle route](#struttura-delle-route)
+  - [4. Layout Component come Shell](#4-layout-component-come-shell)
+    - [Funzionamento](#funzionamento)
+  - [5. Lazy Loading per Feature](#5-lazy-loading-per-feature)
+    - [Meccanismo](#meccanismo)
+    - [Vantaggi](#vantaggi)
+  - [6. Albero di Routing](#6-albero-di-routing)
+    - [Navigazione](#navigazione)
+  - [7. Pattern di Configurazione Feature Routes](#7-pattern-di-configurazione-feature-routes)
+    - [Esempio: chat.routes.ts](#esempio-chatroutests)
+    - [Esempio con sotto-route: documents.routes.ts](#esempio-con-sotto-route-documentsroutests)
+    - [Convenzioni](#convenzioni)
+  - [8. Component Input Binding](#8-component-input-binding)
+    - [Esempio](#esempio)
+    - [Vantaggi](#vantaggi-1)
+  - [9. Wildcard e Redirect](#9-wildcard-e-redirect)
+    - [Redirect root](#redirect-root)
+    - [Wildcard](#wildcard)
+  - [10. Verifica del Bundle Splitting](#10-verifica-del-bundle-splitting)
 
 ---
 
@@ -52,9 +67,9 @@ export const appConfig: ApplicationConfig = {
 
 ### provideRouter()
 
-| Parametro                     | Descrizione                                         |
-|-------------------------------|-----------------------------------------------------|
-| `routes`                      | Array di configurazione route importato da `app.routes.ts` |
+| Parametro                     | Descrizione                                                     |
+|-------------------------------|-----------------------------------------------------------------|
+| `routes`                      | Array di configurazione route importato da `app.routes.ts`      |
 | `withComponentInputBinding()` | Feature flag che abilita il binding automatico dei route params |
 
 ---
@@ -179,12 +194,12 @@ Il lazy loading e' implementato tramite la funzione `loadChildren()` con import 
 
 ### Vantaggi
 
-| Vantaggio                      | Descrizione                                         |
-|--------------------------------|-----------------------------------------------------|
-| **Dimensione bundle iniziale** | Solo il codice del layout e del router viene caricato all'avvio |
-| **Performance percepita**      | L'utente non attende il download di feature non utilizzate |
+| Vantaggio                      | Descrizione                                                                                                         |
+|--------------------------------|---------------------------------------------------------------------------------------------------------------------|
+| **Dimensione bundle iniziale** | Solo il codice del layout e del router viene caricato all'avvio                                                     |
+| **Performance percepita**      | L'utente non attende il download di feature non utilizzate                                                          |
 | **Cache indipendente**         | Ogni bundle e' un file separato con il proprio hash; le modifiche a una feature non invalidano la cache delle altre |
-| **Tree-shaking ottimale**      | I componenti standalone non referenziati vengono eliminati dal build |
+| **Tree-shaking ottimale**      | I componenti standalone non referenziati vengono eliminati dal build                                                |
 
 ---
 
@@ -205,16 +220,16 @@ Il lazy loading e' implementato tramite la funzione `loadChildren()` con import 
 
 ### Navigazione
 
-| URL                          | Componente renderizzato          |
-|------------------------------|----------------------------------|
-| `http://localhost:4200/`     | Redirect a `/chat`               |
-| `http://localhost:4200/chat` | `LayoutComponent` + `ChatPageComponent` |
+| URL                               | Componente renderizzato                         |
+|-----------------------------------|-------------------------------------------------|
+| `http://localhost:4200/`          | Redirect a `/chat`                              |
+| `http://localhost:4200/chat`      | `LayoutComponent` + `ChatPageComponent`         |
 | `http://localhost:4200/documents` | `LayoutComponent` + `DocumentListPageComponent` |
-| `http://localhost:4200/search` | `LayoutComponent` + `SearchPageComponent` |
-| `http://localhost:4200/folders` | `LayoutComponent` + `FolderConfigPageComponent` |
-| `http://localhost:4200/settings` | `LayoutComponent` + `SettingsPageComponent` |
-| `http://localhost:4200/dashboard` | `LayoutComponent` + `DashboardPageComponent` |
-| `http://localhost:4200/xyz`  | Redirect a `/chat`               |
+| `http://localhost:4200/search`    | `LayoutComponent` + `SearchPageComponent`       |
+| `http://localhost:4200/folders`   | `LayoutComponent` + `FolderConfigPageComponent` |
+| `http://localhost:4200/settings`  | `LayoutComponent` + `SettingsPageComponent`     |
+| `http://localhost:4200/dashboard` | `LayoutComponent` + `DashboardPageComponent`    |
+| `http://localhost:4200/xyz`       | Redirect a `/chat`                              |
 
 ---
 
@@ -253,10 +268,10 @@ export const DOCUMENTS_ROUTES: Routes = [
 
 ### Convenzioni
 
-| Convenzione                     | Descrizione                                         |
-|---------------------------------|-----------------------------------------------------|
-| Costante `{FEATURE}_ROUTES`     | Array di route esportato come costante              |
-| `loadComponent()`               | Lazy loading del singolo componente pagina           |
+| Convenzione                     | Descrizione                                                        |
+|---------------------------------|--------------------------------------------------------------------|
+| Costante `{FEATURE}_ROUTES`     | Array di route esportato come costante                             |
+| `loadComponent()`               | Lazy loading del singolo componente pagina                         |
 | `path: ''`                      | Il componente principale e' montato sulla route root della feature |
 
 ---

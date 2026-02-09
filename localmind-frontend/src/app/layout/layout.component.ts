@@ -1,9 +1,11 @@
-import { Component, signal } from '@angular/core';
+import { Component, signal, inject } from '@angular/core';
 import { RouterOutlet, RouterLink, RouterLinkActive } from '@angular/router';
+import { TranslatePipe } from '../core/i18n/translate.pipe';
+import { LanguageSwitcherComponent } from '../shared/components/language-switcher/language-switcher.component';
 
 @Component({
   selector: 'app-layout',
-  imports: [RouterOutlet, RouterLink, RouterLinkActive],
+  imports: [RouterOutlet, RouterLink, RouterLinkActive, TranslatePipe, LanguageSwitcherComponent],
   template: `
     <div class="layout" [class.collapsed]="collapsed()">
       <nav class="sidebar">
@@ -31,7 +33,7 @@ import { RouterOutlet, RouterLink, RouterLinkActive } from '@angular/router';
                 <rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/>
                 <rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/>
               </svg>
-              @if (!collapsed()) { <span>Dashboard</span> }
+              @if (!collapsed()) { <span>{{ 'NAV.DASHBOARD' | translate }}</span> }
             </a>
           </li>
           <li>
@@ -39,7 +41,7 @@ import { RouterOutlet, RouterLink, RouterLinkActive } from '@angular/router';
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/>
               </svg>
-              @if (!collapsed()) { <span>Chat</span> }
+              @if (!collapsed()) { <span>{{ 'NAV.CHAT' | translate }}</span> }
             </a>
           </li>
           <li>
@@ -48,7 +50,7 @@ import { RouterOutlet, RouterLink, RouterLinkActive } from '@angular/router';
                 <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/>
                 <polyline points="14 2 14 8 20 8"/>
               </svg>
-              @if (!collapsed()) { <span>Documenti</span> }
+              @if (!collapsed()) { <span>{{ 'NAV.DOCUMENTS' | translate }}</span> }
             </a>
           </li>
           <li>
@@ -56,7 +58,7 @@ import { RouterOutlet, RouterLink, RouterLinkActive } from '@angular/router';
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/>
               </svg>
-              @if (!collapsed()) { <span>Ricerca</span> }
+              @if (!collapsed()) { <span>{{ 'NAV.SEARCH' | translate }}</span> }
             </a>
           </li>
           <li>
@@ -64,7 +66,7 @@ import { RouterOutlet, RouterLink, RouterLinkActive } from '@angular/router';
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <path d="M22 19a2 2 0 01-2 2H4a2 2 0 01-2-2V5a2 2 0 012-2h5l2 3h9a2 2 0 012 2z"/>
               </svg>
-              @if (!collapsed()) { <span>Cartelle</span> }
+              @if (!collapsed()) { <span>{{ 'NAV.FOLDERS' | translate }}</span> }
             </a>
           </li>
           <li>
@@ -72,7 +74,7 @@ import { RouterOutlet, RouterLink, RouterLinkActive } from '@angular/router';
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <circle cx="12" cy="12" r="3"/><path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83"/>
               </svg>
-              @if (!collapsed()) { <span>MCP</span> }
+              @if (!collapsed()) { <span>{{ 'NAV.MCP' | translate }}</span> }
             </a>
           </li>
           <li>
@@ -81,7 +83,7 @@ import { RouterOutlet, RouterLink, RouterLinkActive } from '@angular/router';
                 <circle cx="12" cy="12" r="3"/>
                 <path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 01-2.83 2.83l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/>
               </svg>
-              @if (!collapsed()) { <span>Impostazioni</span> }
+              @if (!collapsed()) { <span>{{ 'NAV.SETTINGS' | translate }}</span> }
             </a>
           </li>
           <li>
@@ -89,12 +91,13 @@ import { RouterOutlet, RouterLink, RouterLinkActive } from '@angular/router';
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 015.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/>
               </svg>
-              @if (!collapsed()) { <span>Guida</span> }
+              @if (!collapsed()) { <span>{{ 'NAV.GUIDE' | translate }}</span> }
             </a>
           </li>
         </ul>
 
         <div class="sidebar-footer">
+          <app-language-switcher [collapsed]="collapsed()" />
           @if (!collapsed()) {
             <span class="version">v0.1.0</span>
           }
@@ -204,6 +207,10 @@ import { RouterOutlet, RouterLink, RouterLinkActive } from '@angular/router';
     .sidebar-footer {
       padding: 0.75rem 1rem;
       border-top: 1px solid rgba(255,255,255,0.08);
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      align-items: center;
     }
     .version {
       font-size: 0.7rem;

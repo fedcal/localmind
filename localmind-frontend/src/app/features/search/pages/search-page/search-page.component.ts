@@ -2,15 +2,17 @@ import { Component, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { SearchService } from '../../services/search.service';
 import { SearchResult } from '../../models/search.model';
+import { TranslatePipe } from '../../../../core/i18n/translate.pipe';
+import { TranslationService } from '../../../../core/i18n/translation.service';
 
 @Component({
   selector: 'app-search-page',
-  imports: [FormsModule],
+  imports: [FormsModule, TranslatePipe],
   template: `
     <div class="search-page">
       <div class="page-header">
-        <h1>Ricerca Semantica</h1>
-        <p class="subtitle">Cerca nei tuoi documenti usando il linguaggio naturale</p>
+        <h1>{{ 'SEARCH.TITLE' | translate }}</h1>
+        <p class="subtitle">{{ 'SEARCH.SUBTITLE' | translate }}</p>
       </div>
 
       <div class="search-bar">
@@ -22,13 +24,13 @@ import { SearchResult } from '../../models/search.model';
             type="text"
             [(ngModel)]="query"
             (keyup.enter)="search()"
-            placeholder="Es: Come funziona il sistema di autenticazione?"
+            [placeholder]="'SEARCH.PLACEHOLDER' | translate"
             [disabled]="loading()"
           />
         </div>
         <div class="search-options">
           <label>
-            Top K:
+            {{ 'SEARCH.TOP_K' | translate }}
             <select [(ngModel)]="topK">
               <option [value]="3">3</option>
               <option [value]="5">5</option>
@@ -40,29 +42,29 @@ import { SearchResult } from '../../models/search.model';
             @if (loading()) {
               <span class="loading-spinner"></span>
             }
-            Cerca
+            {{ 'SEARCH.BUTTON' | translate }}
           </button>
         </div>
       </div>
 
       @if (hasSearched() && !loading()) {
         <div class="results-header">
-          <span>{{ results().length }} risultati per "<strong>{{ lastQuery() }}</strong>"</span>
+          <span [innerHTML]="'SEARCH.RESULTS_COUNT' | translate:{ count: results().length, query: lastQuery() }"></span>
         </div>
       }
 
       @if (loading()) {
         <div class="loading-state">
           <span class="loading-spinner"></span>
-          <span>Ricerca in corso...</span>
+          <span>{{ 'SEARCH.LOADING' | translate }}</span>
         </div>
       } @else if (hasSearched() && results().length === 0) {
         <div class="empty-state card">
           <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#ccc" stroke-width="1.5">
             <circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/>
           </svg>
-          <h3>Nessun risultato</h3>
-          <p>Prova con una query diversa o carica piu' documenti.</p>
+          <h3>{{ 'SEARCH.EMPTY_TITLE' | translate }}</h3>
+          <p>{{ 'SEARCH.EMPTY_DESC' | translate }}</p>
         </div>
       } @else {
         <div class="results-list">
@@ -91,16 +93,16 @@ import { SearchResult } from '../../models/search.model';
 
       @if (!hasSearched()) {
         <div class="hint-area">
-          <h3>Suggerimenti</h3>
+          <h3>{{ 'SEARCH.HINTS_TITLE' | translate }}</h3>
           <div class="hints">
-            <button class="hint" (click)="query = 'Riassumi il contenuto dei documenti'; search()">
-              Riassumi il contenuto dei documenti
+            <button class="hint" (click)="useHint('SEARCH.HINT_SUMMARIZE')">
+              {{ 'SEARCH.HINT_SUMMARIZE' | translate }}
             </button>
-            <button class="hint" (click)="query = 'Quali sono i concetti principali?'; search()">
-              Quali sono i concetti principali?
+            <button class="hint" (click)="useHint('SEARCH.HINT_CONCEPTS')">
+              {{ 'SEARCH.HINT_CONCEPTS' | translate }}
             </button>
-            <button class="hint" (click)="query = 'Trova informazioni su configurazione'; search()">
-              Trova informazioni su configurazione
+            <button class="hint" (click)="useHint('SEARCH.HINT_CONFIG')">
+              {{ 'SEARCH.HINT_CONFIG' | translate }}
             </button>
           </div>
         </div>
@@ -186,6 +188,7 @@ import { SearchResult } from '../../models/search.model';
 })
 export class SearchPageComponent {
   private searchService = inject(SearchService);
+  private i18n = inject(TranslationService);
 
   query = '';
   topK = 5;
@@ -206,5 +209,10 @@ export class SearchPageComponent {
       next: (results) => { this.results.set(results); this.loading.set(false); },
       error: () => { this.results.set([]); this.loading.set(false); }
     });
+  }
+
+  useHint(key: string) {
+    this.query = this.i18n.instant(key);
+    this.search();
   }
 }

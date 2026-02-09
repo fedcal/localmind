@@ -107,25 +107,25 @@ count();      // OK: lettura
 ### Architettura dello store
 
 ```
-+--------------------------------------------------+
-|  Injectable Store Service (providedIn: 'root')   |
-|                                                  |
-|  Private (writable):                             |
-|    _messages = signal<ChatMessage[]>([])         |
-|    _isLoading = signal(false)                    |
-|    _selectedProvider = signal<string>('OLLAMA')  |
-|                                                  |
-|  Public (readonly):                              |
-|    messages = this._messages.asReadonly()         |
-|    isLoading = this._isLoading.asReadonly()       |
++-----------------------------------------------------------+
+|  Injectable Store Service (providedIn: 'root')            |
+|                                                           |
+|  Private (writable):                                      |
+|    _messages = signal<ChatMessage[]>([])                  |
+|    _isLoading = signal(false)                             |
+|    _selectedProvider = signal<string>('OLLAMA')           |
+|                                                           |
+|  Public (readonly):                                       |
+|    messages = this._messages.asReadonly()                 |
+|    isLoading = this._isLoading.asReadonly()               |
 |    selectedProvider = this._selectedProvider.asReadonly() |
-|                                                  |
-|  Mutation methods:                               |
-|    addMessage(msg: ChatMessage): void            |
-|    setLoading(value: boolean): void              |
-|    clearMessages(): void                         |
-|    setProvider(provider: string): void           |
-+--------------------------------------------------+
+|                                                           |
+|  Mutation methods:                                        |
+|    addMessage(msg: ChatMessage): void                     |
+|    setLoading(value: boolean): void                       |
+|    clearMessages(): void                                  |
+|    setProvider(provider: string): void                    |
++-----------------------------------------------------------+
           ^
           | inject()
           |
@@ -241,19 +241,19 @@ export interface ChatMessage {
 
 ### Signals dello store
 
-| Signal               | Tipo                     | Visibilita' | Descrizione                          |
-|----------------------|--------------------------|-------------|--------------------------------------|
-| `_messages`          | `WritableSignal<ChatMessage[]>` | Private | Lista dei messaggi della conversazione |
-| `_isLoading`         | `WritableSignal<boolean>` | Private    | Flag di caricamento                   |
-| `_selectedProvider`  | `WritableSignal<string>` | Private     | Provider LLM selezionato              |
-| `_selectedModel`     | `WritableSignal<string>` | Private     | Modello LLM selezionato               |
-| `messages`           | `Signal<ChatMessage[]>`  | Public      | Readonly: lista messaggi              |
-| `isLoading`          | `Signal<boolean>`        | Public      | Readonly: stato di caricamento        |
-| `selectedProvider`   | `Signal<string>`         | Public      | Readonly: provider corrente           |
-| `selectedModel`      | `Signal<string>`         | Public      | Readonly: modello corrente            |
-| `messageCount`       | `Signal<number>`         | Public      | Computed: numero messaggi             |
-| `hasMessages`        | `Signal<boolean>`        | Public      | Computed: presenza messaggi           |
-| `lastMessage`        | `Signal<ChatMessage \| null>` | Public | Computed: ultimo messaggio            |
+| Signal               | Tipo                            | Visibilita' | Descrizione                            |
+|----------------------|---------------------------------|-------------|----------------------------------------|
+| `_messages`          | `WritableSignal<ChatMessage[]>` | Private     | Lista dei messaggi della conversazione |
+| `_isLoading`         | `WritableSignal<boolean>`       | Private     | Flag di caricamento                    |
+| `_selectedProvider`  | `WritableSignal<string>`        | Private     | Provider LLM selezionato               |
+| `_selectedModel`     | `WritableSignal<string>`        | Private     | Modello LLM selezionato                |
+| `messages`           | `Signal<ChatMessage[]>`         | Public      | Readonly: lista messaggi               |
+| `isLoading`          | `Signal<boolean>`               | Public      | Readonly: stato di caricamento         |
+| `selectedProvider`   | `Signal<string>`                | Public      | Readonly: provider corrente            |
+| `selectedModel`      | `Signal<string>`                | Public      | Readonly: modello corrente             |
+| `messageCount`       | `Signal<number>`                | Public      | Computed: numero messaggi              |
+| `hasMessages`        | `Signal<boolean>`               | Public      | Computed: presenza messaggi            |
+| `lastMessage`        | `Signal<ChatMessage \| null>`   | Public      | Computed: ultimo messaggio             |
 
 ---
 
@@ -429,17 +429,17 @@ export class ChatStore {
 
 ## 8. Confronto con NgRx
 
-| Aspetto                  | Angular Signals (LocalMind)       | NgRx                                    |
-|--------------------------|-----------------------------------|-----------------------------------------|
-| **Setup**                | Zero configurazione               | Actions, Reducers, Effects, Selectors, Store module |
-| **Boilerplate**          | Minimo (signal + metodo)          | Elevato (4+ file per feature)           |
-| **Dipendenze npm**       | Nessuna                           | `@ngrx/store`, `@ngrx/effects`, `@ngrx/entity`, `@ngrx/store-devtools` |
-| **Type safety**          | Nativa TypeScript                 | Richiede generics e configurazione      |
-| **Curva di apprendimento**| 1-2 ore                          | 1-2 giorni                              |
-| **DevTools**              | Angular DevTools (Signals tab)   | Redux DevTools (time-travel debugging)  |
-| **Immutabilita'**         | Convenzione (`update` con spread) | Forzata dal framework                   |
-| **Scalabilita'**          | Ottimale per app medio-piccole   | Necessario per app enterprise molto complesse |
-| **Testing**               | Standard Angular testing         | Richiede testing specifico NgRx         |
+| Aspetto                   | Angular Signals (LocalMind)       | NgRx                                                                   |
+|---------------------------|-----------------------------------|------------------------------------------------------------------------|
+| **Setup**                 | Zero configurazione               | Actions, Reducers, Effects, Selectors, Store module                    |
+| **Boilerplate**           | Minimo (signal + metodo)          | Elevato (4+ file per feature)                                          |
+| **Dipendenze npm**        | Nessuna                           | `@ngrx/store`, `@ngrx/effects`, `@ngrx/entity`, `@ngrx/store-devtools` |
+| **Type safety**           | Nativa TypeScript                 | Richiede generics e configurazione                                     |
+| **Curva di apprendimento**| 1-2 ore                           | 1-2 giorni                                                             |
+| **DevTools**              | Angular DevTools (Signals tab)    | Redux DevTools (time-travel debugging)                                 |
+| **Immutabilita'**         | Convenzione (`update` con spread) | Forzata dal framework                                                  |
+| **Scalabilita'**          | Ottimale per app medio-piccole    | Necessario per app enterprise molto complesse                          |
+| **Testing**               | Standard Angular testing          | Richiede testing specifico NgRx                                        |
 
 ### Quando preferire NgRx
 
@@ -457,7 +457,7 @@ Per LocalMind v0.1.0, Angular Signals e' la scelta appropriata data la complessi
 
 ### Quando usare ogni primitiva
 
-| Primitiva    | Quando usarla                                              |
+| Primitiva   | Quando usarla                                               |
 |-------------|-------------------------------------------------------------|
 | `signal()`  | Stato mutabile che deve essere tracciato e aggiornato       |
 | `computed()`| Stato derivato che dipende da altri signals                 |

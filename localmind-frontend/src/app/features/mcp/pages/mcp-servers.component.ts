@@ -2,34 +2,36 @@ import { Component, OnInit, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { McpServerService } from '../services/mcp-server.service';
 import { McpServer, CreateMcpServerRequest } from '../models/mcp.model';
+import { TranslatePipe } from '../../../core/i18n/translate.pipe';
+import { TranslationService } from '../../../core/i18n/translation.service';
 
 @Component({
   selector: 'app-mcp-servers',
   standalone: true,
-  imports: [FormsModule],
+  imports: [FormsModule, TranslatePipe],
   template: `
     <div class="servers-page">
       <div class="header">
-        <h2>Server MCP Esterni</h2>
+        <h2>{{ 'MCP_SERVERS.TITLE' | translate }}</h2>
         <button class="btn btn-primary" (click)="showForm = !showForm">
-          {{ showForm ? 'Annulla' : '+ Aggiungi Server' }}
+          {{ showForm ? ('COMMON.CANCEL' | translate) : ('MCP_SERVERS.ADD' | translate) }}
         </button>
       </div>
 
       @if (showForm) {
         <div class="add-form">
-          <h3>Registra Nuovo Server</h3>
+          <h3>{{ 'MCP_SERVERS.FORM_TITLE' | translate }}</h3>
           <div class="form-grid">
             <div class="form-group">
-              <label>Nome *</label>
-              <input type="text" [(ngModel)]="newServer.name" placeholder="Nome del server">
+              <label>{{ 'MCP_SERVERS.FORM_NAME' | translate }}</label>
+              <input type="text" [(ngModel)]="newServer.name" [placeholder]="'MCP_SERVERS.FORM_NAME_PLACEHOLDER' | translate">
             </div>
             <div class="form-group">
-              <label>Descrizione</label>
-              <input type="text" [(ngModel)]="newServer.description" placeholder="Descrizione opzionale">
+              <label>{{ 'MCP_SERVERS.FORM_DESCRIPTION' | translate }}</label>
+              <input type="text" [(ngModel)]="newServer.description" [placeholder]="'MCP_SERVERS.FORM_DESCRIPTION_PLACEHOLDER' | translate">
             </div>
             <div class="form-group">
-              <label>Tipo *</label>
+              <label>{{ 'MCP_SERVERS.FORM_TYPE' | translate }}</label>
               <select [(ngModel)]="newServer.type" (ngModelChange)="onTypeChange()">
                 <option value="STDIO">STDIO</option>
                 <option value="SSE">SSE</option>
@@ -37,34 +39,34 @@ import { McpServer, CreateMcpServerRequest } from '../models/mcp.model';
             </div>
             @if (newServer.type === 'STDIO') {
               <div class="form-group">
-                <label>Comando *</label>
-                <input type="text" [(ngModel)]="newServer.command" placeholder="es. npx">
+                <label>{{ 'MCP_SERVERS.FORM_COMMAND' | translate }}</label>
+                <input type="text" [(ngModel)]="newServer.command" [placeholder]="'MCP_SERVERS.FORM_COMMAND_PLACEHOLDER' | translate">
               </div>
               <div class="form-group full-width">
-                <label>Argomenti (separati da virgola)</label>
-                <input type="text" [(ngModel)]="argsString" placeholder="es. -y,@modelcontextprotocol/server-filesystem,./">
+                <label>{{ 'MCP_SERVERS.FORM_ARGS' | translate }}</label>
+                <input type="text" [(ngModel)]="argsString" [placeholder]="'MCP_SERVERS.FORM_ARGS_PLACEHOLDER' | translate">
               </div>
             }
             @if (newServer.type === 'SSE') {
               <div class="form-group full-width">
-                <label>URL *</label>
-                <input type="text" [(ngModel)]="newServer.url" placeholder="es. http://localhost:8082/sse">
+                <label>{{ 'MCP_SERVERS.FORM_URL' | translate }}</label>
+                <input type="text" [(ngModel)]="newServer.url" [placeholder]="'MCP_SERVERS.FORM_URL_PLACEHOLDER' | translate">
               </div>
             }
             <div class="form-group">
-              <label>Timeout (secondi)</label>
+              <label>{{ 'MCP_SERVERS.FORM_TIMEOUT' | translate }}</label>
               <input type="number" [(ngModel)]="newServer.timeoutSeconds" min="5" max="300">
             </div>
             <div class="form-group checkbox-group">
               <label>
                 <input type="checkbox" [(ngModel)]="newServer.autoReconnect">
-                Auto-riconnessione
+                {{ 'MCP_SERVERS.FORM_AUTO_RECONNECT' | translate }}
               </label>
             </div>
           </div>
           <button class="btn btn-primary" (click)="addServer()" [disabled]="!isFormValid() || adding()">
             @if (adding()) { <span class="spinner-sm"></span> }
-            Registra Server
+            {{ 'MCP_SERVERS.REGISTER' | translate }}
           </button>
         </div>
       }
@@ -78,15 +80,15 @@ import { McpServer, CreateMcpServerRequest } from '../models/mcp.model';
       @if (loading()) {
         <div class="loading">
           <span class="spinner"></span>
-          Caricamento server...
+          {{ 'MCP_SERVERS.LOADING' | translate }}
         </div>
       } @else if (servers().length === 0) {
         <div class="empty-state">
           <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#ccc" stroke-width="1.5">
             <circle cx="12" cy="12" r="3"/><path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4"/>
           </svg>
-          <h3>Nessun server MCP registrato</h3>
-          <p>Aggiungi un server esterno per estendere le capacita' di LocalMind.</p>
+          <h3>{{ 'MCP_SERVERS.EMPTY_TITLE' | translate }}</h3>
+          <p>{{ 'MCP_SERVERS.EMPTY_DESC' | translate }}</p>
         </div>
       } @else {
         <div class="server-list">
@@ -96,7 +98,7 @@ import { McpServer, CreateMcpServerRequest } from '../models/mcp.model';
                 <div class="server-header">
                   <h3>{{ server.name }}</h3>
                   <span class="status-badge" [class]="server.status.toLowerCase()">
-                    {{ getStatusLabel(server.status) }}
+                    {{ 'ENUM.MCP_STATUS.' + server.status | translate }}
                   </span>
                 </div>
                 @if (server.description) {
@@ -114,18 +116,18 @@ import { McpServer, CreateMcpServerRequest } from '../models/mcp.model';
               </div>
               <div class="server-actions">
                 <button class="btn-sm" (click)="testServer(server.id)"
-                        [disabled]="actionId() === server.id" title="Test connessione">
+                        [disabled]="actionId() === server.id" [title]="'MCP_SERVERS.TEST_TITLE' | translate">
                   @if (actionId() === server.id && actionType() === 'test') { <span class="spinner-xs"></span> }
-                  Test
+                  {{ 'COMMON.TEST' | translate }}
                 </button>
                 <button class="btn-sm" (click)="reconnectServer(server.id)"
-                        [disabled]="actionId() === server.id" title="Riconnetti">
+                        [disabled]="actionId() === server.id" [title]="'MCP_SERVERS.RECONNECT' | translate">
                   @if (actionId() === server.id && actionType() === 'reconnect') { <span class="spinner-xs"></span> }
-                  Riconnetti
+                  {{ 'MCP_SERVERS.RECONNECT' | translate }}
                 </button>
                 <button class="btn-sm btn-danger" (click)="removeServer(server.id)"
-                        [disabled]="actionId() === server.id" title="Rimuovi">
-                  Rimuovi
+                        [disabled]="actionId() === server.id" [title]="'COMMON.REMOVE' | translate">
+                  {{ 'COMMON.REMOVE' | translate }}
                 </button>
               </div>
             </div>
@@ -215,6 +217,7 @@ import { McpServer, CreateMcpServerRequest } from '../models/mcp.model';
 })
 export class McpServersComponent implements OnInit {
   private mcpServerService = inject(McpServerService);
+  private i18n = inject(TranslationService);
 
   servers = signal<McpServer[]>([]);
   loading = signal(false);
@@ -263,10 +266,10 @@ export class McpServersComponent implements OnInit {
         this.adding.set(false);
         this.showForm = false;
         this.resetForm();
-        this.showNotify('success', 'Server registrato con successo');
+        this.showNotify('success', this.i18n.instant('MCP_SERVERS.ADD_SUCCESS'));
         this.loadServers();
       },
-      error: () => { this.adding.set(false); this.showNotify('error', 'Errore nella registrazione'); }
+      error: () => { this.adding.set(false); this.showNotify('error', this.i18n.instant('MCP_SERVERS.ADD_ERROR')); }
     });
   }
 
@@ -276,10 +279,10 @@ export class McpServersComponent implements OnInit {
     this.mcpServerService.testConnection(id).subscribe({
       next: (server) => {
         this.actionId.set(null);
-        this.showNotify('success', `Test ${server.name}: ${server.status}`);
+        this.showNotify('success', this.i18n.instant('MCP_SERVERS.TEST_RESULT', { name: server.name, status: server.status }));
         this.loadServers();
       },
-      error: () => { this.actionId.set(null); this.showNotify('error', 'Test connessione fallito'); }
+      error: () => { this.actionId.set(null); this.showNotify('error', this.i18n.instant('MCP_SERVERS.TEST_ERROR')); }
     });
   }
 
@@ -289,10 +292,10 @@ export class McpServersComponent implements OnInit {
     this.mcpServerService.reconnect(id).subscribe({
       next: () => {
         this.actionId.set(null);
-        this.showNotify('success', 'Riconnessione avviata');
+        this.showNotify('success', this.i18n.instant('MCP_SERVERS.RECONNECT_SUCCESS'));
         this.loadServers();
       },
-      error: () => { this.actionId.set(null); this.showNotify('error', 'Errore nella riconnessione'); }
+      error: () => { this.actionId.set(null); this.showNotify('error', this.i18n.instant('MCP_SERVERS.RECONNECT_ERROR')); }
     });
   }
 
@@ -302,10 +305,10 @@ export class McpServersComponent implements OnInit {
     this.mcpServerService.removeServer(id).subscribe({
       next: () => {
         this.actionId.set(null);
-        this.showNotify('success', 'Server rimosso');
+        this.showNotify('success', this.i18n.instant('MCP_SERVERS.REMOVE_SUCCESS'));
         this.loadServers();
       },
-      error: () => { this.actionId.set(null); this.showNotify('error', 'Errore nella rimozione'); }
+      error: () => { this.actionId.set(null); this.showNotify('error', this.i18n.instant('MCP_SERVERS.REMOVE_ERROR')); }
     });
   }
 

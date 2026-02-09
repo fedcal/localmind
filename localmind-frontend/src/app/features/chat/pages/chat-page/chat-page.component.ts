@@ -2,20 +2,22 @@ import { Component, inject, signal, ViewChild, ElementRef, AfterViewChecked } fr
 import { FormsModule } from '@angular/forms';
 import { ChatStore } from '../../state/chat.store';
 import { ChatService } from '../../services/chat.service';
+import { TranslatePipe } from '../../../../core/i18n/translate.pipe';
+import { TranslationService } from '../../../../core/i18n/translation.service';
 
 @Component({
   selector: 'app-chat-page',
-  imports: [FormsModule],
+  imports: [FormsModule, TranslatePipe],
   template: `
     <div class="chat-layout">
       <div class="chat-header">
         <div class="header-left">
-          <h2>Chat AI</h2>
-          <span class="msg-count">{{ store.messageCount() }} messaggi</span>
+          <h2>{{ 'CHAT.TITLE' | translate }}</h2>
+          <span class="msg-count">{{ 'CHAT.MESSAGES_COUNT' | translate:{ count: store.messageCount() } }}</span>
         </div>
         <div class="header-controls">
           <div class="control-group">
-            <label>Provider</label>
+            <label>{{ 'CHAT.PROVIDER' | translate }}</label>
             <select [ngModel]="store.selectedProvider()" (ngModelChange)="store.setProvider($event)">
               <option value="OLLAMA">Ollama</option>
               <option value="OPENAI">OpenAI</option>
@@ -23,14 +25,14 @@ import { ChatService } from '../../services/chat.service';
             </select>
           </div>
           <div class="control-group">
-            <label>Modello</label>
+            <label>{{ 'CHAT.MODEL' | translate }}</label>
             <select [ngModel]="store.selectedModel()" (ngModelChange)="store.setModel($event)">
               @for (model of availableModels(); track model) {
                 <option [value]="model">{{ model }}</option>
               }
             </select>
           </div>
-          <button class="btn-icon" (click)="store.clearMessages()" title="Nuova chat">
+          <button class="btn-icon" (click)="store.clearMessages()" [title]="'CHAT.NEW_CHAT' | translate">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <path d="M12 5v14M5 12h14"/>
             </svg>
@@ -46,17 +48,17 @@ import { ChatService } from '../../services/chat.service';
                 <path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/>
               </svg>
             </div>
-            <h3>Benvenuto in LocalMind</h3>
-            <p>Inizia una conversazione con il tuo assistente AI locale.</p>
+            <h3>{{ 'CHAT.WELCOME_TITLE' | translate }}</h3>
+            <p>{{ 'CHAT.WELCOME_SUBTITLE' | translate }}</p>
             <div class="suggestions">
-              <button class="suggestion" (click)="useSuggestion('Spiega come funziona il RAG')">
-                Spiega come funziona il RAG
+              <button class="suggestion" (click)="useSuggestion(i18n.instant('CHAT.SUGGESTION_RAG'))">
+                {{ 'CHAT.SUGGESTION_RAG' | translate }}
               </button>
-              <button class="suggestion" (click)="useSuggestion('Riassumi i documenti caricati')">
-                Riassumi i documenti caricati
+              <button class="suggestion" (click)="useSuggestion(i18n.instant('CHAT.SUGGESTION_SUMMARIZE'))">
+                {{ 'CHAT.SUGGESTION_SUMMARIZE' | translate }}
               </button>
-              <button class="suggestion" (click)="useSuggestion('Quali modelli LLM sono disponibili?')">
-                Quali modelli sono disponibili?
+              <button class="suggestion" (click)="useSuggestion(i18n.instant('CHAT.SUGGESTION_MODELS'))">
+                {{ 'CHAT.SUGGESTION_MODELS' | translate }}
               </button>
             </div>
           </div>
@@ -71,7 +73,7 @@ import { ChatService } from '../../services/chat.service';
                 }
               </div>
               <div class="msg-content">
-                <div class="msg-role">{{ msg.role === 'USER' ? 'Tu' : 'AI' }}</div>
+                <div class="msg-role">{{ msg.role === 'USER' ? ('CHAT.ROLE_USER' | translate) : ('CHAT.ROLE_AI' | translate) }}</div>
                 <div class="msg-text" [innerHTML]="formatMessage(msg.content)"></div>
               </div>
             </div>
@@ -82,7 +84,7 @@ import { ChatService } from '../../services/chat.service';
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="12" r="3"/></svg>
               </div>
               <div class="msg-content">
-                <div class="msg-role">AI</div>
+                <div class="msg-role">{{ 'CHAT.ROLE_AI' | translate }}</div>
                 <div class="typing-indicator">
                   <span></span><span></span><span></span>
                 </div>
@@ -100,7 +102,7 @@ import { ChatService } from '../../services/chat.service';
         <textarea
           [(ngModel)]="userInput"
           (keydown.enter)="onEnter($event)"
-          placeholder="Scrivi un messaggio..."
+          [placeholder]="'CHAT.PLACEHOLDER' | translate"
           [disabled]="store.isLoading()"
           rows="1"
           #inputField
@@ -303,6 +305,7 @@ import { ChatService } from '../../services/chat.service';
 export class ChatPageComponent implements AfterViewChecked {
   store = inject(ChatStore);
   private chatService = inject(ChatService);
+  i18n = inject(TranslationService);
   userInput = '';
 
   @ViewChild('messagesArea') messagesArea!: ElementRef;
@@ -351,7 +354,7 @@ export class ChatPageComponent implements AfterViewChecked {
         this.shouldScroll = true;
       },
       error: (err) => {
-        this.store.setError('Errore nella comunicazione con il server. Verifica che il backend sia attivo.');
+        this.store.setError(this.i18n.instant('CHAT.ERROR_SERVER'));
         this.store.setLoading(false);
         this.shouldScroll = true;
       }

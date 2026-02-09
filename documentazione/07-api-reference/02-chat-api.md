@@ -96,7 +96,7 @@ Invia un messaggio al modello LLM configurato e restituisce la risposta generata
 
 ### TokenUsageDto
 
-| Campo              | Tipo  | Descrizione                              |
+| Campo             | Tipo  | Descrizione                              |
 |-------------------|-------|------------------------------------------|
 | `promptTokens`    | `int` | Numero di token nel prompt               |
 | `completionTokens`| `int` | Numero di token nella risposta           |
@@ -331,8 +331,8 @@ curl -X POST http://localhost:8080/api/v1/chat \
 
 ## 6. Codici di Errore
 
-| Codice | Eccezione                    | Causa                                              | Risoluzione                              |
-|--------|-----------------------------|----------------------------------------------------|------------------------------------------|
-| 400    | `MethodArgumentNotValidException` | Campo `message` vuoto o nullo                | Fornire un messaggio non vuoto           |
-| 502    | `LlmProviderException`      | Provider non disponibile, timeout, API key mancante | Verificare la configurazione del provider in `application-dev.yml` |
-| 500    | `Exception` (generica)       | Errore interno imprevisto                          | Consultare i log applicativi             |
+| Codice | Eccezione                         | Causa                                              | Risoluzione                                                        |
+|--------|-----------------------------------|----------------------------------------------------|--------------------------------------------------------------------|
+| 400    | `MethodArgumentNotValidException` | Campo `message` vuoto o nullo                      | Fornire un messaggio non vuoto                                     |
+| 502    | `LlmProviderException`            | Provider non disponibile, timeout, API key mancante| Verificare la configurazione del provider in `application-dev.yml` |
+| 500    | `Exception` (generica)            | Errore interno imprevisto                          | Consultare i log applicativi                                       |

@@ -3,35 +3,37 @@ import { SlicePipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { McpToolService } from '../services/mcp-tool.service';
 import { McpTool, McpToolExecutionResult } from '../models/mcp.model';
+import { TranslatePipe } from '../../../core/i18n/translate.pipe';
+import { TranslationService } from '../../../core/i18n/translation.service';
 
 @Component({
   selector: 'app-mcp-tools',
   standalone: true,
-  imports: [FormsModule, SlicePipe],
+  imports: [FormsModule, SlicePipe, TranslatePipe],
   template: `
     <div class="tools-page">
       <div class="header">
-        <h2>Tool MCP Disponibili</h2>
+        <h2>{{ 'MCP_TOOLS.TITLE' | translate }}</h2>
         <button class="btn btn-secondary" (click)="loadAll()">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <path d="M23 4v6h-6M1 20v-6h6"/>
             <path d="M3.51 9a9 9 0 0114.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0020.49 15"/>
           </svg>
-          Aggiorna
+          {{ 'COMMON.REFRESH' | translate }}
         </button>
       </div>
 
       <div class="section">
-        <h3>Tool Locali <span class="count">({{ localTools().length }})</span></h3>
+        <h3>{{ 'MCP_TOOLS.LOCAL' | translate }} <span class="count">({{ localTools().length }})</span></h3>
         @if (localTools().length === 0) {
-          <p class="empty">Nessun tool locale configurato.</p>
+          <p class="empty">{{ 'MCP_TOOLS.LOCAL_EMPTY' | translate }}</p>
         } @else {
           <div class="tool-grid">
             @for (tool of localTools(); track tool.name) {
               <div class="tool-card local" (click)="selectTool(tool)" [class.selected]="selectedTool()?.name === tool.name && selectedTool()?.local">
                 <div class="tool-name">{{ tool.name }}</div>
                 <div class="tool-desc">{{ tool.description }}</div>
-                <span class="tool-badge local">Locale</span>
+                <span class="tool-badge local">{{ 'MCP_TOOLS.BADGE_LOCAL' | translate }}</span>
               </div>
             }
           </div>
@@ -39,14 +41,14 @@ import { McpTool, McpToolExecutionResult } from '../models/mcp.model';
       </div>
 
       <div class="section">
-        <h3>Tool Esterni <span class="count">({{ externalTools().length }})</span></h3>
+        <h3>{{ 'MCP_TOOLS.EXTERNAL' | translate }} <span class="count">({{ externalTools().length }})</span></h3>
         @if (loading()) {
           <div class="loading-state">
             <span class="spinner"></span>
-            Caricamento tool esterni...
+            {{ 'MCP_TOOLS.EXTERNAL_LOADING' | translate }}
           </div>
         } @else if (externalTools().length === 0) {
-          <p class="empty">Nessun tool esterno disponibile. Connetti un server MCP per vedere i tool.</p>
+          <p class="empty">{{ 'MCP_TOOLS.EXTERNAL_EMPTY' | translate }}</p>
         } @else {
           <div class="tool-grid">
             @for (tool of externalTools(); track tool.name + tool.serverId) {
@@ -54,7 +56,7 @@ import { McpTool, McpToolExecutionResult } from '../models/mcp.model';
                 <div class="tool-name">{{ tool.name }}</div>
                 <div class="tool-desc">{{ tool.description }}</div>
                 <div class="tool-meta">
-                  <span class="tool-badge external">Esterno</span>
+                  <span class="tool-badge external">{{ 'MCP_TOOLS.BADGE_EXTERNAL' | translate }}</span>
                   @if (tool.serverId) {
                     <span class="server-id">{{ tool.serverId | slice:0:8 }}...</span>
                   }
@@ -67,34 +69,34 @@ import { McpTool, McpToolExecutionResult } from '../models/mcp.model';
 
       @if (selectedTool()) {
         <div class="execution-panel">
-          <h3>Esegui Tool: <span class="mono">{{ selectedTool()!.name }}</span></h3>
+          <h3>{{ 'MCP_TOOLS.EXEC_TITLE' | translate }} <span class="mono">{{ selectedTool()!.name }}</span></h3>
           <p class="tool-exec-desc">{{ selectedTool()!.description }}</p>
 
           @if (selectedTool()!.inputSchema) {
             <div class="schema-info">
-              <span class="schema-label">Input Schema:</span>
+              <span class="schema-label">{{ 'MCP_TOOLS.INPUT_SCHEMA' | translate }}</span>
               <pre class="schema-code">{{ selectedTool()!.inputSchema }}</pre>
             </div>
           }
 
           <div class="exec-form">
             <div class="form-group">
-              <label>Argomenti (JSON)</label>
+              <label>{{ 'MCP_TOOLS.ARGS_LABEL' | translate }}</label>
               <textarea [(ngModel)]="execArgs" rows="4" placeholder='{"key": "value"}'></textarea>
             </div>
             <button class="btn btn-primary" (click)="executeTool()" [disabled]="executing()">
               @if (executing()) { <span class="spinner-sm"></span> }
-              Esegui
+              {{ 'MCP_TOOLS.EXECUTE' | translate }}
             </button>
             <button class="btn btn-secondary" (click)="selectedTool.set(null); execResult.set(null)">
-              Chiudi
+              {{ 'COMMON.CLOSE' | translate }}
             </button>
           </div>
 
           @if (execResult()) {
             <div class="exec-result" [class.success]="execResult()!.success" [class.error]="!execResult()!.success">
               <div class="result-header">
-                <span class="result-status">{{ execResult()!.success ? 'Successo' : 'Errore' }}</span>
+                <span class="result-status">{{ execResult()!.success ? ('COMMON.SUCCESS' | translate) : ('COMMON.ERROR' | translate) }}</span>
                 <span class="result-time">{{ execResult()!.executionTimeMs }}ms</span>
               </div>
               @if (execResult()!.errorMessage) {
@@ -189,6 +191,7 @@ import { McpTool, McpToolExecutionResult } from '../models/mcp.model';
 })
 export class McpToolsComponent implements OnInit {
   private mcpToolService = inject(McpToolService);
+  private i18n = inject(TranslationService);
 
   localTools = signal<McpTool[]>([]);
   externalTools = signal<McpTool[]>([]);
@@ -230,7 +233,7 @@ export class McpToolsComponent implements OnInit {
         toolName: tool.name,
         result: null,
         success: false,
-        errorMessage: 'JSON argomenti non valido',
+        errorMessage: this.i18n.instant('MCP_TOOLS.INVALID_JSON'),
         executionTimeMs: 0
       });
       return;
@@ -248,7 +251,7 @@ export class McpToolsComponent implements OnInit {
           toolName: tool.name,
           result: null,
           success: false,
-          errorMessage: err.error?.message || 'Errore nell\'esecuzione del tool',
+          errorMessage: err.error?.message || this.i18n.instant('MCP_TOOLS.EXEC_ERROR'),
           executionTimeMs: 0
         });
         this.executing.set(false);

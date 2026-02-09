@@ -95,13 +95,13 @@ localmind-frontend/
 
 ### File principali
 
-| File             | Descrizione                                                |
-|------------------|------------------------------------------------------------|
+| File             | Descrizione                                                                       |
+|------------------|-----------------------------------------------------------------------------------|
 | `angular.json`   | Configurazione Angular CLI: build target, test, output path, asset, stili globali |
-| `package.json`   | Dipendenze npm, script (`ng serve`, `ng build`, `ng test`), versioni |
-| `tsconfig.json`  | Configurazione TypeScript: `strict: true`, path alias, target ES2022 |
-| `src/main.ts`    | Entry point: `bootstrapApplication(AppComponent, appConfig)` |
-| `src/styles.scss`| Stili globali: variabili CSS, reset, tipografia, tema      |
+| `package.json`   | Dipendenze npm, script (`ng serve`, `ng build`, `ng test`), versioni              |
+| `tsconfig.json`  | Configurazione TypeScript: `strict: true`, path alias, target ES2022              |
+| `src/main.ts`    | Entry point: `bootstrapApplication(AppComponent, appConfig)`                      |
+| `src/styles.scss`| Stili globali: variabili CSS, reset, tipografia, tema                             |
 
 ### main.ts
 
@@ -146,13 +146,13 @@ export const appConfig: ApplicationConfig = {
 };
 ```
 
-| Provider                        | Descrizione                                         |
-|---------------------------------|-----------------------------------------------------|
-| `provideRouter()`               | Configura il router con le route definite in `app.routes.ts` |
+| Provider                        | Descrizione                                                     |
+|---------------------------------|-----------------------------------------------------------------|
+| `provideRouter()`               | Configura il router con le route definite in `app.routes.ts`    |
 | `withComponentInputBinding()`   | Abilita il binding automatico dei route params sugli `@Input()` |
-| `provideHttpClient()`           | Configura `HttpClient` con interceptor               |
-| `withInterceptors()`            | Registra interceptor funzionali (error interceptor)  |
-| `provideAnimations()`           | Abilita il sistema di animazioni Angular             |
+| `provideHttpClient()`           | Configura `HttpClient` con interceptor                          |
+| `withInterceptors()`            | Registra interceptor funzionali (error interceptor)             |
+| `provideAnimations()`           | Abilita il sistema di animazioni Angular                        |
 
 ### app.routes.ts (Root Routes)
 
@@ -233,13 +233,13 @@ features/{feature-name}/
 
 ### Feature implementate
 
-| Feature      | Path         | Sotto-directory                       | Descrizione                          |
+| Feature     | Path        | Sotto-directory                       | Descrizione                          |
 |-------------|-------------|---------------------------------------|--------------------------------------|
-| Chat        | `/chat`     | routes, models, services, state, pages| Chat con LLM, feature piu' completa |
+| Chat        | `/chat`     | routes, models, services, state, pages| Chat con LLM, feature piu' completa  |
 | Documents   | `/documents`| routes, models, services, pages       | Gestione documenti                   |
 | Search      | `/search`   | routes, pages                         | Ricerca semantica                    |
 | Folders     | `/folders`  | routes, pages                         | Configurazione cartelle              |
-| Settings    | `/settings` | routes, pages                         | Impostazioni LLM e API key          |
+| Settings    | `/settings` | routes, pages                         | Impostazioni LLM e API key           |
 | Dashboard   | `/dashboard`| routes, pages                         | Health check e statistiche           |
 
 ---
@@ -278,17 +278,17 @@ export const environment = {
 
 Configurazione principale del progetto Angular CLI:
 
-| Sezione            | Descrizione                                    |
-|--------------------|-------------------------------------------------|
+| Sezione            | Descrizione                                             |
+|--------------------|---------------------------------------------------------|
 | `architect.build`  | Configurazione build: output path, budget, optimization |
-| `architect.serve`  | Configurazione dev server: porta 4200, proxy   |
-| `architect.test`   | Configurazione test runner (Vitest)             |
-| `styles`           | Array di stili globali (`src/styles.scss`)      |
-| `fileReplacements` | Sostituzione environment file per build prod    |
+| `architect.serve`  | Configurazione dev server: porta 4200, proxy            |
+| `architect.test`   | Configurazione test runner (Vitest)                     |
+| `styles`           | Array di stili globali (`src/styles.scss`)              |
+| `fileReplacements` | Sostituzione environment file per build prod            |
 
 ### tsconfig.json
 
-| Proprieta'          | Valore     | Descrizione                              |
+| Proprieta'          | Valore    | Descrizione                              |
 |---------------------|-----------|------------------------------------------|
 | `strict`            | `true`    | Modalita' strict TypeScript              |
 | `target`            | `ES2022`  | Target di compilazione                   |
@@ -301,11 +301,11 @@ Configurazione principale del progetto Angular CLI:
 
 ### Naming
 
-| Tipo              | Convenzione                     | Esempio                            |
+| Tipo              | Convenzione                    | Esempio                            |
 |-------------------|--------------------------------|------------------------------------|
-| Componenti        | `kebab-case.component.ts`      | `chat-page.component.ts`          |
+| Componenti        | `kebab-case.component.ts`      | `chat-page.component.ts`           |
 | Servizi           | `kebab-case.service.ts`        | `chat.service.ts`                  |
-| Modelli           | `kebab-case.model.ts`          | `chat-message.model.ts`           |
+| Modelli           | `kebab-case.model.ts`          | `chat-message.model.ts`            |
 | Pipe              | `kebab-case.pipe.ts`           | `file-size.pipe.ts`                |
 | Interceptor       | `kebab-case.interceptor.ts`    | `error.interceptor.ts`             |
 | Route             | `kebab-case.routes.ts`         | `chat.routes.ts`                   |

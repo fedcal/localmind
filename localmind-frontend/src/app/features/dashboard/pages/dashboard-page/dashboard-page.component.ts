@@ -1,20 +1,21 @@
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { ApiService } from '../../../../core/services/api.service';
+import { TranslatePipe } from '../../../../core/i18n/translate.pipe';
 
 @Component({
   selector: 'app-dashboard-page',
-  imports: [RouterLink],
+  imports: [RouterLink, TranslatePipe],
   template: `
     <div class="dashboard">
       <div class="page-header">
-        <h1>Dashboard</h1>
+        <h1>{{ 'DASHBOARD.TITLE' | translate }}</h1>
         <button class="btn btn-secondary btn-sm" (click)="refresh()">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <path d="M23 4v6h-6M1 20v-6h6"/>
             <path d="M3.51 9a9 9 0 0114.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0020.49 15"/>
           </svg>
-          Aggiorna
+          {{ 'COMMON.REFRESH' | translate }}
         </button>
       </div>
 
@@ -26,7 +27,7 @@ import { ApiService } from '../../../../core/services/api.service';
             </svg>
           </div>
           <div class="stat-content">
-            <span class="stat-label">Stato API</span>
+            <span class="stat-label">{{ 'DASHBOARD.STAT_API' | translate }}</span>
             <span class="stat-value" [class]="apiStatus() === 'UP' ? 'success' : 'error'">
               {{ apiStatus() }}
             </span>
@@ -41,7 +42,7 @@ import { ApiService } from '../../../../core/services/api.service';
             </svg>
           </div>
           <div class="stat-content">
-            <span class="stat-label">Documenti</span>
+            <span class="stat-label">{{ 'DASHBOARD.STAT_DOCUMENTS' | translate }}</span>
             <span class="stat-value">{{ documentCount() }}</span>
           </div>
         </div>
@@ -54,7 +55,7 @@ import { ApiService } from '../../../../core/services/api.service';
             </svg>
           </div>
           <div class="stat-content">
-            <span class="stat-label">Server MCP</span>
+            <span class="stat-label">{{ 'DASHBOARD.STAT_MCP' | translate }}</span>
             <span class="stat-value">{{ mcpServerCount() }}</span>
           </div>
         </div>
@@ -66,43 +67,43 @@ import { ApiService } from '../../../../core/services/api.service';
             </svg>
           </div>
           <div class="stat-content">
-            <span class="stat-label">Provider LLM</span>
+            <span class="stat-label">{{ 'DASHBOARD.STAT_LLM' | translate }}</span>
             <span class="stat-value">{{ llmProvider() }}</span>
           </div>
         </div>
       </div>
 
       <div class="quick-actions">
-        <h2>Azioni Rapide</h2>
+        <h2>{{ 'DASHBOARD.QUICK_ACTIONS' | translate }}</h2>
         <div class="actions-grid">
           <a routerLink="/chat" class="action-card">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/>
             </svg>
-            <span class="action-title">Nuova Chat</span>
-            <span class="action-desc">Inizia una conversazione con l'AI</span>
+            <span class="action-title">{{ 'DASHBOARD.ACTION_CHAT' | translate }}</span>
+            <span class="action-desc">{{ 'DASHBOARD.ACTION_CHAT_DESC' | translate }}</span>
           </a>
           <a routerLink="/documents" class="action-card">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M17 8l-5-5-5 5M12 3v12"/>
             </svg>
-            <span class="action-title">Carica Documento</span>
-            <span class="action-desc">Aggiungi documenti alla knowledge base</span>
+            <span class="action-title">{{ 'DASHBOARD.ACTION_UPLOAD' | translate }}</span>
+            <span class="action-desc">{{ 'DASHBOARD.ACTION_UPLOAD_DESC' | translate }}</span>
           </a>
           <a routerLink="/search" class="action-card">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/>
             </svg>
-            <span class="action-title">Ricerca RAG</span>
-            <span class="action-desc">Cerca nei tuoi documenti</span>
+            <span class="action-title">{{ 'DASHBOARD.ACTION_SEARCH' | translate }}</span>
+            <span class="action-desc">{{ 'DASHBOARD.ACTION_SEARCH_DESC' | translate }}</span>
           </a>
           <a routerLink="/mcp" class="action-card">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <circle cx="12" cy="12" r="3"/>
               <path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4"/>
             </svg>
-            <span class="action-title">Gestisci MCP</span>
-            <span class="action-desc">Connetti server e tool esterni</span>
+            <span class="action-title">{{ 'DASHBOARD.ACTION_MCP' | translate }}</span>
+            <span class="action-desc">{{ 'DASHBOARD.ACTION_MCP_DESC' | translate }}</span>
           </a>
         </div>
       </div>

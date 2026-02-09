@@ -37,11 +37,11 @@ Restituisce la lista di tutti i modelli LLM disponibili nel sistema, indipendent
 
 ### Request
 
-| Proprieta'       | Valore                                |
-|------------------|---------------------------------------|
-| **URL**          | `GET /api/v1/models`                 |
-| **Content-Type** | -                                    |
-| **Autenticazione** | Nessuna                             |
+| Proprieta'         | Valore                                |
+|--------------------|---------------------------------------|
+| **URL**            | `GET /api/v1/models`                  |
+| **Content-Type**   | -                                     |
+| **Autenticazione** | Nessuna                               |
 
 ### Response (200 OK)
 
@@ -98,16 +98,16 @@ Restituisce i dettagli di un singolo modello identificato dal suo ID.
 
 ### Request
 
-| Proprieta'       | Valore                                |
-|------------------|---------------------------------------|
-| **URL**          | `GET /api/v1/models/{id}`            |
-| **Content-Type** | -                                    |
-| **Autenticazione** | Nessuna                             |
+| Proprieta'         | Valore                                |
+|--------------------|---------------------------------------|
+| **URL**            | `GET /api/v1/models/{id}`             |
+| **Content-Type**   | -                                     |
+| **Autenticazione** | Nessuna                               |
 
 ### Path Parameters
 
-| Parametro | Tipo     | Descrizione                                |
-|-----------|----------|--------------------------------------------|
+| Parametro | Tipo     | Descrizione                                        |
+|-----------|----------|----------------------------------------------------|
 | `id`      | `String` | Identificatore del modello (es. `ollama:llama3.2`) |
 
 ### Response (200 OK)
@@ -168,12 +168,12 @@ public class ModelDto {
 }
 ```
 
-| Campo           | Tipo      | Descrizione                              |
-|----------------|-----------|------------------------------------------|
-| `id`           | `String`  | Identificatore univoco (formato `provider:nome`) |
-| `name`         | `String`  | Nome del modello                         |
-| `provider`     | `String`  | Provider: `OLLAMA`, `OPENAI`, `ANTHROPIC`, `GOOGLE` |
-| `contextWindow`| `int`     | Dimensione della finestra di contesto in token |
+| Campo          | Tipo      | Descrizione                                          |
+|----------------|-----------|------------------------------------------------------|
+| `id`           | `String`  | Identificatore univoco (formato `provider:nome`)     |
+| `name`         | `String`  | Nome del modello                                     |
+| `provider`     | `String`  | Provider: `OLLAMA`, `OPENAI`, `ANTHROPIC`, `GOOGLE`  |
+| `contextWindow`| `int`     | Dimensione della finestra di contesto in token       |
 | `available`    | `boolean` | `true` se il modello e' raggiungibile e utilizzabile |
 
 ### Mapping dal dominio
@@ -194,13 +194,13 @@ private ModelDto toDto(LlmModel model) {
 
 ### Modello di dominio - LlmModel
 
-| Campo           | Tipo          | Descrizione                              |
-|----------------|---------------|------------------------------------------|
-| `id`           | `String`      | Identificatore univoco                   |
-| `name`         | `String`      | Nome del modello                         |
+| Campo          | Tipo          | Descrizione                                     |
+|----------------|---------------|-------------------------------------------------|
+| `id`           | `String`      | Identificatore univoco                          |
+| `name`         | `String`      | Nome del modello                                |
 | `provider`     | `LlmProvider` | Enum: `OLLAMA`, `OPENAI`, `ANTHROPIC`, `GOOGLE` |
-| `contextWindow`| `int`         | Dimensione della finestra di contesto    |
-| `available`    | `boolean`     | Stato di disponibilita'                  |
+| `contextWindow`| `int`         | Dimensione della finestra di contesto           |
+| `available`    | `boolean`     | Stato di disponibilita'                         |
 
 ---
 
