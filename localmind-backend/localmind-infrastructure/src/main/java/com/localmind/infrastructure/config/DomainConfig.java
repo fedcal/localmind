@@ -38,6 +38,7 @@ public class DomainConfig {
     public LlmGatewayService llmGatewayService(
             List<LlmClient> clients,
             LlmUsageRepository usageRepository,
+            ProviderConfigRepository providerConfigRepository,
             @Value("${localmind.llm.fallback.order:OLLAMA,OPENAI,ANTHROPIC,GOOGLE}") String fallbackOrderStr,
             @Value("${localmind.llm.default-provider:OLLAMA}") String defaultProviderStr) {
 
@@ -48,7 +49,7 @@ public class DomainConfig {
 
         LlmProvider defaultProvider = LlmProvider.valueOf(defaultProviderStr.trim());
 
-        return new LlmGatewayService(clients, usageRepository, fallbackOrder, defaultProvider);
+        return new LlmGatewayService(clients, usageRepository, providerConfigRepository, fallbackOrder, defaultProvider);
     }
 
     @Bean

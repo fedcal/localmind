@@ -11,17 +11,27 @@
 
 ## Indice
 
-1. [Principio Fondamentale](#1-principio-fondamentale)
-2. [I 5 Pilastri della Sicurezza LocalMind](#2-i-5-pilastri-della-sicurezza-localmind)
-   - 2.1 [Local-First](#21-local-first)
-   - 2.2 [Zero Data Leakage](#22-zero-data-leakage)
-   - 2.3 [Cloud Opt-In](#23-cloud-opt-in)
-   - 2.4 [No Telemetry](#24-no-telemetry)
-   - 2.5 [Self-Hosted](#25-self-hosted)
-3. [Confronto Privacy vs Competitor](#3-confronto-privacy-vs-competitor)
-4. [Modalita' Offline Totale](#4-modalita-offline-totale)
-5. [GDPR Compliance](#5-gdpr-compliance)
-6. [Assenza di Vendor Lock-In](#6-assenza-di-vendor-lock-in)
+- [Principi di Sicurezza e Privacy](#principi-di-sicurezza-e-privacy)
+  - [Indice](#indice)
+  - [1. Principio Fondamentale](#1-principio-fondamentale)
+  - [2. I 5 Pilastri della Sicurezza LocalMind](#2-i-5-pilastri-della-sicurezza-localmind)
+    - [2.1 Local-First](#21-local-first)
+    - [2.2 Zero Data Leakage](#22-zero-data-leakage)
+    - [2.3 Cloud Opt-In](#23-cloud-opt-in)
+    - [2.4 No Telemetry](#24-no-telemetry)
+    - [2.5 Self-Hosted](#25-self-hosted)
+  - [3. Confronto Privacy vs Competitor](#3-confronto-privacy-vs-competitor)
+    - [Analisi dettagliata](#analisi-dettagliata)
+  - [4. Modalita' Offline Totale](#4-modalita-offline-totale)
+    - [Prerequisiti per il funzionamento offline](#prerequisiti-per-il-funzionamento-offline)
+    - [Funzionalita' disponibili offline](#funzionalita-disponibili-offline)
+    - [Scenari d'uso offline](#scenari-duso-offline)
+  - [5. GDPR Compliance](#5-gdpr-compliance)
+    - [Principi GDPR soddisfatti](#principi-gdpr-soddisfatti)
+    - [Assenza di trasferimento transfrontaliero](#assenza-di-trasferimento-transfrontaliero)
+  - [6. Assenza di Vendor Lock-In](#6-assenza-di-vendor-lock-in)
+    - [Componenti sostituibili](#componenti-sostituibili)
+    - [Migrazione tra componenti](#migrazione-tra-componenti)
 
 ---
 
@@ -47,15 +57,15 @@ LocalMind garantisce che:
 
 Tutti i dati gestiti da LocalMind risiedono fisicamente sulla macchina dell'utente:
 
-| Tipo di dato | Storage locale | Tecnologia |
-|---|---|---|
-| Documenti originali | File system locale | Path configurabili |
-| Metadati documenti | MySQL | Istanza locale |
-| Embedding vettoriali | Qdrant | Istanza locale (nativa o Docker) |
-| Conversazioni e chat | MySQL | Istanza locale |
-| Modelli LLM | Ollama model store | Istanza locale (nativa o Docker) |
-| Workflow automazioni | n8n | Istanza locale (nativa o Docker) |
-| Configurazioni utente | MySQL + file | Istanza locale + .env |
+| Tipo di dato          | Storage locale     | Tecnologia                       |
+|-----------------------|--------------------|----------------------------------|
+| Documenti originali   | File system locale | Path configurabili               |
+| Metadati documenti    | MySQL              | Istanza locale                   |
+| Embedding vettoriali  | Qdrant             | Istanza locale (nativa o Docker) |
+| Conversazioni e chat  | MySQL              | Istanza locale                   |
+| Modelli LLM           | Ollama model store | Istanza locale (nativa o Docker) |
+| Workflow automazioni  | n8n                | Istanza locale (nativa o Docker) |
+| Configurazioni utente | MySQL + file       | Istanza locale + .env            |
 
 Non esiste alcun componente dell'architettura che richieda obbligatoriamente una connessione a server remoti per il funzionamento base del sistema.
 
@@ -118,14 +128,14 @@ Queste metriche sono accessibili esclusivamente dall'utente tramite la dashboard
 
 Ogni componente dell'architettura LocalMind gira sulla macchina dell'utente. Il backend e il frontend vengono eseguiti nativamente tramite script nella cartella `scripts/`, mentre i servizi infrastrutturali possono essere eseguiti nativamente o tramite Docker:
 
-| Componente | Modalita' di esecuzione | Funzione |
-|---|---|---|
-| MySQL 8.0 | Istanza locale nativa | Database relazionale |
-| Qdrant | Nativo o Docker (opzionale) | Vector store per embedding |
-| Ollama | Nativo o Docker (opzionale) | LLM inference locale |
-| n8n | Nativo o Docker (opzionale) | Workflow automation |
-| Spring Boot | JVM locale (script) | Backend API |
-| Angular | Dev server locale (script) | Frontend UI |
+| Componente  | Modalita' di esecuzione     | Funzione                   |
+|-------------|-----------------------------|----------------------------|
+| MySQL 8.0   | Istanza locale nativa       | Database relazionale       |
+| Qdrant      | Nativo o Docker (opzionale) | Vector store per embedding |
+| Ollama      | Nativo o Docker (opzionale) | LLM inference locale       |
+| n8n         | Nativo o Docker (opzionale) | Workflow automation        |
+| Spring Boot | JVM locale (script)         | Backend API                |
+| Angular     | Dev server locale (script)  | Frontend UI                |
 
 L'utente ha pieno controllo su:
 
@@ -138,18 +148,18 @@ L'utente ha pieno controllo su:
 
 ## 3. Confronto Privacy vs Competitor
 
-| Caratteristica | ChatGPT | Notion AI | PrivateGPT | **LocalMind** |
-|---|---|---|---|---|
-| **Dove risiedono i dati** | Cloud OpenAI | Cloud Notion | Locale | **Locale** |
-| **Training sui dati utente** | Possibile (opt-out disponibile) | Non dichiarato | No | **No** |
-| **Persistence strutturata** | Cloud-only | Cloud-only | Limitata | **MySQL + Qdrant locale** |
-| **Funziona offline** | No | No | Si' | **Si'** |
-| **Vector store dedicato** | Non esposto | Non esposto | In-memory / Chroma | **Qdrant locale** |
-| **Automazioni** | No | Limitato | No | **n8n locale** |
-| **Multi-provider LLM** | Solo OpenAI | Solo OpenAI | Limitato | **Ollama + OpenAI + Anthropic + Google** |
-| **GDPR by design** | No (trasferimento US) | No (trasferimento US) | Si' | **Si'** |
-| **Open source** | No | No | Si' | **Si'** |
-| **Self-hosted** | N/A | N/A | Parziale | **Completo (esecuzione nativa + Docker opzionale)** |
+| Caratteristica               | ChatGPT                         | Notion AI              | PrivateGPT         | **LocalMind**                                       |
+|------------------------------|---------------------------------|------------------------|--------------------|-----------------------------------------------------|
+| **Dove risiedono i dati**    | Cloud OpenAI                    | Cloud Notion           | Locale             | **Locale**                                          |
+| **Training sui dati utente** | Possibile (opt-out disponibile) | Non dichiarato         | No                 | **No**                                              |
+| **Persistence strutturata**  | Cloud-only                      | Cloud-only             | Limitata           | **MySQL + Qdrant locale**                           |
+| **Funziona offline**         | No                              | No                     | Si'                | **Si'**                                             |
+| **Vector store dedicato**    | Non esposto                     | Non esposto            | In-memory / Chroma | **Qdrant locale**                                   |
+| **Automazioni**              | No                              | Limitato               | No                 | **n8n locale**                                      |
+| **Multi-provider LLM**       | Solo OpenAI                     | Solo OpenAI            | Limitato           | **Ollama + OpenAI + Anthropic + Google**            |
+| **GDPR by design**           | No (trasferimento US)           | No (trasferimento US)  | Si'                | **Si'**                                             |
+| **Open source**              | No                              | No                     | Si'                | **Si'**                                             |
+| **Self-hosted**              | N/A                             | N/A                    | Parziale           | **Completo (esecuzione nativa + Docker opzionale)** |
 
 ### Analisi dettagliata
 

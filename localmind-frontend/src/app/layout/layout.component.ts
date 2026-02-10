@@ -2,6 +2,7 @@ import { Component, signal, inject } from '@angular/core';
 import { RouterOutlet, RouterLink, RouterLinkActive } from '@angular/router';
 import { TranslatePipe } from '../core/i18n/translate.pipe';
 import { LanguageSwitcherComponent } from '../shared/components/language-switcher/language-switcher.component';
+import { OllamaDownloadService } from '../core/services/ollama-download.service';
 
 @Component({
   selector: 'app-layout',
@@ -104,6 +105,48 @@ import { LanguageSwitcherComponent } from '../shared/components/language-switche
         </div>
       </nav>
       <main class="content">
+        @if (dl.showBar()) {
+          <div class="download-bar"
+               [class.download-error]="dl.downloadProgress()?.error"
+               [class.download-done]="dl.downloadProgress()?.done && !dl.downloadProgress()?.error">
+            <div class="download-info">
+              <span class="download-icon">
+                @if (dl.downloadProgress()?.done && !dl.downloadProgress()?.error) {
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg>
+                } @else if (dl.downloadProgress()?.error) {
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M18 6L6 18M6 6l12 12"/></svg>
+                } @else {
+                  <span class="dl-spinner"></span>
+                }
+              </span>
+              <span class="download-text">
+                @if (dl.downloadProgress()?.error) {
+                  {{ 'DOWNLOAD.ERROR' | translate }}: {{ dl.downloadProgress()?.errorMessage }}
+                } @else if (dl.downloadProgress()?.done) {
+                  {{ 'DOWNLOAD.COMPLETE' | translate }}: {{ dl.downloadModelName() }}
+                } @else {
+                  {{ 'DOWNLOAD.PULLING' | translate }}: {{ dl.downloadModelName() }}
+                  @if (dl.downloadProgress()?.status; as status) {
+                    <span class="download-status">- {{ status }}</span>
+                  }
+                }
+              </span>
+            </div>
+            <div class="download-actions">
+              @if (dl.downloadPercentage() >= 0) {
+                <span class="download-pct">{{ dl.downloadPercentage() }}%</span>
+              }
+              @if (!dl.isDownloading()) {
+                <button class="download-dismiss" (click)="dl.dismiss()" [title]="'DOWNLOAD.DISMISS' | translate">&times;</button>
+              }
+            </div>
+            @if (dl.downloadPercentage() >= 0) {
+              <div class="download-track">
+                <div class="download-fill" [style.width.%]="dl.downloadPercentage()"></div>
+              </div>
+            }
+          </div>
+        }
         <router-outlet />
       </main>
     </div>
@@ -223,8 +266,40 @@ import { LanguageSwitcherComponent } from '../shared/components/language-switche
       background: var(--color-bg);
       min-width: 0;
     }
+    .download-bar {
+      background: #e3f2fd;
+      border-radius: 8px;
+      padding: 0.5rem 1rem;
+      margin-bottom: 1rem;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.8rem;
+      animation: slideDown 0.3s ease;
+    }
+    .download-bar.download-error { background: #fef2f2; }
+    .download-bar.download-done { background: #d4edda; }
+    .download-info { display: flex; align-items: center; gap: 0.5rem; flex: 1; min-width: 0; }
+    .download-icon { display: flex; align-items: center; flex-shrink: 0; }
+    .download-bar.download-done .download-icon { color: #2e7d32; }
+    .download-bar.download-error .download-icon { color: #c62828; }
+    .download-text { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: #333; }
+    .download-status { color: #888; font-size: 0.75rem; }
+    .download-actions { display: flex; align-items: center; gap: 0.5rem; }
+    .download-pct { font-weight: 600; font-size: 0.85rem; color: #0f3460; min-width: 36px; text-align: right; }
+    .download-dismiss { background: none; border: none; cursor: pointer; font-size: 1rem; color: #888; padding: 0.1rem 0.3rem; line-height: 1; border-radius: 4px; }
+    .download-dismiss:hover { color: #333; background: rgba(0,0,0,0.05); }
+    .download-track { width: 100%; height: 4px; background: rgba(0,0,0,0.08); border-radius: 2px; overflow: hidden; }
+    .download-fill { height: 100%; background: linear-gradient(90deg, #0f3460, #3498db); border-radius: 2px; transition: width 0.3s ease; }
+    .download-bar.download-error .download-fill { background: #e74c3c; }
+    .download-bar.download-done .download-fill { background: #2ecc71; }
+    .dl-spinner { display: inline-block; width: 12px; height: 12px; border: 2px solid #ddd; border-top-color: #0f3460; border-radius: 50%; animation: spin 0.6s linear infinite; }
+    @keyframes slideDown { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes spin { to { transform: rotate(360deg); } }
   `]
 })
 export class LayoutComponent {
   collapsed = signal(false);
+  dl = inject(OllamaDownloadService);
 }

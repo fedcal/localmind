@@ -18,3 +18,16 @@ export interface CreateProviderRequest {
   apiKey?: string;
   defaultModel?: string;
 }
+
+export interface OllamaStatus {
+  online: boolean;
+  version?: string;
+  models: OllamaModelDetail[];
+  errorMessage?: string;
+}
+
+export interface OllamaModelDetail {
+  name: string;
+  size: string;
+  modifiedAt: string;
+}

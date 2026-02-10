@@ -33,5 +33,12 @@ qdrant_data/
 ollama_data/
 n8n_data/
 
+# Playwright
+localmind-frontend/playwright-report/
+localmind-frontend/test-results/
+localmind-frontend/blob-report/
+
 .claude
 CLAUDE.md
+
+Sviluppi

@@ -1,13 +1,15 @@
-import { Component, inject, OnInit, signal } from '@angular/core';
+import { Component, inject, OnInit, signal, effect, computed } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { SlicePipe } from '@angular/common';
 import { SettingsService } from '../../services/settings.service';
-import { LlmProviderConfig, CreateProviderRequest } from '../../models/settings.model';
+import { LlmProviderConfig, CreateProviderRequest, OllamaStatus, OllamaModelDetail } from '../../models/settings.model';
 import { TranslatePipe } from '../../../../core/i18n/translate.pipe';
 import { TranslationService } from '../../../../core/i18n/translation.service';
+import { OllamaDownloadService } from '../../../../core/services/ollama-download.service';
 
 @Component({
   selector: 'app-settings-page',
-  imports: [FormsModule, TranslatePipe],
+  imports: [FormsModule, TranslatePipe, SlicePipe],
   template: `
     <div class="settings-page">
       <div class="page-header">
@@ -18,6 +20,107 @@ import { TranslationService } from '../../../../core/i18n/translation.service';
         <button class="btn btn-primary" (click)="toggleForm()">
           {{ showForm ? ('COMMON.CANCEL' | translate) : ('SETTINGS.ADD_PROVIDER' | translate) }}
         </button>
+      </div>
+
+      <!-- Sezione Stato Ollama -->
+      <div class="ollama-status-card" [class.online]="ollamaOnline() === true" [class.offline]="ollamaOnline() === false">
+        <div class="ollama-status-header">
+          <div class="ollama-title-row">
+            <h3>{{ 'SETTINGS.OLLAMA_STATUS_TITLE' | translate }}</h3>
+            @if (ollamaOnline() === null) {
+              <span class="badge badge-neutral">
+                <span class="spinner-sm"></span>
+                {{ 'SETTINGS.OLLAMA_CHECKING' | translate }}
+              </span>
+            } @else if (ollamaOnline()) {
+              <span class="badge badge-success">&#x2713; {{ 'SETTINGS.OLLAMA_ONLINE' | translate }}</span>
+            } @else {
+              <span class="badge badge-danger">&#x2717; {{ 'SETTINGS.OLLAMA_OFFLINE' | translate }}</span>
+            }
+          </div>
+          <button class="btn-icon" (click)="checkOllamaStatus()" [disabled]="ollamaCheckLoading()"
+                  [title]="'COMMON.REFRESH' | translate">
+            @if (ollamaCheckLoading()) {
+              <span class="spinner-sm"></span>
+            } @else {
+              &#x21bb;
+            }
+          </button>
+        </div>
+
+        @if (ollamaOnline() === true) {
+          <div class="ollama-info">
+            <span class="ollama-version">{{ 'SETTINGS.OLLAMA_VERSION' | translate }}: <strong>{{ ollamaVersion() }}</strong></span>
+            <span class="ollama-count">{{ ollamaInstalledModels().length }} {{ 'SETTINGS.OLLAMA_MODELS_INSTALLED' | translate }}</span>
+          </div>
+
+          @if (ollamaInstalledModels().length > 0) {
+            <div class="ollama-models-table">
+              <div class="table-header">
+                <span>{{ 'SETTINGS.OLLAMA_MODEL_NAME' | translate }}</span>
+                <span>{{ 'SETTINGS.OLLAMA_MODEL_SIZE' | translate }}</span>
+                <span>{{ 'SETTINGS.OLLAMA_MODEL_MODIFIED' | translate }}</span>
+                <span></span>
+              </div>
+              @for (model of ollamaInstalledModels(); track model.name) {
+                <div class="table-row">
+                  <span class="mono">{{ model.name }}</span>
+                  <span>{{ model.size }}</span>
+                  <span>{{ model.modifiedAt | slice:0:10 }}</span>
+                  <span>
+                    <button class="model-action delete-model" (click)="deleteInstalledModel(model.name)"
+                            [title]="'SETTINGS.DELETE_MODEL' | translate">&times;</button>
+                  </span>
+                </div>
+              }
+            </div>
+          } @else {
+            <p class="hint">{{ 'SETTINGS.OLLAMA_NO_MODELS_INSTALLED' | translate }}</p>
+          }
+
+          <div class="ollama-install-row">
+            <input type="text" [(ngModel)]="installModelName"
+                   [placeholder]="'SETTINGS.OLLAMA_INSTALL_PLACEHOLDER' | translate"
+                   class="pull-input"
+                   (keydown.enter)="installModel()">
+            <button class="btn btn-sm btn-primary" (click)="installModel()"
+                    [disabled]="installingModel() || !installModelName.trim()">
+              @if (installingModel()) {
+                <span class="spinner-sm"></span>
+              }
+              {{ 'SETTINGS.OLLAMA_INSTALL_MODEL' | translate }}
+            </button>
+          </div>
+        }
+
+        @if (ollamaOnline() === false) {
+          <div class="ollama-offline-content">
+            <div class="ollama-alert">
+              <strong>{{ 'SETTINGS.OLLAMA_UNREACHABLE' | translate }}</strong>
+              <p>{{ 'SETTINGS.OLLAMA_UNREACHABLE_DESC' | translate }}</p>
+            </div>
+            <div class="ollama-actions">
+              <button class="btn btn-primary" (click)="startOllama()" [disabled]="startingOllama()">
+                @if (startingOllama()) {
+                  <span class="spinner-sm"></span>
+                  {{ 'SETTINGS.OLLAMA_STARTING' | translate }}
+                } @else {
+                  &#x25B6; {{ 'SETTINGS.OLLAMA_START' | translate }}
+                }
+              </button>
+              <button class="btn btn-secondary" (click)="checkOllamaStatus()">
+                {{ 'SETTINGS.OLLAMA_RETRY' | translate }}
+              </button>
+            </div>
+            <details class="ollama-instructions">
+              <summary>{{ 'SETTINGS.OLLAMA_MANUAL_INSTRUCTIONS' | translate }}</summary>
+              <ul>
+                <li>{{ 'SETTINGS.OLLAMA_CMD_LINUX' | translate }}</li>
+                <li>{{ 'SETTINGS.OLLAMA_CMD_DOCKER' | translate }}</li>
+              </ul>
+            </details>
+          </div>
+        }
       </div>
 
       @if (showForm) {
@@ -135,16 +238,40 @@ import { TranslationService } from '../../../../core/i18n/translation.service';
                   </div>
                 }
                 @if (provider.models.length > 0) {
-                  <div class="detail-row">
+                  <div class="detail-row models-row">
                     <span class="detail-label">{{ 'SETTINGS.PROVIDER_MODELS' | translate }}</span>
                     <span class="models-list">
                       @for (model of provider.models; track model) {
-                        <span class="model-tag">{{ model }}</span>
+                        <span class="model-tag" [class.active-model]="model === provider.defaultModel">
+                          {{ model }}
+                          @if (model !== provider.defaultModel) {
+                            <button class="model-action set-default" (click)="setDefaultModel(provider, model)"
+                                    [title]="'SETTINGS.SET_DEFAULT' | translate">&#x2713;</button>
+                          }
+                          @if (provider.type === 'OLLAMA') {
+                            <button class="model-action delete-model" (click)="deleteOllamaModel(provider, model)"
+                                    [title]="'SETTINGS.DELETE_MODEL' | translate">&times;</button>
+                          }
+                        </span>
                       }
                     </span>
                   </div>
                 }
               </div>
+              @if (provider.type === 'OLLAMA') {
+                <div class="pull-model-row">
+                  <input type="text" [(ngModel)]="pullModelName"
+                         [placeholder]="'SETTINGS.PULL_MODEL_PLACEHOLDER' | translate"
+                         class="pull-input">
+                  <button class="btn btn-sm btn-secondary" (click)="pullOllamaModel(provider)"
+                          [disabled]="pullingModel() || !pullModelName.trim()">
+                    @if (pullingModel()) {
+                      <span class="spinner-sm"></span>
+                    }
+                    {{ 'SETTINGS.PULL_MODEL' | translate }}
+                  </button>
+                </div>
+              }
               <div class="provider-actions">
                 <button class="btn btn-sm btn-secondary" (click)="testProvider(provider)"
                         [disabled]="testingId() === provider.id">
@@ -240,12 +367,57 @@ import { TranslationService } from '../../../../core/i18n/translation.service';
     .models-list { display: flex; flex-wrap: wrap; gap: 0.25rem; }
     .model-tag { background: #f0f0f0; padding: 0.1rem 0.4rem; border-radius: 4px; font-size: 0.7rem; font-family: monospace; }
     .provider-actions { display: flex; gap: 0.5rem; }
+    .models-row { align-items: start !important; }
+    .model-tag { display: inline-flex; align-items: center; gap: 0.2rem; position: relative; }
+    .model-tag.active-model { background: #d4edda; border: 1px solid #28a745; }
+    .model-action { background: none; border: none; cursor: pointer; font-size: 0.75rem; padding: 0 0.15rem; line-height: 1; border-radius: 2px; }
+    .model-action.set-default { color: #28a745; }
+    .model-action.set-default:hover { background: #d4edda; }
+    .model-action.delete-model { color: #e74c3c; }
+    .model-action.delete-model:hover { background: #fef2f2; }
+    .pull-model-row { display: flex; gap: 0.5rem; align-items: center; margin-bottom: 0.75rem; }
+    .pull-input { padding: 0.35rem 0.5rem; border: 1px solid #ddd; border-radius: 4px; font-size: 0.8rem; font-family: monospace; flex: 1; max-width: 300px; }
+
+    .ollama-status-card {
+      background: white; padding: 1.25rem; border-radius: 10px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.08); margin-bottom: 1.5rem;
+      border-left: 4px solid #ddd;
+    }
+    .ollama-status-card.online { border-left-color: #2ecc71; }
+    .ollama-status-card.offline { border-left-color: #e74c3c; }
+    .ollama-status-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem; }
+    .ollama-title-row { display: flex; align-items: center; gap: 0.75rem; }
+    .ollama-title-row h3 { margin: 0; font-size: 1rem; }
+    .badge-danger { background: #f8d7da; color: #721c24; }
+    .ollama-info { display: flex; gap: 1.5rem; font-size: 0.85rem; color: #555; margin-bottom: 0.75rem; }
+    .ollama-version, .ollama-count { display: flex; align-items: center; gap: 0.25rem; }
+    .ollama-models-table { margin-bottom: 0.75rem; font-size: 0.8rem; }
+    .table-header {
+      display: grid; grid-template-columns: 2fr 1fr 1fr 40px; gap: 0.5rem;
+      padding: 0.4rem 0.5rem; font-weight: 600; color: #888; border-bottom: 1px solid #eee;
+    }
+    .table-row {
+      display: grid; grid-template-columns: 2fr 1fr 1fr 40px; gap: 0.5rem;
+      padding: 0.4rem 0.5rem; border-bottom: 1px solid #f5f5f5; align-items: center;
+    }
+    .table-row:hover { background: #fafafa; }
+    .ollama-install-row { display: flex; gap: 0.5rem; align-items: center; }
+    .ollama-offline-content { display: flex; flex-direction: column; gap: 0.75rem; }
+    .ollama-alert { background: #fff3cd; border-radius: 6px; padding: 0.75rem 1rem; font-size: 0.85rem; }
+    .ollama-alert strong { display: block; margin-bottom: 0.25rem; }
+    .ollama-alert p { margin: 0; color: #856404; }
+    .ollama-actions { display: flex; gap: 0.5rem; }
+    .ollama-instructions { font-size: 0.8rem; color: #666; }
+    .ollama-instructions summary { cursor: pointer; font-weight: 500; margin-bottom: 0.5rem; }
+    .ollama-instructions ul { margin: 0; padding-left: 1.25rem; }
+    .ollama-instructions li { margin-bottom: 0.35rem; font-family: monospace; font-size: 0.75rem; }
 
   `]
 })
 export class SettingsPageComponent implements OnInit {
   private settingsService = inject(SettingsService);
   private i18n = inject(TranslationService);
+  private downloadService = inject(OllamaDownloadService);
 
   providers = signal<LlmProviderConfig[]>([]);
   loading = signal(false);
@@ -255,9 +427,37 @@ export class SettingsPageComponent implements OnInit {
   ollamaModels = signal<string[]>([]);
   loadingModels = signal(false);
   ollamaModelsFetched = signal(false);
+  pullingModel = computed(() => this.downloadService.isDownloading());
+  pullModelName = '';
   newProvider: CreateProviderRequest = { name: '', type: 'OLLAMA', baseUrl: 'http://localhost:11434', defaultModel: '' };
 
-  ngOnInit() { this.loadProviders(); }
+  // Ollama Status
+  ollamaOnline = signal<boolean | null>(null);
+  ollamaVersion = signal('');
+  ollamaInstalledModels = signal<OllamaModelDetail[]>([]);
+  ollamaCheckLoading = signal(false);
+  startingOllama = signal(false);
+  installingModel = computed(() => this.downloadService.isDownloading());
+  installModelName = '';
+  private ollamaBaseUrl = 'http://localhost:11434';
+
+  constructor() {
+    effect(() => {
+      const progress = this.downloadService.downloadProgress();
+      if (progress?.done && !progress.error) {
+        this.showNotify('success', this.i18n.instant('SETTINGS.PULL_SUCCESS', { model: this.downloadService.downloadModelName() }));
+        this.loadProviders();
+        this.checkOllamaStatus();
+      } else if (progress?.error) {
+        this.showNotify('error', this.i18n.instant('SETTINGS.PULL_ERROR', { model: this.downloadService.downloadModelName() }));
+      }
+    });
+  }
+
+  ngOnInit() {
+    this.loadProviders();
+    this.checkOllamaStatus();
+  }
 
   toggleForm() {
     this.showForm = !this.showForm;
@@ -390,6 +590,93 @@ export class SettingsPageComponent implements OnInit {
     this.settingsService.deleteProvider(id).subscribe({
       next: () => { this.showNotify('success', this.i18n.instant('SETTINGS.DELETE_SUCCESS')); this.loadProviders(); },
       error: () => this.showNotify('error', this.i18n.instant('SETTINGS.DELETE_ERROR'))
+    });
+  }
+
+  pullOllamaModel(provider: LlmProviderConfig) {
+    const name = this.pullModelName.trim();
+    if (!name || !provider.baseUrl) return;
+    this.downloadService.startPull(provider.baseUrl, name);
+    this.pullModelName = '';
+  }
+
+  deleteOllamaModel(provider: LlmProviderConfig, modelName: string) {
+    if (!provider.baseUrl) return;
+    this.settingsService.deleteOllamaModel(provider.baseUrl, modelName).subscribe({
+      next: () => {
+        this.showNotify('success', this.i18n.instant('SETTINGS.MODEL_DELETE_SUCCESS', { model: modelName }));
+        this.loadProviders();
+      },
+      error: () => this.showNotify('error', this.i18n.instant('SETTINGS.MODEL_DELETE_ERROR', { model: modelName }))
+    });
+  }
+
+  setDefaultModel(provider: LlmProviderConfig, modelName: string) {
+    this.settingsService.updateDefaultModel(provider.id, modelName).subscribe({
+      next: () => {
+        this.showNotify('success', this.i18n.instant('SETTINGS.DEFAULT_MODEL_SUCCESS', { model: modelName }));
+        this.loadProviders();
+      },
+      error: () => this.showNotify('error', this.i18n.instant('SETTINGS.DEFAULT_MODEL_ERROR'))
+    });
+  }
+
+  checkOllamaStatus() {
+    this.ollamaCheckLoading.set(true);
+    // Usa la baseUrl dal primo provider Ollama configurato, altrimenti default
+    const ollamaProvider = this.providers().find(p => p.type === 'OLLAMA' && p.enabled);
+    const baseUrl = ollamaProvider?.baseUrl || this.ollamaBaseUrl;
+    this.settingsService.getOllamaStatus(baseUrl).subscribe({
+      next: (status) => {
+        this.ollamaOnline.set(status.online);
+        this.ollamaVersion.set(status.version || '');
+        this.ollamaInstalledModels.set(status.models || []);
+        this.ollamaCheckLoading.set(false);
+      },
+      error: () => {
+        this.ollamaOnline.set(false);
+        this.ollamaCheckLoading.set(false);
+      }
+    });
+  }
+
+  startOllama() {
+    this.startingOllama.set(true);
+    this.settingsService.startOllama().subscribe({
+      next: () => {
+        this.showNotify('success', this.i18n.instant('SETTINGS.OLLAMA_START_SUCCESS'));
+        // Attendi 3 secondi e ricontrolla lo stato
+        setTimeout(() => {
+          this.startingOllama.set(false);
+          this.checkOllamaStatus();
+        }, 3000);
+      },
+      error: () => {
+        this.startingOllama.set(false);
+        this.showNotify('error', this.i18n.instant('SETTINGS.OLLAMA_START_ERROR'));
+      }
+    });
+  }
+
+  installModel() {
+    const name = this.installModelName.trim();
+    if (!name) return;
+    const ollamaProvider = this.providers().find(p => p.type === 'OLLAMA' && p.enabled);
+    const baseUrl = ollamaProvider?.baseUrl || this.ollamaBaseUrl;
+    this.downloadService.startPull(baseUrl, name);
+    this.installModelName = '';
+  }
+
+  deleteInstalledModel(modelName: string) {
+    const ollamaProvider = this.providers().find(p => p.type === 'OLLAMA' && p.enabled);
+    const baseUrl = ollamaProvider?.baseUrl || this.ollamaBaseUrl;
+    this.settingsService.deleteOllamaModel(baseUrl, modelName).subscribe({
+      next: () => {
+        this.showNotify('success', this.i18n.instant('SETTINGS.MODEL_DELETE_SUCCESS', { model: modelName }));
+        this.checkOllamaStatus();
+        this.loadProviders();
+      },
+      error: () => this.showNotify('error', this.i18n.instant('SETTINGS.MODEL_DELETE_ERROR', { model: modelName }))
     });
   }
 

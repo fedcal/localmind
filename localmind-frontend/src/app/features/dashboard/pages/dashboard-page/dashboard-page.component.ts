@@ -1,5 +1,5 @@
 import { Component, inject, OnInit, signal } from '@angular/core';
-import { RouterLink } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { ApiService } from '../../../../core/services/api.service';
 import { TranslatePipe } from '../../../../core/i18n/translate.pipe';
 
@@ -30,6 +30,21 @@ import { TranslatePipe } from '../../../../core/i18n/translate.pipe';
             <span class="stat-label">{{ 'DASHBOARD.STAT_API' | translate }}</span>
             <span class="stat-value" [class]="apiStatus() === 'UP' ? 'success' : 'error'">
               {{ apiStatus() }}
+            </span>
+          </div>
+        </div>
+
+        <div class="stat-card clickable" (click)="goToSettings()">
+          <div class="stat-icon ollama">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <rect x="4" y="4" width="16" height="16" rx="2"/>
+              <path d="M9 9h6M9 13h6M9 17h4"/>
+            </svg>
+          </div>
+          <div class="stat-content">
+            <span class="stat-label">{{ 'DASHBOARD.STAT_OLLAMA' | translate }}</span>
+            <span class="stat-value" [class]="ollamaStatus() === 'UP' ? 'success' : ollamaStatus() === 'DOWN' ? 'error' : ''">
+              {{ ollamaStatus() }}
             </span>
           </div>
         </div>
@@ -138,7 +153,10 @@ import { TranslatePipe } from '../../../../core/i18n/translate.pipe';
     .stat-icon.api { background: #e8f5e9; color: #2e7d32; }
     .stat-icon.docs { background: #e3f2fd; color: #1565c0; }
     .stat-icon.mcp { background: #f3e5f5; color: #7b1fa2; }
+    .stat-icon.ollama { background: #e8f5e9; color: #2e7d32; }
     .stat-icon.chat { background: #fff3e0; color: #e65100; }
+    .stat-card.clickable { cursor: pointer; transition: all 0.2s; border: 1px solid transparent; }
+    .stat-card.clickable:hover { border-color: #0f3460; box-shadow: 0 4px 12px rgba(15,52,96,0.12); }
     .stat-content { display: flex; flex-direction: column; }
     .stat-label { font-size: 0.8rem; color: #888; }
     .stat-value { font-size: 1.35rem; font-weight: 700; color: #1a1a2e; }
@@ -176,8 +194,10 @@ import { TranslatePipe } from '../../../../core/i18n/translate.pipe';
 })
 export class DashboardPageComponent implements OnInit {
   private api = inject(ApiService);
+  private router = inject(Router);
 
   apiStatus = signal('...');
+  ollamaStatus = signal('...');
   documentCount = signal(0);
   mcpServerCount = signal(0);
   llmProvider = signal('Ollama');
@@ -186,10 +206,20 @@ export class DashboardPageComponent implements OnInit {
     this.refresh();
   }
 
+  goToSettings() {
+    this.router.navigate(['/settings']);
+  }
+
   refresh() {
-    this.api.get<{ status: string }>('/dashboard/health').subscribe({
-      next: (res) => this.apiStatus.set(res.status ?? 'UP'),
-      error: () => this.apiStatus.set('DOWN')
+    this.api.get<{ status: string; services?: Record<string, string> }>('/dashboard/health').subscribe({
+      next: (res) => {
+        this.apiStatus.set(res.services?.['api'] ?? res.status ?? 'UP');
+        this.ollamaStatus.set(res.services?.['ollama'] ?? 'N/A');
+      },
+      error: () => {
+        this.apiStatus.set('DOWN');
+        this.ollamaStatus.set('DOWN');
+      }
     });
 
     this.api.get<any[]>('/documents').subscribe({

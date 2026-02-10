@@ -10,8 +10,10 @@ import org.springframework.ai.chat.model.ChatResponse;
 import org.springframework.ai.chat.prompt.Prompt;
 import org.springframework.ai.ollama.OllamaChatModel;
 import org.springframework.ai.ollama.api.OllamaOptions;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Component;
+import org.springframework.web.client.RestTemplate;
 
 import java.util.List;
 
@@ -20,9 +22,14 @@ import java.util.List;
 public class OllamaLlmAdapter implements LlmClient {
 
     private final OllamaChatModel chatModel;
+    private final String baseUrl;
+    private final RestTemplate restTemplate;
 
-    public OllamaLlmAdapter(OllamaChatModel chatModel) {
+    public OllamaLlmAdapter(OllamaChatModel chatModel,
+                             @Value("${spring.ai.ollama.base-url:http://localhost:11434}") String baseUrl) {
         this.chatModel = chatModel;
+        this.baseUrl = baseUrl;
+        this.restTemplate = new RestTemplate();
     }
 
     @Override
@@ -60,7 +67,8 @@ public class OllamaLlmAdapter implements LlmClient {
     @Override
     public boolean isAvailable() {
         try {
-            chatModel.call("ping");
+            String url = baseUrl.endsWith("/") ? baseUrl + "api/tags" : baseUrl + "/api/tags";
+            restTemplate.getForObject(url, String.class);
             return true;
         } catch (Exception e) {
             return false;

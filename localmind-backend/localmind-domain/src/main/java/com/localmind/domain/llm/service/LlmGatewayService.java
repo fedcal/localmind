@@ -5,6 +5,7 @@ import com.localmind.domain.llm.model.*;
 import com.localmind.domain.llm.port.in.ChatUseCase;
 import com.localmind.domain.llm.port.out.LlmClient;
 import com.localmind.domain.llm.port.out.LlmUsageRepository;
+import com.localmind.domain.llm.port.out.ProviderConfigRepository;
 
 import java.util.List;
 import java.util.Map;
@@ -14,16 +15,19 @@ public class LlmGatewayService implements ChatUseCase {
 
     private final Map<LlmProvider, LlmClient> clients;
     private final LlmUsageRepository usageRepository;
+    private final ProviderConfigRepository providerConfigRepository;
     private final List<LlmProvider> fallbackOrder;
     private final LlmProvider defaultProvider;
 
     public LlmGatewayService(List<LlmClient> clientList,
                               LlmUsageRepository usageRepository,
+                              ProviderConfigRepository providerConfigRepository,
                               List<LlmProvider> fallbackOrder,
                               LlmProvider defaultProvider) {
         this.clients = clientList.stream()
                 .collect(Collectors.toMap(LlmClient::getProvider, c -> c));
         this.usageRepository = usageRepository;
+        this.providerConfigRepository = providerConfigRepository;
         this.fallbackOrder = fallbackOrder;
         this.defaultProvider = defaultProvider;
     }
@@ -41,11 +45,13 @@ public class LlmGatewayService implements ChatUseCase {
                 continue;
             }
             try {
+                String model = resolveModel(request.getModel(), p);
+
                 long start = System.currentTimeMillis();
                 LlmRequest adjustedRequest = LlmRequest.builder()
                         .messages(request.getMessages())
                         .provider(p)
-                        .model(request.getModel())
+                        .model(model)
                         .temperature(request.getTemperature())
                         .maxTokens(request.getMaxTokens())
                         .conversationId(request.getConversationId())
@@ -66,6 +72,19 @@ public class LlmGatewayService implements ChatUseCase {
 
         throw lastException != null ? lastException
                 : new LlmProviderException("No LLM provider available");
+    }
+
+    private String resolveModel(String requestModel, LlmProvider provider) {
+        if (requestModel != null && !requestModel.isBlank()) {
+            return requestModel;
+        }
+        List<LlmProviderConfig> configs = providerConfigRepository.findByType(provider);
+        return configs.stream()
+                .filter(LlmProviderConfig::isEnabled)
+                .map(LlmProviderConfig::getDefaultModel)
+                .filter(m -> m != null && !m.isBlank())
+                .findFirst()
+                .orElse(null);
     }
 
     private List<LlmProvider> buildProviderChain(LlmProvider preferred) {

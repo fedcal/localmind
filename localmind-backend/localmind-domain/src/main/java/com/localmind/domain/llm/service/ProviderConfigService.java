@@ -2,11 +2,14 @@ package com.localmind.domain.llm.service;
 
 import com.localmind.domain.common.exception.ResourceNotFoundException;
 import com.localmind.domain.llm.model.LlmProviderConfig;
+import com.localmind.domain.llm.model.OllamaStatus;
+import com.localmind.domain.llm.model.PullProgress;
 import com.localmind.domain.llm.port.in.ProviderConfigUseCase;
 import com.localmind.domain.llm.port.out.OllamaModelPort;
 import com.localmind.domain.llm.port.out.ProviderConfigRepository;
 
 import java.util.List;
+import java.util.function.Consumer;
 
 public class ProviderConfigService implements ProviderConfigUseCase {
 
@@ -68,5 +71,37 @@ public class ProviderConfigService implements ProviderConfigUseCase {
     @Override
     public List<String> listOllamaModels(String baseUrl) {
         return ollamaModelPort.listAvailableModels(baseUrl);
+    }
+
+    @Override
+    public void pullOllamaModel(String baseUrl, String modelName) {
+        ollamaModelPort.pullModel(baseUrl, modelName);
+    }
+
+    @Override
+    public void pullOllamaModelStreaming(String baseUrl, String modelName, Consumer<PullProgress> progressCallback) {
+        ollamaModelPort.pullModelStreaming(baseUrl, modelName, progressCallback);
+    }
+
+    @Override
+    public void deleteOllamaModel(String baseUrl, String modelName) {
+        ollamaModelPort.deleteModel(baseUrl, modelName);
+    }
+
+    @Override
+    public LlmProviderConfig updateDefaultModel(String providerId, String modelName) {
+        LlmProviderConfig config = getById(providerId);
+        config.setDefaultModel(modelName);
+        return repository.save(config);
+    }
+
+    @Override
+    public OllamaStatus checkOllamaStatus(String baseUrl) {
+        return ollamaModelPort.checkStatus(baseUrl);
+    }
+
+    @Override
+    public void startOllama() {
+        ollamaModelPort.startOllama();
     }
 }

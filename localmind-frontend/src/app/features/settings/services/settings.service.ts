@@ -1,7 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
 import { ApiService } from '../../../core/services/api.service';
-import { LlmProviderConfig, CreateProviderRequest } from '../models/settings.model';
+import { LlmProviderConfig, CreateProviderRequest, OllamaStatus } from '../models/settings.model';
 
 @Injectable({ providedIn: 'root' })
 export class SettingsService {
@@ -25,5 +25,25 @@ export class SettingsService {
 
   listOllamaModels(baseUrl: string): Observable<string[]> {
     return this.api.get<string[]>(`/settings/providers/ollama/models?baseUrl=${encodeURIComponent(baseUrl)}`);
+  }
+
+  pullOllamaModel(baseUrl: string, modelName: string): Observable<void> {
+    return this.api.post<void>('/settings/providers/ollama/models/pull', { baseUrl, modelName });
+  }
+
+  deleteOllamaModel(baseUrl: string, modelName: string): Observable<void> {
+    return this.api.delete<void>(`/settings/providers/ollama/models/${encodeURIComponent(modelName)}?baseUrl=${encodeURIComponent(baseUrl)}`);
+  }
+
+  updateDefaultModel(providerId: string, model: string): Observable<LlmProviderConfig> {
+    return this.api.put<LlmProviderConfig>(`/settings/providers/${providerId}/default-model`, { model });
+  }
+
+  getOllamaStatus(baseUrl: string): Observable<OllamaStatus> {
+    return this.api.get<OllamaStatus>(`/settings/providers/ollama/status?baseUrl=${encodeURIComponent(baseUrl)}`);
+  }
+
+  startOllama(): Observable<void> {
+    return this.api.post<void>('/settings/providers/ollama/start', {});
   }
 }
