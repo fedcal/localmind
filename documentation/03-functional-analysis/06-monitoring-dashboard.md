@@ -117,8 +117,8 @@ GET /api/v1/dashboard/health
 
 Each service can be in one of the following states:
 
-| Status     | Description                                | UI Color  |
-|------------|--------------------------------------------|-----------|
+| Status     | Description                                 | UI Color  |
+|------------|---------------------------------------------|-----------|
 | `UP`       | Service reachable and functioning           | Green     |
 | `DOWN`     | Service unreachable or in error             | Red       |
 | `DEGRADED` | Service reachable but with issues           | Yellow    |

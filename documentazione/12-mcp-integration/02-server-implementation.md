@@ -28,7 +28,7 @@ compatibile (Claude Desktop, altri agenti AI, IDE con supporto MCP) di utilizzar
 di LocalMind come strumenti esterni.
 
 ```
-+-----------------------------------------------------+
++------------------------------------------------------+
 |                   LocalMind Backend                  |
 |                                                      |
 |  +--------------------+    +-----------------------+ |
@@ -36,16 +36,16 @@ di LocalMind come strumenti esterni.
 |  |   @Tool methods    |--->| ChatUseCase           | |
 |  +--------------------+    +-----------------------+ |
 |  +--------------------+         Domain Layer         |
-|  | LocalMindMcpRes.   |                             |
-|  +--------------------+                             |
-|  +--------------------+                             |
-|  | LocalMindMcpPrompts|                             |
-|  +--------------------+                             |
+|  | LocalMindMcpRes.   |                              |
+|  +--------------------+                              |
+|  +--------------------+                              |
+|  | LocalMindMcpPrompts|                              |
+|  +--------------------+                              |
 |         |                                            |
 |         v                                            |
 |  Spring AI MCP Server WebMVC                         |
 |  (spring-ai-starter-mcp-server-webmvc)               |
-+-----------------------------------------------------+
++------------------------------------------------------+
          |
          | HTTP/SSE (JSON-RPC 2.0)
          v
@@ -71,11 +71,11 @@ spring:
 Il server MCP di LocalMind e' composto da tre classi principali nel package
 `com.localmind.infrastructure.mcp.server`:
 
-| Classe                   | Responsabilita'                              | Primitiva MCP |
-|--------------------------|----------------------------------------------|---------------|
+| Classe                   | Responsabilita'                                | Primitiva MCP |
+|--------------------------|------------------------------------------------|---------------|
 | `LocalMindMcpTools`      | Espone tool invocabili (ricerca, chat, modelli)| Tool          |
-| `LocalMindMcpResources`  | Espone risorse leggibili (documenti, config)  | Resource      |
-| `LocalMindMcpPrompts`    | Fornisce template di prompt parametrizzati    | Prompt        |
+| `LocalMindMcpResources`  | Espone risorse leggibili (documenti, config)   | Resource      |
+| `LocalMindMcpPrompts`    | Fornisce template di prompt parametrizzati     | Prompt        |
 
 Tutte le classi sono annotate con:
 - `@Component` - registrazione automatica nel contesto Spring
@@ -143,12 +143,12 @@ Supporta Ollama, OpenAI, Anthropic, Google.
 
 **Parametri:**
 
-| Parametro     | Tipo   | Obbligatorio | Default  | Descrizione                          |
-|---------------|--------|--------------|----------|--------------------------------------|
-| `message`     | String | Si'          | -        | Messaggio da inviare al LLM          |
+| Parametro     | Tipo   | Obbligatorio | Default  | Descrizione                                 |
+|---------------|--------|--------------|----------|---------------------------------------------|
+| `message`     | String | Si'          | -        | Messaggio da inviare al LLM                 |
 | `provider`    | String | No           | OLLAMA   | Provider: OLLAMA, OPENAI, ANTHROPIC, GOOGLE |
-| `model`       | String | No           | default  | Nome specifico del modello           |
-| `temperature` | Double | No           | 0.7      | Temperatura per la generazione (0-1) |
+| `model`       | String | No           | default  | Nome specifico del modello                  |
+| `temperature` | Double | No           | 0.7      | Temperatura per la generazione (0-1)        |
 
 **Risposta:** Oggetto con `content`, `model`, `provider`, `latencyMs`.
 
@@ -340,8 +340,8 @@ public String getSummarizeDocumentPrompt(String content) {
 
 ### Riepilogo prompt
 
-| Prompt                | Parametri          | Caso d'uso                              |
-|-----------------------|--------------------|-----------------------------------------|
+| Prompt                | Parametri          | Caso d'uso                               |
+|-----------------------|--------------------|------------------------------------------|
 | `rag-query`           | query, context     | Q&A con contesto dalla knowledge base    |
 | `summarize-document`  | content            | Riassunto automatico di documenti        |
 
@@ -385,10 +385,10 @@ spring:
 
 Con il starter WebMVC, il server MCP espone automaticamente:
 
-| Endpoint          | Metodo | Descrizione                           |
-|-------------------|--------|---------------------------------------|
+| Endpoint          | Metodo | Descrizione                            |
+|-------------------|--------|----------------------------------------|
 | `/mcp/sse`        | GET    | Stream SSE per notifiche server->client|
-| `/mcp/message`    | POST   | Messaggi JSON-RPC client->server      |
+| `/mcp/message`    | POST   | Messaggi JSON-RPC client->server       |
 
 Questi endpoint sono separati dalle API REST di LocalMind (`/api/v1/*`).
 

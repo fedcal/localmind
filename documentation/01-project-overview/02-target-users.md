@@ -183,13 +183,13 @@ LocalMind offers three interface modes to adapt to different levels of user tech
 
 ## 7. Use Case Summary by Target
 
-| Target          | Primary Use Case                     | Agent    | UI Mode      |
-|-----------------|--------------------------------------|----------|--------------|
+| Target          | Primary Use Case                      | Agent    | UI Mode      |
+|-----------------|---------------------------------------|----------|--------------|
 | Developer       | Debug, code review, technical analysis| Tech     | Advanced     |
-| Developer       | Documentation generation             | Tech     | Advanced     |
-| Business        | Automatic reports, summaries         | Business | Simple       |
-| Legal           | Contract analysis, compliance        | Legal    | Simple       |
-| Legal           | Regulatory references                | Legal    | Simple       |
-| Common User     | Study assistance                     | Personal | Simple       |
-| Common User     | Personal document management         | Personal | Simple       |
-| Common User     | Assisted writing                     | Personal | Simple       |
+| Developer       | Documentation generation              | Tech     | Advanced     |
+| Business        | Automatic reports, summaries          | Business | Simple       |
+| Legal           | Contract analysis, compliance         | Legal    | Simple       |
+| Legal           | Regulatory references                 | Legal    | Simple       |
+| Common User     | Study assistance                      | Personal | Simple       |
+| Common User     | Personal document management          | Personal | Simple       |
+| Common User     | Assisted writing                      | Personal | Simple       |

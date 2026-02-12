@@ -75,7 +75,7 @@ Every alternative in the local-first and open-source AI landscape uses different
 
 | Product       | Backend Language   | AI Framework              |
 |---------------|--------------------|---------------------------|
-| PrivateGPT    | Python             | LangChain/LlamaIndex     |
+| PrivateGPT    | Python             | LangChain/LlamaIndex      |
 | LangChain     | Python             | LangChain (itself)        |
 | AnythingLLM   | Node.js            | Custom                    |
 | Jan.ai        | TypeScript/Rust    | Custom                    |
@@ -307,8 +307,8 @@ LocalMind is the only solution with an enterprise-grade web UI on Angular, the m
 
 ## 9. Differentiators Summary
 
-| # | Differentiator                     | Closest competitor         | LocalMind gap                         |
-|---|------------------------------------|-----------------------------|---------------------------------------|
+| # | Differentiator                     | Closest competitor          | LocalMind gap                          |
+|---|------------------------------------|-----------------------------|----------------------------------------|
 | 1 | Java/Spring Boot stack             | None                        | Unique in the local-first AI landscape |
 | 2 | Hexagonal architecture             | None                        | Rigorous domain/infra separation       |
 | 3 | Multi-LLM with fallback + cost     | AnythingLLM (partial)       | Auto fallback + cost tracking          |

@@ -101,33 +101,33 @@ The Chat section is the main interface for interaction with LLMs and AI agents.
 ### 3.1 Layout
 
 ```
-+-------------------------------------------------+
-| Chat [Provider: Ollama v] [Model: llama3.2 v]   |
-+-------------------------------------------------+
-|                                                 |
-|    +----------------------------------------+   |
-|    | [System] Hello! How can I help you?    |   |
-|    +----------------------------------------+   |
-|                                                 |
-|    +----------------------------------------+   |
++--------------------------------------------------+
+| Chat [Provider: Ollama v] [Model: llama3.2 v]    |
++--------------------------------------------------+
+|                                                  |
+|    +-----------------------------------------+   |
+|    | [System] Hello! How can I help you?     |   |
+|    +-----------------------------------------+   |
+|                                                  |
+|    +-----------------------------------------+   |
 |    | [User] Explain the hexagonal            |   |
 |    | architecture                            |   |
-|    +----------------------------------------+   |
-|                                                 |
-|    +----------------------------------------+   |
+|    +-----------------------------------------+   |
+|                                                  |
+|    +-----------------------------------------+   |
 |    | [Assistant] The hexagonal architecture  |   |
 |    | is an architectural pattern...          |   |
-|    |                                        |   |
+|    |                                         |   |
 |    | Sources: doc1.pdf (p.12), doc2.pdf (p.3)|   |
-|    +----------------------------------------+   |
-|                                                 |
-|    +----------------------------------------+   |
-|    | [Loading...]                ///         |  |
-|    +----------------------------------------+   |
-|                                                 |
-+-------------------------------------------------+
-| [Agent: Tech v]  [Message...          ] [>]     |
-+-------------------------------------------------+
+|    +-----------------------------------------+   |
+|                                                  |
+|    +-----------------------------------------+   |
+|    | [Loading...]                ///         |   |
+|    +-----------------------------------------+   |
+|                                                  |
++--------------------------------------------------+
+| [Agent: Tech v]  [Message...          ] [>]      |
++--------------------------------------------------+
 ```
 
 ### 3.2 Components
@@ -219,7 +219,7 @@ The Search section provides an interface for semantic search within indexed docu
 +----------------------------------------------+
 |                                              |
 | +------------------------------------------+ |
-| | Search your documents...          [Search]| |
+| | Search your documents...         [Search]| |
 | +------------------------------------------+ |
 |                                              |
 | Results for: "withdrawal clause"             |
@@ -227,12 +227,12 @@ The Search section provides an interface for semantic search within indexed docu
 | +------------------------------------------+ |
 | | contract.docx - Chunk 4 - Score: 0.92    | |
 | | "...the party may withdraw from the      | |
-| | contract with 30 days notice..."          | |
+| | contract with 30 days notice..."         | |
 | +------------------------------------------+ |
 |                                              |
 | +------------------------------------------+ |
 | | agreement.pdf - Chunk 12 - Score: 0.87   | |
-| | "...unilateral withdrawal is permitted    | |
+| | "...unilateral withdrawal is permitted   | |
 | | in the following cases..."               | |
 | +------------------------------------------+ |
 |                                              |
@@ -379,7 +379,7 @@ The Dashboard section provides an overview of system status and usage metrics.
 |                                              |
 | Batch Jobs                                   |
 | +------------------------------------------+ |
-| | Completed: 45 | Failed: 2               | |
+| | Completed: 45 | Failed: 2                | |
 | | Running: 1                               | |
 | | Last job: 2026-02-09 15:30               | |
 | +------------------------------------------+ |

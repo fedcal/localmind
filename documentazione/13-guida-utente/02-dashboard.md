@@ -32,12 +32,12 @@ La parte superiore mostra 4 card informative disposte in una griglia:
 
 La parte inferiore mostra 4 card cliccabili per navigare velocemente alle funzioni principali:
 
-| Azione | Destinazione | Descrizione |
-|--------|-------------|-------------|
-| **Nuova Chat** | /chat | Apre l'interfaccia di conversazione AI |
-| **Carica Documento** | /documents | Vai alla gestione documenti per caricare file |
-| **Ricerca RAG** | /search | Apre la ricerca semantica nei documenti |
-| **Gestione MCP** | /mcp | Vai alla configurazione dei server MCP |
+| Azione               | Destinazione | Descrizione                                   |
+|----------------------|--------------|-----------------------------------------------|
+| **Nuova Chat**       | /chat        | Apre l'interfaccia di conversazione AI        |
+| **Carica Documento** | /documents   | Vai alla gestione documenti per caricare file |
+| **Ricerca RAG**      | /search      | Apre la ricerca semantica nei documenti       |
+| **Gestione MCP**     | /mcp         | Vai alla configurazione dei server MCP        |
 
 ## Aggiornamento dati
 

@@ -32,13 +32,13 @@ L'implementazione segue fedelmente l'**architettura esagonale** del progetto, co
 separazione tra domain model, ports (use case e SPI) e adapters (infrastructure e API).
 
 ```
-+----------------------------------------------------------------+
-|                         localmind-api                            |
++-----------------------------------------------------------------+
+|                         localmind-api                           |
 |  McpServerController   McpToolController                        |
 |         |                      |                                |
 +---------+----------------------+--------------------------------+
           |                      |
-+---------v----------------------v--------------------------------+
++---------v----------------------v---------------------------------+
 |                       localmind-domain                           |
 |  McpServerManagementUseCase  McpToolDiscoveryUseCase             |
 |  McpToolExecutionUseCase                                         |
@@ -49,10 +49,10 @@ separazione tra domain model, ports (use case e SPI) e adapters (infrastructure 
 +---------+----------------------+---------------------------------+
           |                      |
 +---------v----------------------v---------------------------------+
-|                   localmind-infrastructure                        |
+|                   localmind-infrastructure                       |
 |  SpringAiMcpClientAdapter    McpServerRepositoryAdapter          |
 |  (ConcurrentHashMap)         (JPA -> McpServerEntity)            |
-+-----------------------------------------------------------------+
++-------------------------------------------------------------- ---+
 ```
 
 ---
@@ -63,15 +63,15 @@ Il client MCP e' organizzato secondo il pattern Ports & Adapters:
 
 ### Layer e responsabilita'
 
-| Layer            | Package                                      | Responsabilita'                   |
-|------------------|----------------------------------------------|-----------------------------------|
-| **Domain Model** | `domain.mcp.model`                           | Entita' e value objects           |
-| **Inbound Ports**| `domain.mcp.port.in`                         | Use case (interfacce)             |
-| **Outbound Ports**| `domain.mcp.port.out`                       | SPI per infrastruttura            |
-| **Services**     | `domain.mcp.service`                         | Implementazione logica di business|
-| **Infra Adapter**| `infrastructure.mcp.adapter`                 | Adapter MCP SDK (Spring AI)       |
-| **Persistence**  | `infrastructure.mcp.persistence`             | JPA entity, repository adapter    |
-| **API**          | `api.mcp.controller`, `api.mcp.dto`          | REST controller e DTO             |
+| Layer             | Package                                      | Responsabilita'                   |
+|-------------------|----------------------------------------------|-----------------------------------|
+| **Domain Model**  | `domain.mcp.model`                           | Entita' e value objects           |
+| **Inbound Ports** | `domain.mcp.port.in`                         | Use case (interfacce)             |
+| **Outbound Ports**| `domain.mcp.port.out`                        | SPI per infrastruttura            |
+| **Services**      | `domain.mcp.service`                         | Implementazione logica di business|
+| **Infra Adapter** | `infrastructure.mcp.adapter`                 | Adapter MCP SDK (Spring AI)       |
+| **Persistence**   | `infrastructure.mcp.persistence`             | JPA entity, repository adapter    |
+| **API**           | `api.mcp.controller`, `api.mcp.dto`          | REST controller e DTO             |
 
 ### Principio della dipendenza
 
@@ -566,14 +566,14 @@ L'API REST per MCP si trova nel modulo `localmind-api` sotto `com.localmind.api.
 
 Endpoint per la gestione dei server MCP registrati.
 
-| Metodo | Endpoint                              | Descrizione                 |
-|--------|---------------------------------------|-----------------------------|
-| POST   | `/api/v1/mcp/servers`                 | Registra un nuovo server    |
-| GET    | `/api/v1/mcp/servers`                 | Elenca tutti i server       |
-| GET    | `/api/v1/mcp/servers/{serverId}`      | Ottieni dettagli server     |
-| DELETE | `/api/v1/mcp/servers/{serverId}`      | Rimuovi un server           |
-| POST   | `/api/v1/mcp/servers/{serverId}/test` | Testa la connessione        |
-| POST   | `/api/v1/mcp/servers/{serverId}/reconnect` | Riconnetti al server   |
+| Metodo | Endpoint                                   | Descrizione                 |
+|--------|--------------------------------------------|-----------------------------|
+| POST   | `/api/v1/mcp/servers`                      | Registra un nuovo server    |
+| GET    | `/api/v1/mcp/servers`                      | Elenca tutti i server       |
+| GET    | `/api/v1/mcp/servers/{serverId}`           | Ottieni dettagli server     |
+| DELETE | `/api/v1/mcp/servers/{serverId}`           | Rimuovi un server           |
+| POST   | `/api/v1/mcp/servers/{serverId}/test`      | Testa la connessione        |
+| POST   | `/api/v1/mcp/servers/{serverId}/reconnect` | Riconnetti al server        |
 
 **DTO di richiesta (`CreateMcpServerRequestDto`):**
 

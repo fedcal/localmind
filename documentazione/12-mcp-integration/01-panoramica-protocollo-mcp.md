@@ -142,7 +142,7 @@ summarize-document     -> Riassunto automatico di un documento
 
 ### Tabella riassuntiva
 
-| Primitiva    | Controllata da | Descrizione                         | Analogia API     |
+| Primitiva   | Controllata da | Descrizione                         | Analogia API     |
 |-------------|----------------|-------------------------------------|------------------|
 | **Tool**    | Modello (LLM)  | Funzione invocabile                 | POST endpoint    |
 | **Resource**| Applicazione   | Dato leggibile                      | GET endpoint     |

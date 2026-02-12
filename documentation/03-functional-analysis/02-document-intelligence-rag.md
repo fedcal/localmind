@@ -54,11 +54,11 @@ LocalMind supports two document ingestion modes:
 
 ### 2.2 Supported Formats
 
-| Format  | Extension  | Extraction Library         | Notes                          |
-|---------|------------|----------------------------|--------------------------------|
-| PDF     | .pdf       | Apache Tika 2.9.2          | Text and metadata              |
-| DOCX    | .docx      | Apache Tika 2.9.2          | Text, tables, metadata         |
-| TXT     | .txt       | Direct reading             | UTF-8 encoding                 |
+| Format  | Extension  | Extraction Library         | Notes                           |
+|---------|------------|----------------------------|---------------------------------|
+| PDF     | .pdf       | Apache Tika 2.9.2          | Text and metadata               |
+| DOCX    | .docx      | Apache Tika 2.9.2          | Text, tables, metadata          |
+| TXT     | .txt       | Direct reading             | UTF-8 encoding                  |
 | EML     | .eml       | Apache Tika 2.9.2          | Email body, headers, attachments|
 
 ### 2.3 Deduplication

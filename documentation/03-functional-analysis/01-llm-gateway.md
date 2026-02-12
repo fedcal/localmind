@@ -1,11 +1,11 @@
 # Functional Specification: LLM Gateway
 
-| Field        | Value                              |
-|--------------|------------------------------------|
+| Field        | Value                               |
+|--------------|-------------------------------------|
 | **Document** | Functional Specification LLM Gateway|
-| **Version**  | 0.1.0                              |
-| **Date**     | 2026-02-09                         |
-| **Project**  | LocalMind                          |
+| **Version**  | 0.1.0                               |
+| **Date**     | 2026-02-09                          |
+| **Project**  | LocalMind                           |
 
 ---
 
@@ -269,7 +269,7 @@ User            ChatController    ChatUseCase       LlmGatewayService   LlmClien
   |                  |                |                    |<-------------------|                    |
   |                  |                |                    |                    |                    |
   |                  |                |                    |  trackCost(usage)  |                    |
-  |                  |                |                    |------------------------------------------->|
+  |                  |                |                    |---------------------------------------->|
   |                  |                |                    |                    |                    |
   |                  |                |                    |                    |              save(usage)
   |                  |                |                    |                    |                    |

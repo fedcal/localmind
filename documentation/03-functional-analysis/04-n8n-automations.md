@@ -33,18 +33,18 @@ The integration occurs through an HTTP webhook mechanism: LocalMind generates in
 ## 2. Integration Architecture
 
 ```
-+------------------+         HTTP POST          +------------------+
-|                  |  (webhook)                 |                  |
-|    LocalMind     |--------------------------->|       n8n        |
-|    Backend       |                            |    (self-hosted) |
-|                  |                            |                  |
-|  - Internal event|                            | - Receives event |
-|  - AutomationSvc |                            | - Runs workflow  |
-|  - WebhookClient |                              - External actions|
-|                  |         HTTP REST          |                  |
-|    (API REST)    |<---------------------------|  (callback)      |
-|                  |                            |                  |
-+------------------+                            +------------------+
++------------------+         HTTP POST          +-------------------+
+|                  |  (webhook)                 |                   |
+|    LocalMind     |--------------------------->|       n8n         |
+|    Backend       |                            |    (self-hosted)  |
+|                  |                            |                   |
+|  - Internal event|                            | - Receives event  |
+|  - AutomationSvc |                            | - Runs workflow   |
+|  - WebhookClient |                            | - External actions|
+|                  |         HTTP REST          |                   |
+|    (API REST)    |<---------------------------|  (callback)       |
+|                  |                            |                   |
++------------------+                            +-------------------+
        ^                                               |
        |                                               v
 +------+-------+                               +-------+--------+
@@ -157,7 +157,7 @@ n8n sends the report via email to the configured recipient
 
 ### 5.1 Webhook (Entity)
 
-| Field         | Type              | Description                              |
+| Field        | Type              | Description                              |
 |--------------|-------------------|------------------------------------------|
 | `id`         | UUID              | Unique webhook identifier                |
 | `name`       | String            | Descriptive webhook name                 |

@@ -1,40 +1,52 @@
 # Evoluzione Futura
 
-| | |
-|---|---|
+|               |                             |
+|---------------|-----------------------------|
 | **Documento** | Evoluzione Futura e Visione |
-| **Versione** | 0.1.0 |
-| **Data** | 2026-02-09 |
-| **Progetto** | LocalMind |
+| **Versione**  | 0.1.0                       |
+| **Data**      | 2026-02-09                  |
+| **Progetto**  | LocalMind                   |
 
 ---
 
 ## Indice
 
-1. [Panoramica](#1-panoramica)
-2. [Feature Pianificate Post-v1.0](#2-feature-pianificate-post-v10)
-   - 2.1 [SSE/WebSocket Streaming](#21-ssewebsocket-streaming)
-   - 2.2 [OCR Integrato](#22-ocr-integrato)
-   - 2.3 [Multi-Utente con Autenticazione](#23-multi-utente-con-autenticazione)
-   - 2.4 [Plugin System](#24-plugin-system)
-   - 2.5 [Mobile Responsive / PWA](#25-mobile-responsive--pwa)
-   - 2.6 [API SDK per Integrazione Esterna](#26-api-sdk-per-integrazione-esterna)
-   - 2.7 [Supporto Modelli Multimodali](#27-supporto-modelli-multimodali)
-   - 2.8 [Knowledge Graph](#28-knowledge-graph)
-   - 2.9 [Fine-Tuning Locale](#29-fine-tuning-locale)
-   - 2.10 [Marketplace Agenti e Workflow](#210-marketplace-agenti-e-workflow)
-   - 2.11 [Backup e Restore Configurazione](#211-backup-e-restore-configurazione)
-   - 2.12 [Import/Export Conversazioni](#212-importexport-conversazioni)
-   - 2.13 [Supporto Multi-Lingua UI](#213-supporto-multi-lingua-ui)
-   - 2.14 [Metriche Avanzate e Analytics](#214-metriche-avanzate-e-analytics)
-   - 2.15 [Integrazione Calendario e Email](#215-integrazione-calendario-e-email)
-3. [Evoluzione Architetturale](#3-evoluzione-architetturale)
-   - 3.1 [Microservizi](#31-microservizi)
-   - 3.2 [Event-Driven Architecture](#32-event-driven-architecture)
-   - 3.3 [CQRS](#33-cqrs)
-   - 3.4 [Kubernetes Deployment](#34-kubernetes-deployment)
-4. [Community e Open Source](#4-community-e-open-source)
-5. [Matrice Priorita' e Impatto](#5-matrice-priorita-e-impatto)
+- [Evoluzione Futura](#evoluzione-futura)
+  - [Indice](#indice)
+  - [1. Panoramica](#1-panoramica)
+  - [2. Feature Pianificate Post-v1.0](#2-feature-pianificate-post-v10)
+    - [2.1 SSE/WebSocket Streaming](#21-ssewebsocket-streaming)
+    - [2.2 OCR Integrato](#22-ocr-integrato)
+    - [2.3 Multi-Utente con Autenticazione](#23-multi-utente-con-autenticazione)
+    - [2.4 Plugin System](#24-plugin-system)
+    - [2.5 Mobile Responsive / PWA](#25-mobile-responsive--pwa)
+    - [2.6 API SDK per Integrazione Esterna](#26-api-sdk-per-integrazione-esterna)
+    - [2.7 Supporto Modelli Multimodali](#27-supporto-modelli-multimodali)
+    - [2.8 Knowledge Graph](#28-knowledge-graph)
+    - [2.9 Fine-Tuning Locale](#29-fine-tuning-locale)
+    - [2.10 Marketplace Agenti e Workflow](#210-marketplace-agenti-e-workflow)
+    - [2.11 Backup e Restore Configurazione](#211-backup-e-restore-configurazione)
+    - [2.12 Import/Export Conversazioni](#212-importexport-conversazioni)
+    - [2.13 Supporto Multi-Lingua UI](#213-supporto-multi-lingua-ui)
+    - [2.14 Metriche Avanzate e Analytics](#214-metriche-avanzate-e-analytics)
+    - [2.15 Integrazione Calendario e Email](#215-integrazione-calendario-e-email)
+  - [3. Evoluzione Architetturale](#3-evoluzione-architetturale)
+    - [3.1 Microservizi](#31-microservizi)
+    - [3.2 Event-Driven Architecture](#32-event-driven-architecture)
+    - [3.3 CQRS](#33-cqrs)
+    - [3.4 Kubernetes Deployment](#34-kubernetes-deployment)
+  - [4. Community e Open Source](#4-community-e-open-source)
+    - [Licenza](#licenza)
+    - [Contributing Guidelines](#contributing-guidelines)
+    - [Plugin Development Kit](#plugin-development-kit)
+    - [Documentation Site](#documentation-site)
+  - [5. Matrice Priorita' e Impatto](#5-matrice-priorita-e-impatto)
+    - [Alta priorita', alto impatto](#alta-priorita-alto-impatto)
+    - [Alta priorita', medio impatto](#alta-priorita-medio-impatto)
+    - [Media priorita', alto impatto](#media-priorita-alto-impatto)
+    - [Media priorita', medio impatto](#media-priorita-medio-impatto)
+    - [Bassa priorita' (lungo termine)](#bassa-priorita-lungo-termine)
+    - [Evoluzione architetturale (on-demand)](#evoluzione-architetturale-on-demand)
 
 ---
 
@@ -63,10 +75,10 @@ Le feature elencate rappresentano un'aspirazione progettuale e non un impegno vi
 
 **Dettaglio tecnico:**
 
-| Tecnologia | Approccio | Vantaggi |
-|---|---|---|
+| Tecnologia                   | Approccio                              | Vantaggi                                                             |
+|------------------------------|----------------------------------------|----------------------------------------------------------------------|
 | **Server-Sent Events (SSE)** | Flusso unidirezionale server-to-client | Semplice, supportato nativamente dai browser, compatibile con HTTP/2 |
-| **WebSocket** | Connessione bidirezionale full-duplex | Comunicazione bidirezionale, minor overhead per messaggi frequenti |
+| **WebSocket**                | Connessione bidirezionale full-duplex  | Comunicazione bidirezionale, minor overhead per messaggi frequenti   |
 
 **Implementazione prevista:**
 
@@ -75,10 +87,10 @@ Client (Angular)                    Server (Spring Boot)
      │                                      │
      │──── POST /api/v1/chat/stream ────►   │
      │                                      │──► Ollama (streaming)
-     │◄──── SSE: token 1 ─────────────     │
-     │◄──── SSE: token 2 ─────────────     │
-     │◄──── SSE: token 3 ─────────────     │
-     │◄──── SSE: [DONE] ──────────────     │
+     │◄──── SSE: token 1 ─────────────      │
+     │◄──── SSE: token 2 ─────────────      │
+     │◄──── SSE: token 3 ─────────────      │
+     │◄──── SSE: [DONE] ──────────────      │
      │                                      │
 ```
 
@@ -96,11 +108,11 @@ Spring Boot supporta nativamente SSE tramite `SseEmitter` o il tipo reattivo `Fl
 
 **Tecnologia proposta:**
 
-| Motore | Licenza | Lingue | Self-hosted |
-|---|---|---|---|
+| Motore        | Licenza    | Lingue      | Self-hosted            |
+|---------------|------------|-------------|------------------------|
 | **Tesseract** | Apache 2.0 | 100+ lingue | Si' (container Docker) |
-| **EasyOCR** | Apache 2.0 | 80+ lingue | Si' (Python) |
-| **PaddleOCR** | Apache 2.0 | 80+ lingue | Si' (Python) |
+| **EasyOCR**   | Apache 2.0 | 80+ lingue  | Si' (Python)           |
+| **PaddleOCR** | Apache 2.0 | 80+ lingue  | Si' (Python)           |
 
 **Flusso previsto:**
 
@@ -126,13 +138,13 @@ Documento scansionato (immagine/PDF)
 
 **Dettaglio:**
 
-| Aspetto | Implementazione |
-|---|---|
-| **Autenticazione** | JWT (locale) o OAuth2/OIDC (Keycloak self-hosted) |
+| Aspetto             | Implementazione                                          |
+|---------------------|----------------------------------------------------------|
+| **Autenticazione**  | JWT (locale) o OAuth2/OIDC (Keycloak self-hosted)        |
 | **Isolamento dati** | Ogni utente vede solo i propri documenti e conversazioni |
-| **Ruoli** | Admin, User, Viewer |
-| **Gestione utenti** | Pagina admin per creazione/modifica/eliminazione utenti |
-| **Quota** | Limiti configurabili per utente (storage, token LLM) |
+| **Ruoli**           | Admin, User, Viewer                                      |
+| **Gestione utenti** | Pagina admin per creazione/modifica/eliminazione utenti  |
+| **Quota**           | Limiti configurabili per utente (storage, token LLM)     |
 
 ---
 
@@ -179,13 +191,13 @@ LocalMind Core
 
 **Funzionalita' PWA:**
 
-| Funzionalita' | Descrizione |
-|---|---|
-| **Installabile** | Aggiunta alla home screen del dispositivo |
-| **Offline first** | Funzionamento base anche senza connessione (cache locale) |
-| **Responsive** | Layout ottimizzato per smartphone e tablet |
+| Funzionalita'          | Descrizione                                                       |
+|------------------------|-------------------------------------------------------------------|
+| **Installabile**       | Aggiunta alla home screen del dispositivo                         |
+| **Offline first**      | Funzionamento base anche senza connessione (cache locale)         |
+| **Responsive**         | Layout ottimizzato per smartphone e tablet                        |
 | **Push notifications** | Notifiche per eventi (documento indicizzato, workflow completato) |
-| **Service Worker** | Caching intelligente delle risorse statiche |
+| **Service Worker**     | Caching intelligente delle risorse statiche                       |
 
 ---
 
@@ -197,11 +209,11 @@ LocalMind Core
 
 **SDK previsti:**
 
-| SDK | Linguaggio | Utilizzo |
-|---|---|---|
-| `localmind-sdk-java` | Java/Kotlin | Integrazione in applicazioni JVM |
-| `localmind-sdk-python` | Python | Integrazione in script e applicazioni Python |
-| `localmind-sdk-js` | JavaScript/TypeScript | Integrazione in applicazioni web e Node.js |
+| SDK                    | Linguaggio            | Utilizzo                                     |
+|------------------------|-----------------------|----------------------------------------------|
+| `localmind-sdk-java`   | Java/Kotlin           | Integrazione in applicazioni JVM             |
+| `localmind-sdk-python` | Python                | Integrazione in script e applicazioni Python |
+| `localmind-sdk-js`     | JavaScript/TypeScript | Integrazione in applicazioni web e Node.js   |
 
 **Funzionalita' esposte:**
 
@@ -231,11 +243,11 @@ client.documents.index("/path/to/document.pdf")
 
 **Casi d'uso:**
 
-| Input | Modello | Caso d'uso |
-|---|---|---|
+| Input        | Modello       | Caso d'uso                                                        |
+|--------------|---------------|-------------------------------------------------------------------|
 | **Immagini** | LLaVA, GPT-4V | Analisi foto, descrizione immagini, estrazione dati da screenshot |
-| **Audio** | Whisper | Trascrizione riunioni, note vocali, podcast |
-| **Video** | Futuro | Analisi contenuti video, estrazione frame chiave |
+| **Audio**    | Whisper       | Trascrizione riunioni, note vocali, podcast                       |
+| **Video**    | Futuro        | Analisi contenuti video, estrazione frame chiave                  |
 
 **Impatto architetturale:**
 
@@ -256,11 +268,11 @@ client.documents.index("/path/to/document.pdf")
 
 **Tecnologia proposta:**
 
-| Componente | Tecnologia | Self-hosted |
-|---|---|---|
-| Graph database | **Neo4j Community** | Si' (container Docker) |
-| NER (Named Entity Recognition) | spaCy o modello LLM | Si' |
-| Relation extraction | Modello LLM | Si' |
+| Componente                     | Tecnologia          | Self-hosted            |
+|--------------------------------|---------------------|------------------------|
+| Graph database                 | **Neo4j Community** | Si' (container Docker) |
+| NER (Named Entity Recognition) | spaCy o modello LLM | Si'                    |
+| Relation extraction            | Modello LLM         | Si'                    |
 
 **Flusso:**
 
@@ -287,11 +299,11 @@ Documento
 
 **Requisiti hardware:**
 
-| Tecnica | VRAM minima | Tempo stimato (1000 documenti) |
-|---|---|---|
-| LoRA (7B params) | 8 GB | 2-4 ore |
-| QLoRA (7B params) | 4 GB | 4-8 ore |
-| LoRA (13B params) | 16 GB | 6-12 ore |
+| Tecnica           | VRAM minima | Tempo stimato (1000 documenti) |
+|-------------------|-------------|--------------------------------|
+| LoRA (7B params)  | 8 GB        | 2-4 ore                        |
+| QLoRA (7B params) | 4 GB        | 4-8 ore                        |
+| LoRA (13B params) | 16 GB       | 6-12 ore                       |
 
 **Flusso:**
 
@@ -321,13 +333,13 @@ Deploy su Ollama locale
 
 **Funzionalita':**
 
-| Aspetto | Descrizione |
-|---|---|
-| **Catalogo** | Lista di agenti e workflow disponibili con descrizione, rating, download |
-| **Installazione** | One-click install da UI LocalMind |
-| **Versionamento** | Gestione versioni degli agenti e workflow |
-| **Review** | Sistema di recensioni e rating da parte della community |
-| **Publishing** | Possibilita' per gli utenti di pubblicare i propri agenti e workflow |
+| Aspetto           | Descrizione                                                              |
+|-------------------|--------------------------------------------------------------------------|
+| **Catalogo**      | Lista di agenti e workflow disponibili con descrizione, rating, download |
+| **Installazione** | One-click install da UI LocalMind                                        |
+| **Versionamento** | Gestione versioni degli agenti e workflow                                |
+| **Review**        | Sistema di recensioni e rating da parte della community                  |
+| **Publishing**    | Possibilita' per gli utenti di pubblicare i propri agenti e workflow     |
 
 ---
 
@@ -355,13 +367,13 @@ Deploy su Ollama locale
 
 **Formati supportati:**
 
-| Formato | Export | Import |
-|---|---|---|
-| JSON | Si' | Si' |
-| Markdown | Si' | No |
-| PDF | Si' | No |
-| ChatGPT export | No | Si' |
-| Claude export | No | Si' |
+| Formato        | Export | Import |
+|----------------|--------|--------|
+| JSON           | Si'    | Si'    |
+| Markdown       | Si'    | No     |
+| PDF            | Si'    | No     |
+| ChatGPT export | No     | Si'    |
+| Claude export  | No     | Si'    |
 
 ---
 
@@ -373,13 +385,13 @@ Deploy su Ollama locale
 
 **Lingue pianificate:**
 
-| Lingua | Codice | Priorita' |
-|---|---|---|
-| Italiano | `it` | Alta (lingua principale) |
-| Inglese | `en` | Alta |
-| Francese | `fr` | Media |
-| Tedesco | `de` | Media |
-| Spagnolo | `es` | Media |
+| Lingua   | Codice | Priorita'                |
+|----------|--------|--------------------------|
+| Italiano | `it`   | Alta (lingua principale) |
+| Inglese  | `en`   | Alta                     |
+| Francese | `fr`   | Media                    |
+| Tedesco  | `de`   | Media                    |
+| Spagnolo | `es`   | Media                    |
 
 **Implementazione:** Angular i18n o ngx-translate per la gestione delle traduzioni con file JSON per lingua.
 
@@ -393,13 +405,13 @@ Deploy su Ollama locale
 
 **Metriche previste:**
 
-| Categoria | Metriche |
-|---|---|
-| **LLM Usage** | Token consumati per provider/modello/giorno, costo stimato, tempi di risposta |
-| **RAG Performance** | Qualita' retrieval (precision, recall), coverage documenti |
-| **Document Stats** | Documenti per tipo, dimensione media, tasso di aggiornamento |
-| **User Activity** | Conversazioni per giorno, query piu' frequenti, orari di utilizzo |
-| **System Health** | CPU, RAM, storage, uptime, errori per tipo |
+| Categoria           | Metriche                                                                      |
+|---------------------|-------------------------------------------------------------------------------|
+| **LLM Usage**       | Token consumati per provider/modello/giorno, costo stimato, tempi di risposta |
+| **RAG Performance** | Qualita' retrieval (precision, recall), coverage documenti                    |
+| **Document Stats**  | Documenti per tipo, dimensione media, tasso di aggiornamento                  |
+| **User Activity**   | Conversazioni per giorno, query piu' frequenti, orari di utilizzo             |
+| **System Health**   | CPU, RAM, storage, uptime, errori per tipo                                    |
 
 ---
 
@@ -411,10 +423,10 @@ Deploy su Ollama locale
 
 **Funzionalita':**
 
-| Integrazione | Funzionalita' |
-|---|---|
+| Integrazione   | Funzionalita'                                                         |
+|----------------|-----------------------------------------------------------------------|
 | **Calendario** | Consultazione appuntamenti, creazione eventi, promemoria intelligenti |
-| **Email** | Lettura email, riepilogo inbox, bozze di risposta generate da LLM |
+| **Email**      | Lettura email, riepilogo inbox, bozze di risposta generate da LLM     |
 
 **Nota:** Queste integrazioni rispetteranno il principio local-first. Le credenziali email e calendario saranno gestite localmente, e i dati non transiteranno su servizi terzi. Per il calendario, si privilegera' il protocollo CalDAV (locale/self-hosted). Per l'email, si utilizzera' IMAP/SMTP diretto.
 
@@ -428,14 +440,14 @@ Deploy su Ollama locale
 
 **Decomposizione prevista:**
 
-| Microservizio | Responsabilita' |
-|---|---|
-| `localmind-chat-service` | Gestione conversazioni e interazione LLM |
-| `localmind-document-service` | Indicizzazione, parsing, gestione documenti |
-| `localmind-search-service` | Ricerca semantica e RAG |
-| `localmind-agent-service` | Orchestrazione agenti AI |
-| `localmind-automation-service` | Integrazione n8n e workflow |
-| `localmind-gateway` | API Gateway (routing, autenticazione, rate limiting) |
+| Microservizio                  | Responsabilita'                                      |
+|--------------------------------|------------------------------------------------------|
+| `localmind-chat-service`       | Gestione conversazioni e interazione LLM             |
+| `localmind-document-service`   | Indicizzazione, parsing, gestione documenti          |
+| `localmind-search-service`     | Ricerca semantica e RAG                              |
+| `localmind-agent-service`      | Orchestrazione agenti AI                             |
+| `localmind-automation-service` | Integrazione n8n e workflow                          |
+| `localmind-gateway`            | API Gateway (routing, autenticazione, rate limiting) |
 
 **Nota importante:** La migrazione a microservizi NON e' prevista nella roadmap a breve termine. L'architettura Hexagonal adottata fin dalla v0.1.0 facilita una futura decomposizione, ma il monolite modulare e' adeguato per le esigenze attuali e prevedibili.
 
@@ -445,21 +457,21 @@ Deploy su Ollama locale
 
 **Tecnologia proposta:**
 
-| Componente | Tecnologia | Self-hosted |
-|---|---|---|
-| Message broker | **Apache Kafka** | Si' (container Docker) |
-| Alternativa leggera | **RabbitMQ** | Si' (container Docker) |
-| Alternativa embedded | **Spring Events** (gia' in uso) | Si' (in-process) |
+| Componente           | Tecnologia                      | Self-hosted            |
+|----------------------|---------------------------------|------------------------|
+| Message broker       | **Apache Kafka**                | Si' (container Docker) |
+| Alternativa leggera  | **RabbitMQ**                    | Si' (container Docker) |
+| Alternativa embedded | **Spring Events** (gia' in uso) | Si' (in-process)       |
 
 **Eventi previsti:**
 
-| Evento | Producer | Consumer |
-|---|---|---|
-| `DocumentIndexed` | Document Service | Search Service, Automation Service |
-| `ConversationCompleted` | Chat Service | Analytics Service, Automation Service |
-| `EmbeddingGenerated` | Search Service | Vector Store |
-| `AgentTaskCompleted` | Agent Service | Chat Service, Automation Service |
-| `CostThresholdExceeded` | Analytics Service | Automation Service (alert) |
+| Evento                  | Producer          | Consumer                                |
+|-------------------------|-------------------|-----------------------------------------|
+| `DocumentIndexed`       | Document Service  | Search Service, Automation Service      |
+| `ConversationCompleted` | Chat Service      | Analytics Service, Automation Service   |
+| `EmbeddingGenerated`    | Search Service    | Vector Store                            |
+| `AgentTaskCompleted`    | Agent Service     | Chat Service, Automation Service        |
+| `CostThresholdExceeded` | Analytics Service | Automation Service (alert)              |
 
 **Evoluzione progressiva:**
 
@@ -481,11 +493,11 @@ v2.x: Apache Kafka / RabbitMQ (distribuito, asincrono)
 
 **Applicabilita' in LocalMind:**
 
-| Dominio | Command (Scrittura) | Query (Lettura) |
-|---|---|---|
-| **Documenti** | Indicizzazione, aggiornamento metadati | Ricerca, listing, filtri complessi |
-| **Conversazioni** | Creazione messaggi, aggiornamento stato | Cronologia, ricerca, analytics |
-| **Metriche** | Registrazione token/costi | Dashboard, report, grafici |
+| Dominio           | Command (Scrittura)                     | Query (Lettura)                    |
+|-------------------|-----------------------------------------|------------------------------------|
+| **Documenti**     | Indicizzazione, aggiornamento metadati  | Ricerca, listing, filtri complessi |
+| **Conversazioni** | Creazione messaggi, aggiornamento stato | Cronologia, ricerca, analytics     |
+| **Metriche**      | Registrazione token/costi               | Dashboard, report, grafici         |
 
 **Implementazione prevista:**
 
@@ -501,14 +513,14 @@ v2.x: Apache Kafka / RabbitMQ (distribuito, asincrono)
 
 | Risorsa K8s | Utilizzo |
 |---|---|
-| **Deployment** | Per ogni microservizio (quando applicabile) |
-| **StatefulSet** | Per MySQL e Qdrant (dati persistenti) |
-| **Service** | Per comunicazione inter-pod |
-| **Ingress** | Per esposizione API e frontend |
-| **ConfigMap** | Per configurazioni non sensibili |
-| **Secret** | Per credenziali e API key |
-| **PersistentVolumeClaim** | Per storage persistente |
-| **HorizontalPodAutoscaler** | Per scaling automatico |
+| **Deployment**              | Per ogni microservizio (quando applicabile) |
+| **StatefulSet**             | Per MySQL e Qdrant (dati persistenti)       |
+| **Service**                 | Per comunicazione inter-pod                 |
+| **Ingress**                 | Per esposizione API e frontend              |
+| **ConfigMap**               | Per configurazioni non sensibili            |
+| **Secret**                  | Per credenziali e API key                   |
+| **PersistentVolumeClaim**   | Per storage persistente                     |
+| **HorizontalPodAutoscaler** | Per scaling automatico                      |
 
 **Helm Chart:** Distribuzione tramite Helm chart per installazione semplificata su qualsiasi cluster Kubernetes.
 
@@ -530,10 +542,10 @@ La licenza per il progetto LocalMind e' ancora da definire. Le opzioni in valuta
 
 | Licenza | Caratteristiche | Pro | Contro |
 |---|---|---|---|
-| **MIT** | Permissiva, minimale | Massima adozione, semplicita' | Nessuna protezione copyleft |
-| **Apache 2.0** | Permissiva con patent grant | Protezione brevetti, adozione enterprise | Leggermente piu' complessa |
-| **AGPL 3.0** | Copyleft forte | Protegge il codice da appropriazione proprietaria | Puo' scoraggiare l'adozione enterprise |
-| **BSL** | Source available con timer | Monetizzazione possibile, diventa open dopo X anni | Non e' open source puro |
+| **MIT**        | Permissiva, minimale        | Massima adozione, semplicita'                      | Nessuna protezione copyleft            |
+| **Apache 2.0** | Permissiva con patent grant | Protezione brevetti, adozione enterprise           | Leggermente piu' complessa             |
+| **AGPL 3.0**   | Copyleft forte              | Protegge il codice da appropriazione proprietaria  | Puo' scoraggiare l'adozione enterprise |
+| **BSL**        | Source available con timer  | Monetizzazione possibile, diventa open dopo X anni | Non e' open source puro                |
 
 **Decisione prevista:** Entro la v1.0.0.
 
@@ -543,37 +555,37 @@ Linee guida per i contributori della community:
 
 | Aspetto | Regola |
 |---|---|
-| **Code style** | Google Java Style Guide (backend), Angular Style Guide (frontend) |
-| **Commit convention** | Conventional Commits (feat, fix, docs, refactor, test) |
-| **Branch strategy** | GitFlow (main, develop, feature/*, release/*, hotfix/*) |
-| **Pull request** | Template obbligatorio, almeno 1 review, CI green |
-| **Issue tracker** | GitHub Issues con template (bug report, feature request) |
-| **Code of conduct** | Contributor Covenant |
+| **Code style**        | Google Java Style Guide (backend), Angular Style Guide (frontend) |
+| **Commit convention** | Conventional Commits (feat, fix, docs, refactor, test)            |
+| **Branch strategy**   | GitFlow (main, develop, feature/*, release/*, hotfix/*)           |
+| **Pull request**      | Template obbligatorio, almeno 1 review, CI green                  |
+| **Issue tracker**     | GitHub Issues con template (bug report, feature request)          |
+| **Code of conduct**   | Contributor Covenant                                              |
 
 ### Plugin Development Kit
 
 Per facilitare lo sviluppo di plugin da parte della community:
 
-| Risorsa | Descrizione |
-|---|---|
-| `localmind-plugin-api` | Artefatto Maven con le interfacce stabili per i plugin |
-| `localmind-plugin-archetype` | Maven archetype per lo scaffolding di un nuovo plugin |
-| Plugin documentation | Guida completa allo sviluppo di plugin |
-| Plugin examples | Repository con esempi di plugin per ogni tipo |
-| Plugin testing framework | Strumenti per il testing dei plugin in isolamento |
+| Risorsa                      | Descrizione                                            |
+|------------------------------|--------------------------------------------------------|
+| `localmind-plugin-api`       | Artefatto Maven con le interfacce stabili per i plugin |
+| `localmind-plugin-archetype` | Maven archetype per lo scaffolding di un nuovo plugin  |
+| Plugin documentation         | Guida completa allo sviluppo di plugin                 |   
+| Plugin examples              | Repository con esempi di plugin per ogni tipo          |
+| Plugin testing framework     | Strumenti per il testing dei plugin in isolamento      |
 
 ### Documentation Site
 
 Pianificazione di un sito di documentazione dedicato:
 
-| Aspetto | Tecnologia |
-|---|---|
-| **Framework** | Docusaurus o MkDocs |
-| **Hosting** | GitHub Pages (gratuito) |
-| **Contenuti** | Guida utente, guida sviluppatore, API reference, tutorial |
-| **Versioning** | Documentazione versionata per ogni major release |
-| **Search** | Ricerca full-text integrata |
-| **Internazionalizzazione** | Italiano e inglese (minimo) |
+| Aspetto                    | Tecnologia                                                |
+|----------------------------|-----------------------------------------------------------|
+| **Framework**              | Docusaurus o MkDocs                                       |
+| **Hosting**                | GitHub Pages (gratuito)                                   |
+| **Contenuti**              | Guida utente, guida sviluppatore, API reference, tutorial |
+| **Versioning**             | Documentazione versionata per ogni major release          |
+| **Search**                 | Ricerca full-text integrata                               |
+| **Internazionalizzazione** | Italiano e inglese (minimo)                               |
 
 ---
 
@@ -583,51 +595,51 @@ La seguente matrice classifica le feature per priorita' di implementazione e imp
 
 ### Alta priorita', alto impatto
 
-| # | Feature | Versione target |
-|---|---|---|
-| 1 | SSE/WebSocket Streaming | v1.1.0 |
-| 12 | Import/Export Conversazioni | v1.1.0 |
-| 11 | Backup e Restore | v1.2.0 |
-| 3 | Multi-Utente | v1.3.0 |
+| #  | Feature                     | Versione target |
+|----|-----------------------------|-----------------|
+| 1  | SSE/WebSocket Streaming     | v1.1.0          |
+| 12 | Import/Export Conversazioni | v1.1.0          |
+| 11 | Backup e Restore            | v1.2.0          |
+| 3  | Multi-Utente                | v1.3.0          |
 
 ### Alta priorita', medio impatto
 
-| # | Feature | Versione target |
-|---|---|---|
-| 2 | OCR Integrato | v1.2.0 |
-| 13 | Multi-Lingua UI | v1.3.0 |
-| 14 | Metriche Avanzate | v1.4.0 |
+| #  | Feature           | Versione target |
+|----|-------------------|-----------------|
+| 2  | OCR Integrato     | v1.2.0          |
+| 13 | Multi-Lingua UI   | v1.3.0          |
+| 14 | Metriche Avanzate | v1.4.0          |
 
 ### Media priorita', alto impatto
 
-| # | Feature | Versione target |
-|---|---|---|
-| 4 | Plugin System | v1.4.0 |
-| 5 | PWA | v1.5.0 |
-| 7 | Modelli Multimodali | v2.0.0 |
+| # | Feature             | Versione target |
+|---|---------------------|-----------------|
+| 4 | Plugin System       | v1.4.0          |
+| 5 | PWA                 | v1.5.0          |
+| 7 | Modelli Multimodali | v2.0.0          |
 
 ### Media priorita', medio impatto
 
-| # | Feature | Versione target |
-|---|---|---|
-| 6 | API SDK | v1.6.0 |
-| 15 | Calendario e Email | v2.0.0 |
-| 8 | Knowledge Graph | v2.1.0 |
+| #  | Feature            | Versione target |
+|----|--------------------|-----------------|
+| 6  | API SDK            | v1.6.0          |
+| 15 | Calendario e Email | v2.0.0          |
+| 8  | Knowledge Graph    | v2.1.0          |
 
 ### Bassa priorita' (lungo termine)
 
-| # | Feature | Versione target |
-|---|---|---|
-| 9 | Fine-Tuning Locale | v2.2.0 |
-| 10 | Marketplace | v2.3.0 |
+| #  | Feature            | Versione target |
+|----|--------------------|-----------------|
+| 9  | Fine-Tuning Locale | v2.2.0          |
+| 10 | Marketplace        | v2.3.0          |
 
 ### Evoluzione architetturale (on-demand)
 
-| Feature | Trigger |
-|---|---|
-| Microservizi | Complessita' monolite insostenibile |
-| Event-Driven (Kafka) | Necessita' di processamento asincrono distribuito |
-| CQRS | Divergenza significativa pattern lettura/scrittura |
-| Kubernetes | Adozione enterprise con requisiti HA |
+| Feature              | Trigger                                            |
+|----------------------|----------------------------------------------------|
+| Microservizi         | Complessita' monolite insostenibile                |
+| Event-Driven (Kafka) | Necessita' di processamento asincrono distribuito  |
+| CQRS                 | Divergenza significativa pattern lettura/scrittura |
+| Kubernetes           | Adozione enterprise con requisiti HA               |
 
 Queste evoluzioni architetturali non hanno una versione target fissa, poiche' saranno attivate in base alle effettive necessita' del progetto e della sua community.

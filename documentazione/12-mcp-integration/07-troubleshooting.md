@@ -26,7 +26,7 @@
 **Cause possibili e soluzioni:**
 
 | Causa                              | Diagnosi                                       | Soluzione                                      |
-|------------------------------------|-------------------------------------------------|------------------------------------------------|
+|------------------------------------|------------------------------------------------|------------------------------------------------|
 | Comando non trovato                | Log: `Cannot run program "npx"`                | Verificare che il comando sia nel PATH         |
 | Node.js non installato             | `node --version` restituisce errore            | Installare Node.js >= 18                       |
 | Pacchetto npm non esistente        | Log: `npm ERR! 404 Not Found`                  | Verificare il nome del pacchetto               |
@@ -60,7 +60,7 @@ echo $PATH
 **Sintomo:** La connessione a un server SSE remoto fallisce.
 
 | Causa                              | Diagnosi                                       | Soluzione                                      |
-|------------------------------------|-------------------------------------------------|------------------------------------------------|
+|------------------------------------|------------------------------------------------|------------------------------------------------|
 | URL non raggiungibile              | Log: `Connection refused`                      | Verificare che il server sia attivo            |
 | URL errato                         | Log: `404 Not Found`                           | Verificare l'URL (deve terminare con `/sse`)   |
 | Firewall blocca la connessione     | Log: `Connection timed out`                    | Verificare regole firewall/proxy               |
@@ -213,7 +213,7 @@ curl -s http://localhost:8080/api/v1/mcp/servers | python3 -m json.tool
 **Interpretazione degli stati:**
 
 | Stato          | Significato                                  | Azione                          |
-|----------------|----------------------------------------------|----------------------------------|
+|----------------|----------------------------------------------|---------------------------------|
 | `CONNECTED`    | Connessione attiva e funzionante             | Nessuna azione necessaria       |
 | `DISCONNECTED` | Non connesso (stato iniziale dopo errore)    | Tentare `reconnect`             |
 | `CONNECTING`   | Connessione in corso                         | Attendere qualche secondo       |

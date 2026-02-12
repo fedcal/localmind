@@ -114,7 +114,7 @@ LocalMind provides four predefined specialized agents:
 Each agent is composed of:
 
 ```
-+------------------------------------------------------+
++-------------------------------------------------------+
 |                      Agent                            |
 |                                                       |
 |  +------------------+  +---------------------------+  |
@@ -128,19 +128,19 @@ Each agent is composed of:
 |  +------------------+  +---------------------------+  |
 |  |   LLM Gateway    |  |   RAG Context             |  |
 |  |                  |  |                           |  |
-|  |  Response         |  |   Relevant documents      |  |
-|  |  generation       |  |   for the query           |  |
+|  |  Response        |  |   Relevant documents      |  |
+|  |  generation      |  |   for the query           |  |
 |  +------------------+  +---------------------------+  |
 |                                                       |
 |  +-------------------------------------------------+  |
 |  |              Tools (AgentTool[])                |  |
 |  |                                                 |  |
-|  |  - document_search: search in RAG              |  |
-|  |  - web_search: web search (future)             |  |
-|  |  - calculator: mathematical calculations       |  |
-|  |  - formatter: output formatting                |  |
+|  |  - document_search: search in RAG               |  |
+|  |  - web_search: web search (future)              |  |
+|  |  - calculator: mathematical calculations        |  |
+|  |  - formatter: output formatting                 |  |
 |  +-------------------------------------------------+  |
-+------------------------------------------------------+
++-------------------------------------------------------+
 ```
 
 ### 3.2 Execution Pattern
@@ -231,7 +231,7 @@ Example of parametersSchema for the `document_search` tool:
 | `filename`        | String  | Source file name                         |
 | `chunkIndex`      | int     | Cited chunk index                        |
 | `text`            | String  | Cited chunk text                         |
-| `similarityScore` | double  | Similarity score (0.0 - 1.0)            |
+| `similarityScore` | double  | Similarity score (0.0 - 1.0)             |
 
 ---
 

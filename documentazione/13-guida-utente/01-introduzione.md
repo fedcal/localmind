@@ -8,15 +8,15 @@ LocalMind si presenta come un'applicazione web single-page accessibile all'indir
 
 Il sidebar contiene le seguenti voci, ciascuna corrispondente a una sezione del sistema:
 
-| Voce | Descrizione |
-|------|-------------|
-| **Dashboard** | Panoramica dello stato del sistema e accesso rapido alle funzioni principali |
-| **Chat** | Interfaccia di conversazione con i modelli LLM configurati |
-| **Documenti** | Gestione dei documenti caricati (upload, visualizzazione stato, eliminazione) |
-| **Ricerca** | Ricerca semantica nei documenti indicizzati tramite RAG |
-| **Cartelle** | Configurazione delle cartelle locali da monitorare per l'indicizzazione automatica |
-| **MCP** | Gestione dei server e tool MCP (Model Context Protocol) |
-| **Impostazioni** | Configurazione dei provider LLM (Ollama, OpenAI, Anthropic, Google Gemini) |
+| Voce             | Descrizione |
+|------------------|-------------|
+| **Dashboard**    | Panoramica dello stato del sistema e accesso rapido alle funzioni principali       |
+| **Chat**         | Interfaccia di conversazione con i modelli LLM configurati                         |
+| **Documenti**    | Gestione dei documenti caricati (upload, visualizzazione stato, eliminazione)      |
+| **Ricerca**      | Ricerca semantica nei documenti indicizzati tramite RAG                            |
+| **Cartelle**     | Configurazione delle cartelle locali da monitorare per l'indicizzazione automatica |
+| **MCP**          | Gestione dei server e tool MCP (Model Context Protocol)                            |
+| **Impostazioni** | Configurazione dei provider LLM (Ollama, OpenAI, Anthropic, Google Gemini)         |
 
 ### Sidebar comprimibile
 

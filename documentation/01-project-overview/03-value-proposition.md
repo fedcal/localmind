@@ -196,15 +196,15 @@ LocalMind is the only local-first AI platform on a Java/Spring Boot stack, makin
 
 ### 7.1 Cost Structure
 
-| Component          | Cost                                                      |
-|--------------------|-----------------------------------------------------------|
-| **LocalMind**      | Open-source, free                                         |
-| **Ollama**         | Free (local execution)                                    |
-| **MySQL**          | Free (open-source)                                        |
-| **Qdrant**         | Free (open-source, self-hosted)                           |
-| **n8n**            | Free (open-source, self-hosted)                           |
-| **OpenAI API**     | Pay-per-use (e.g., GPT-4o: ~$5/$15 per 1M tokens)        |
-| **Anthropic API**  | Pay-per-use (e.g., Sonnet: ~$3/$15 per 1M tokens)        |
+| Component          | Cost                                                       |
+|--------------------|------------------------------------------------------------|
+| **LocalMind**      | Open-source, free                                          |
+| **Ollama**         | Free (local execution)                                     |
+| **MySQL**          | Free (open-source)                                         |
+| **Qdrant**         | Free (open-source, self-hosted)                            |
+| **n8n**            | Free (open-source, self-hosted)                            |
+| **OpenAI API**     | Pay-per-use (e.g., GPT-4o: ~$5/$15 per 1M tokens)          |
+| **Anthropic API**  | Pay-per-use (e.g., Sonnet: ~$3/$15 per 1M tokens)          |
 | **Google API**     | Pay-per-use (e.g., Gemini Pro: ~$3.50/$10.50 per 1M tokens)|
 
 ### 7.2 Cost Comparison

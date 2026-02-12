@@ -31,24 +31,24 @@ This document provides a detailed comparison between LocalMind and the main comp
 
 ## 2. Comparison Matrix
 
-| Criterion | ChatGPT | Claude.ai | Notion AI | PrivateGPT | LangChain | AnythingLLM | Jan.ai | GPT4All | LM Studio | LibreChat | n8n | **LocalMind** |
-|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| **Type** | SaaS | SaaS | SaaS | Open-source | Framework | Open-source | Open-source | Open-source | Freeware | Open-source | Open-source | **Self-hosted** |
-| **Data privacy** | Cloud | Cloud | Cloud | Local | Configurable | Local | Local | Local | Local | Configurable | Self-hosted | **Local/Hybrid** |
-| **Local LLMs** | No | No | No | Yes | Yes | Yes | Yes | Yes | Yes | No | No | **Yes** |
-| **Cloud LLMs** | Yes (OpenAI only) | Yes (Anthropic only) | Yes (OpenAI only) | Partial | Yes | Yes | Partial | No | No | Yes | No | **Yes** |
-| **Multi-provider** | No | No | No | Partial | Yes | Yes | Partial | No | No | Yes | No | **Yes (with fallback)** |
-| **RAG/Doc Intelligence** | Partial (upload) | Partial (upload) | Partial (workspace) | Yes | Yes (framework) | Yes | No | Basic | No | No | No | **Yes (complete)** |
-| **Semantic search** | No | No | No | Yes | Yes (framework) | Yes | No | Basic | No | No | No | **Yes** |
-| **Agents/Tool calling** | Yes | Yes | No | No | Yes (framework) | Partial | No | No | No | Partial | No | **Yes** |
-| **Automations/Workflow** | No | No | No | No | No | No | No | No | No | No | Yes (only) | **Yes (via n8n)** |
-| **Batch processing** | No | No | No | No | Possible | No | No | No | No | No | Yes | **Yes (Spring Batch)** |
-| **Complete UI** | Yes | Yes | Yes | Minimal | No | Yes | Yes | Yes | Yes | Yes | Yes | **Yes** |
-| **Technology stack** | Proprietary | Proprietary | Proprietary | Python | Python | Node.js/React | Electron/TS | C++/Qt | Electron | Node.js/React | Node.js/Vue | **Java/Angular** |
-| **Cost** | $0-$20/month | $0-$20/month | $10/month/user | Free | Free | Free | Free | Free | Free | Free | Free | **Free** |
-| **Offline mode** | No | No | No | Yes | Possible | Yes | Yes | Yes | Yes | No | Yes | **Yes** |
-| **Extensibility** | Plugin (limited) | No | No | Low | High | Medium | Low | Low | Low | Medium | High (nodes) | **High (hexagonal)** |
-| **Community/Support** | Enterprise | Enterprise | Enterprise | Medium | Very high | Medium | Medium | Medium | Medium | Medium | High | **Growing** |
+| Criterion                | ChatGPT           | Claude.ai            | Notion AI           | PrivateGPT  | LangChain       | AnythingLLM   | Jan.ai      | GPT4All     | LM Studio | LibreChat     | n8n          | **LocalMind**           |
+|--------------------------|-------------------|----------------------|---------------------|-------------|-----------------|---------------|-------------|-------------|-----------|---------------|--------------|-------------------------|
+| **Type**                 | SaaS              | SaaS                 | SaaS                | Open-source | Framework       | Open-source   | Open-source | Open-source | Freeware  | Open-source   | Open-source  | **Self-hosted**         |
+| **Data privacy**         | Cloud             | Cloud                | Cloud               | Local       | Configurable    | Local         | Local       | Local       | Local     | Configurable  | Self-hosted  | **Local/Hybrid**        |
+| **Local LLMs**           | No                | No                   | No                  | Yes         | Yes             | Yes           | Yes         | Yes         | Yes       | No            | No           | **Yes**                 |
+| **Cloud LLMs**           | Yes (OpenAI only) | Yes (Anthropic only) | Yes (OpenAI only)   | Partial     | Yes             | Yes           | Partial     | No          | No        | Yes           | No           | **Yes**                 |
+| **Multi-provider**       | No                | No                   | No                  | Partial     | Yes             | Yes           | Partial     | No          | No        | Yes           | No           | **Yes (with fallback)** |
+| **RAG/Doc Intelligence** | Partial (upload)  | Partial (upload)     | Partial (workspace) | Yes         | Yes (framework) | Yes           | No          | Basic       | No        | No            | No           | **Yes (complete)**      |
+| **Semantic search**      | No                | No                   | No                  | Yes         | Yes (framework) | Yes           | No          | Basic       | No        | No            | No           | **Yes**                 |
+| **Agents/Tool calling**  | Yes               | Yes                  | No                  | No          | Yes (framework) | Partial       | No          | No          | No        | Partial       | No           | **Yes**                 |
+| **Automations/Workflow** | No                | No                   | No                  | No          | No              | No            | No          | No          | No        | No            | Yes (only)   | **Yes (via n8n)**       |
+| **Batch processing**     | No                | No                   | No                  | No          | Possible        | No            | No          | No          | No        | No            | Yes          | **Yes (Spring Batch)**  |
+| **Complete UI**          | Yes               | Yes                  | Yes                 | Minimal     | No              | Yes           | Yes         | Yes         | Yes       | Yes           | Yes          | **Yes**                 |
+| **Technology stack**     | Proprietary       | Proprietary          | Proprietary         | Python      | Python          | Node.js/React | Electron/TS | C++/Qt      | Electron  | Node.js/React | Node.js/Vue  | **Java/Angular**        |
+| **Cost**                 | $0-$20/month      | $0-$20/month         | $10/month/user      | Free        | Free            | Free          | Free        | Free        | Free      | Free          | Free         | **Free**                |
+| **Offline mode**         | No                | No                   | No                  | Yes         | Possible        | Yes           | Yes         | Yes         | Yes       | No            | Yes          | **Yes**                 |
+| **Extensibility**        | Plugin (limited)  | No                   | No                  | Low         | High            | Medium        | Low         | Low         | Low       | Medium        | High (nodes) | **High (hexagonal)**    |
+| **Community/Support**    | Enterprise        | Enterprise           | Enterprise          | Medium      | Very high       | Medium        | Medium      | Medium      | Medium    | Medium        | High         | **Growing**             |
 
 ---
 

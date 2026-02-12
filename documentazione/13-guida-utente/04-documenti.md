@@ -18,14 +18,14 @@ La sezione Documenti permette di caricare, visualizzare e gestire i file che ven
 
 ### Formati supportati
 
-| Formato | Estensioni |
-|---------|------------|
-| PDF | .pdf |
+| Formato        | Estensioni  |
+|----------------|-------------|
+| PDF            | .pdf        |
 | Documenti Word | .doc, .docx |
-| Testo semplice | .txt |
-| Markdown | .md |
-| CSV | .csv |
-| JSON | .json |
+| Testo semplice | .txt        |
+| Markdown       | .md         |
+| CSV            | .csv        |
+| JSON           | .json       |
 
 ### Progresso upload
 
@@ -44,13 +44,13 @@ Al completamento dell'upload:
 
 Sotto l'intestazione sono presenti dei tab per filtrare i documenti per stato:
 
-| Filtro | Descrizione | Colore badge |
-|--------|-------------|-------------|
-| **Tutti** | Mostra tutti i documenti | - |
-| **Indicizzati** | Documenti elaborati e pronti per la ricerca | Verde |
-| **In attesa** | Documenti caricati in attesa di elaborazione | Giallo |
-| **In elaborazione** | Documenti attualmente in fase di processing | Blu |
-| **Falliti** | Documenti la cui elaborazione e' fallita | Rosso |
+| Filtro              | Descrizione                                  | Colore badge |
+|---------------------|----------------------------------------------|--------------|
+| **Tutti**           | Mostra tutti i documenti                     | -            |
+| **Indicizzati**     | Documenti elaborati e pronti per la ricerca  | Verde        |
+| **In attesa**       | Documenti caricati in attesa di elaborazione | Giallo       |
+| **In elaborazione** | Documenti attualmente in fase di processing  | Blu          |
+| **Falliti**         | Documenti la cui elaborazione e' fallita     | Rosso        |
 
 Ogni tab mostra il conteggio dei documenti in quello stato. Il tab attivo e' evidenziato.
 

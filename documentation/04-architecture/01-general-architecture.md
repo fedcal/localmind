@@ -54,7 +54,7 @@ The architecture is designed for:
 |  |  - Standalone components                                       |   |
 |  |  - Signal-based state management                               |   |
 |  |  - REST client (HttpClient)                                    |   |
-|  |  - Port: 4200 (dev) / 80 (prod via nginx)                     |   |
+|  |  - Port: 4200 (dev) / 80 (prod via nginx)                      |   |
 |  +----------------------------------------------------------------+   |
 |                              |                                        |
 |                         HTTP REST (JSON)                              |
@@ -77,7 +77,7 @@ The architecture is designed for:
 |  |  |  jobs, config)   |  |  configuration)  |                     |  |
 |  |  +------------------+  +------------------+                     |  |
 |  |                                                                 |  |
-|  |  Port: 8080                                                    |  |
+|  |  Port: 8080                                                     |  |
 |  +-----------------------------------------------------------------+  |
 |                              |                                        |
 +-----------------------------------------------------------------------+
@@ -185,7 +185,7 @@ The C4 Container diagram shows the containers (processes) that make up LocalMind
 |  |   localmind-frontend        |  |   localmind-backend        |  |
 |  |   (Angular CLI / ng serve)  |  |   (Spring Boot fat JAR)    |  |
 |  |                             |  |                            |  |
-|  |   Port: 4200 (dev)         |  |   Port: 8080               |  |
+|  |   Port: 4200 (dev)          |  |   Port: 8080               |  |
 |  +-----------------------------+  +---+------+------+------+---+  |
 |                                       |      |      |      |      |
 |                          +------------+  +---+--+ +-+----+ |      |
@@ -195,17 +195,17 @@ The C4 Container diagram shows the containers (processes) that make up LocalMind
 |  |   localmind-db              |  |   localmind-qdrant         |  |
 |  |   (MySQL 8.0)               |  |   (Qdrant) [optional]      |  |
 |  |                             |  |                            |  |
-|  |   Port: 3306               |  |   Port: 6333 (HTTP)        |  |
-|  |   native or Docker         |  |         6334 (gRPC)        |  |
+|  |   Port: 3306                |  |   Port: 6333 (HTTP)        |  |
+|  |   native or Docker          |  |         6334 (gRPC)        |  |
 |  +-----------------------------+  +----------------------------+  |
 |                                                                   |
 |  +-----------------------------+  +----------------------------+  |
 |  |   localmind-ollama          |  |   localmind-n8n            |  |
 |  |   (Ollama) [optional]       |  |   (n8n) [optional]         |  |
 |  |                             |  |                            |  |
-|  |   Port: 11434              |  |   Port: 5678               |  |
-|  |   native or Docker         |  |   native or Docker         |  |
-|  |   GPU: nvidia (optional)   |  |   Auth: Basic              |  |
+|  |   Port: 11434               |  |   Port: 5678               |  |
+|  |   native or Docker          |  |   native or Docker         |  |
+|  |   GPU: nvidia (optional)    |  |   Auth: Basic              |  |
 |  +-----------------------------+  +----------------------------+  |
 |                                                                   |
 +-------------------------------------------------------------------+

@@ -74,15 +74,15 @@ curl -X POST http://localhost:8080/api/v1/mcp/servers \
 
 Il server filesystem espone tipicamente i seguenti tool:
 
-| Tool             | Descrizione                                |
-|------------------|--------------------------------------------|
-| `read_file`      | Leggi il contenuto di un file              |
-| `write_file`     | Scrivi contenuto in un file                |
-| `list_directory` | Elenca il contenuto di una directory       |
-| `create_directory`| Crea una nuova directory                  |
-| `move_file`      | Sposta/rinomina un file                    |
-| `search_files`   | Cerca file per pattern                     |
-| `get_file_info`  | Ottieni metadati di un file                |
+| Tool              | Descrizione                                |
+|-------------------|--------------------------------------------|
+| `read_file`       | Leggi il contenuto di un file              |
+| `write_file`      | Scrivi contenuto in un file                |
+| `list_directory`  | Elenca il contenuto di una directory       |
+| `create_directory`| Crea una nuova directory                   |
+| `move_file`       | Sposta/rinomina un file                    |
+| `search_files`    | Cerca file per pattern                     |
+| `get_file_info`   | Ottieni metadati di un file                |
 
 ---
 

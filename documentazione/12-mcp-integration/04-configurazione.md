@@ -62,10 +62,10 @@ Le versioni sono gestite dal BOM di Spring AI nel parent POM.
 
 ### Dettaglio degli starter
 
-| Starter                               | Funzionalita'                                      |
+| Starter                               | Funzionalita'                                     |
 |---------------------------------------|---------------------------------------------------|
-| `spring-ai-starter-mcp-server-webmvc`| Server MCP su WebMVC (SSE + HTTP endpoint)         |
-| `spring-ai-starter-mcp-client`       | Client MCP con supporto STDIO e SSE               |
+| `spring-ai-starter-mcp-server-webmvc` | Server MCP su WebMVC (SSE + HTTP endpoint)        |
+| `spring-ai-starter-mcp-client`        | Client MCP con supporto STDIO e SSE               |
 
 **Nota:** Lo starter `mcp-server-webmvc` e' specifico per applicazioni Spring MVC (non WebFlux).
 LocalMind usa Spring MVC, quindi questo e' lo starter corretto. Per applicazioni reactive,
@@ -121,8 +121,8 @@ localmind.mcp.client.enabled   -> Flag ON/OFF per il client MCP di LocalMind
 
 | Property                       | Tipo   | Default     | Descrizione                          |
 |--------------------------------|--------|-------------|--------------------------------------|
-| `spring.ai.mcp.server.name`   | String | `spring-ai` | Nome del server MCP                  |
-| `spring.ai.mcp.server.version`| String | `1.0.0`     | Versione del server MCP              |
+| `spring.ai.mcp.server.name`    | String | `spring-ai` | Nome del server MCP                  |
+| `spring.ai.mcp.server.version` | String | `1.0.0`     | Versione del server MCP              |
 
 ### Properties LocalMind MCP
 
@@ -188,7 +188,7 @@ CREATE INDEX idx_mcp_servers_type ON mcp_servers(type);
 | `id`                | VARCHAR(255)  | NO       | -       | UUID generato dall'applicazione  |
 | `name`              | VARCHAR(255)  | NO       | -       | Nome leggibile del server        |
 | `description`       | VARCHAR(1000) | SI'      | NULL    | Descrizione opzionale            |
-| `type`              | VARCHAR(50)   | NO       | -       | 'STDIO' o 'SSE'                 |
+| `type`              | VARCHAR(50)   | NO       | -       | 'STDIO' o 'SSE'                  |
 | `status`            | VARCHAR(50)   | NO       | -       | Stato della connessione          |
 | `command`           | VARCHAR(500)  | SI'      | NULL    | Comando per STDIO                |
 | `args`              | TEXT          | SI'      | NULL    | Argomenti (comma-separated)      |
@@ -203,7 +203,7 @@ CREATE INDEX idx_mcp_servers_type ON mcp_servers(type);
 | Constraint          | Tipo  | Regola                                                      |
 |---------------------|-------|-------------------------------------------------------------|
 | `PRIMARY KEY`       | PK    | `id` e' chiave primaria                                     |
-| `type CHECK`        | CHECK | `type` deve essere 'STDIO' o 'SSE'                         |
+| `type CHECK`        | CHECK | `type` deve essere 'STDIO' o 'SSE'                          |
 | `status CHECK`      | CHECK | `status` deve essere uno dei 4 valori validi                |
 | `chk_stdio_command` | CHECK | Se `type='STDIO'`, allora `command` non puo' essere NULL    |
 | `chk_sse_url`       | CHECK | Se `type='SSE'`, allora `url` non puo' essere NULL          |
@@ -259,13 +259,13 @@ public class SpringAiMcpClientAdapter implements McpClientPort { ... }
 ### Matrice di attivazione
 
 | Property                        | Valore | LocalMindMcpTools | SpringAiMcpClientAdapter | McpServerManagementService |
-|---------------------------------|--------|-------------------|--------------------------|---------------------------|
-| `server.enabled` non impostata  | (true) | ATTIVO            | -                        | -                         |
-| `server.enabled=true`           | true   | ATTIVO            | -                        | -                         |
-| `server.enabled=false`          | false  | DISATTIVO         | -                        | -                         |
-| `client.enabled` non impostata  | -      | -                 | DISATTIVO                | DISATTIVO                 |
-| `client.enabled=true`           | true   | -                 | ATTIVO                   | ATTIVO                    |
-| `client.enabled=false`          | false  | -                 | DISATTIVO                | DISATTIVO                 |
+|---------------------------------|--------|-------------------|--------------------------|----------------------------|
+| `server.enabled` non impostata  | (true) | ATTIVO            | -                        | -                          |
+| `server.enabled=true`           | true   | ATTIVO            | -                        | -                          |
+| `server.enabled=false`          | false  | DISATTIVO         | -                        | -                          |
+| `client.enabled` non impostata  | -      | -                 | DISATTIVO                | DISATTIVO                  |
+| `client.enabled=true`           | true   | -                 | ATTIVO                   | ATTIVO                     |
+| `client.enabled=false`          | false  | -                 | DISATTIVO                | DISATTIVO                  |
 
 ---
 

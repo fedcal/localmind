@@ -15,11 +15,11 @@ La sezione Cartelle Monitorate permette di configurare delle cartelle locali sul
 
 ### Campi del form
 
-| Campo | Obbligatorio | Descrizione | Esempio |
-|-------|-------------|-------------|---------|
-| **Percorso cartella** | Si | Percorso assoluto della cartella da monitorare | `/home/user/documenti` |
-| **Pattern file** | No | Pattern glob per filtrare i tipi di file | `*.pdf,*.md,*.txt` |
-| **Includi sottocartelle** | No | Checkbox per la scansione ricorsiva | Selezionato = scansiona anche le sottocartelle |
+| Campo                     | Obbligatorio | Descrizione                                    | Esempio                                        |
+|---------------------------|--------------|------------------------------------------------|------------------------------------------------|
+| **Percorso cartella**     | Si           | Percorso assoluto della cartella da monitorare | `/home/user/documenti`                         | 
+| **Pattern file**          | No           | Pattern glob per filtrare i tipi di file       | `*.pdf,*.md,*.txt`                             |
+| **Includi sottocartelle** | No           | Checkbox per la scansione ricorsiva            | Selezionato = scansiona anche le sottocartelle |
 
 3. Cliccare **Aggiungi** per salvare la configurazione
 
@@ -44,10 +44,10 @@ Ogni cartella configurata viene mostrata come una card contenente:
 
 ### Azioni disponibili
 
-| Azione | Icona | Descrizione |
-|--------|-------|-------------|
+| Azione          | Icona             | Descrizione                                                                    |
+|-----------------|-------------------|--------------------------------------------------------------------------------|
 | **Sincronizza** | Freccia circolare | Avvia una scansione immediata della cartella (disabilitato durante il syncing) |
-| **Elimina** | Cestino (rosso) | Rimuove la configurazione della cartella |
+| **Elimina**     | Cestino (rosso)   | Rimuove la configurazione della cartella                                       |
 
 ## Funzionamento automatico
 

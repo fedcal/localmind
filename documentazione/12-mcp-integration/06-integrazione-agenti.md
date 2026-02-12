@@ -52,7 +52,7 @@ dinamicamente quali utilizzare in base al task richiesto dall'utente.
 L'integrazione tra agenti e MCP sfrutta i port/use case gia' definiti nel dominio:
 
 ```
-+--------------------------------------------+
++---------------------------------------------+
 |              Agent Domain                   |
 |                                             |
 |  AgentOrchestrator                          |
@@ -69,24 +69,24 @@ L'integrazione tra agenti e MCP sfrutta i port/use case gia' definiti nel domini
 |  |    McpToolDiscoveryUseCase             | |
 |  |    McpToolExecutionUseCase             | |
 |  +----------------------------------------+ |
-+--------------------------------------------+
++---------------------------------------------+
               |
               v
-+--------------------------------------------+
++---------------------------------------------+
 |         Infrastructure Layer                |
 |  SpringAiMcpClientAdapter                   |
 |  (connessioni a server MCP esterni)         |
-+--------------------------------------------+
++---------------------------------------------+
 ```
 
 ### Componenti coinvolti
 
-| Componente                  | Layer          | Responsabilita'                           |
-|-----------------------------|----------------|-------------------------------------------|
-| `AgentOrchestrator`         | Domain (agent) | Orchestrazione del ciclo agent            |
-| `McpToolDiscoveryUseCase`   | Domain (mcp)   | Scoperta tool dai server connessi          |
-| `McpToolExecutionUseCase`   | Domain (mcp)   | Esecuzione tool su server esterni          |
-| `McpToolOrchestratorService`| Domain (mcp)   | Implementazione dei due use case           |
+| Componente                  | Layer           | Responsabilita'                            |
+|-----------------------------|-----------------|--------------------------------------------|
+| `AgentOrchestrator`         | Domain (agent)  | Orchestrazione del ciclo agent             |
+| `McpToolDiscoveryUseCase`   | Domain (mcp)    | Scoperta tool dai server connessi          |
+| `McpToolExecutionUseCase`   | Domain (mcp)    | Esecuzione tool su server esterni          |
+| `McpToolOrchestratorService`| Domain (mcp)    | Implementazione dei due use case           |
 | `SpringAiMcpClientAdapter`  | Infrastructure  | Comunicazione effettiva via MCP SDK        |
 
 ---
@@ -310,18 +310,18 @@ Passo 4: Gli agenti possono usare i nuovi tool nella prossima esecuzione
 
 ### Server MCP consigliati per scenari comuni
 
-| Capacita' desiderata     | Server MCP                                    | Tool principali                    |
-|--------------------------|-----------------------------------------------|------------------------------------|
-| Accesso filesystem       | `@modelcontextprotocol/server-filesystem`     | read_file, write_file, list_dir    |
+| Capacita' desiderata     | Server MCP                                    | Tool principali                     |
+|--------------------------|-----------------------------------------------|-------------------------------------|
+| Accesso filesystem       | `@modelcontextprotocol/server-filesystem`     | read_file, write_file, list_dir     |
 | Database SQLite          | `@modelcontextprotocol/server-sqlite`         | read_query, write_query, list_tables|
-| Database MySQL           | `@modelcontextprotocol/server-mysql`          | query, list_tables, describe_table |
-| Ricerca web              | `@modelcontextprotocol/server-fetch`          | fetch                              |
-| Browser automation       | `@anthropic/server-puppeteer`                 | navigate, screenshot, click        |
-| Git operations           | `@modelcontextprotocol/server-git`            | log, diff, status, commit          |
-| GitHub API               | `@modelcontextprotocol/server-github`         | issues, pull_requests, repos       |
-| Slack                    | `@modelcontextprotocol/server-slack`          | send_message, list_channels        |
-| Google Drive             | `@modelcontextprotocol/server-gdrive`         | search, read, create               |
-| Memoria persistente      | `@modelcontextprotocol/server-memory`         | store, retrieve, search            |
+| Database MySQL           | `@modelcontextprotocol/server-mysql`          | query, list_tables, describe_table  |
+| Ricerca web              | `@modelcontextprotocol/server-fetch`          | fetch                               |
+| Browser automation       | `@anthropic/server-puppeteer`                 | navigate, screenshot, click         |
+| Git operations           | `@modelcontextprotocol/server-git`            | log, diff, status, commit           |
+| GitHub API               | `@modelcontextprotocol/server-github`         | issues, pull_requests, repos        |
+| Slack                    | `@modelcontextprotocol/server-slack`          | send_message, list_channels         |
+| Google Drive             | `@modelcontextprotocol/server-gdrive`         | search, read, create                |
+| Memoria persistente      | `@modelcontextprotocol/server-memory`         | store, retrieve, search             |
 
 ### Pattern di composizione
 

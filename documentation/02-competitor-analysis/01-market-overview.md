@@ -1,6 +1,6 @@
 # AI Market Overview
 
-| Field        | Value                          |
+| Field        | Value                           |
 |--------------|---------------------------------|
 | **Document** | Market Overview                 |
 | **Version**  | 0.1.0                           |
@@ -30,11 +30,11 @@ This document analyzes the competitive landscape of AI platforms with intelligen
 
 The AI platform market is divided into three main segments, each with distinctive characteristics, advantages and limitations:
 
-| Segment                | Main Characteristic                         | Examples                                            |
-|------------------------|---------------------------------------------|-----------------------------------------------------|
-| **SaaS Cloud-Only**    | Managed service, zero infrastructure        | ChatGPT, Claude, Gemini, Notion AI, Copilot         |
+| Segment                 | Main Characteristic                         | Examples                                            |
+|-------------------------|---------------------------------------------|-----------------------------------------------------|
+| **SaaS Cloud-Only**     | Managed service, zero infrastructure        | ChatGPT, Claude, Gemini, Notion AI, Copilot         |
 | **Python Open-Source**  | Programmable framework, high flexibility    | LangChain, LlamaIndex, PrivateGPT, Haystack         |
-| **Local-First**        | Local execution, native privacy             | AnythingLLM, Jan.ai, GPT4All, LM Studio, LibreChat  |
+| **Local-First**         | Local execution, native privacy             | AnythingLLM, Jan.ai, GPT4All, LM Studio, LibreChat  |
 
 None of these segments fully covers the needs of a user who simultaneously requires: data privacy, advanced AI features, automations, enterprise stack and a complete user interface.
 
