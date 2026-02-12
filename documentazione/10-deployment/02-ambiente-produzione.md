@@ -1,11 +1,11 @@
 # Ambiente di Produzione
 
-| | |
-|---|---|
+|               |                                       |
+|---------------|---------------------------------------|
 | **Documento** | Documentazione Ambiente di Produzione |
-| **Versione** | 0.1.0 |
-| **Data** | 2026-02-09 |
-| **Progetto** | LocalMind |
+| **Versione**  | 0.1.0                                 |
+| **Data**      | 2026-02-09                            |
+| **Progetto**  | LocalMind                             |
 
 ---
 
@@ -40,19 +40,19 @@ Le principali differenze rispetto all'ambiente di sviluppo riguardano:
 
 ## 2. Differenze tra Sviluppo e Produzione
 
-| Aspetto | Sviluppo (`dev`) | Produzione (`prod`) |
-|---|---|---|
-| **Database hostname** | `localhost` | `localhost` (MySQL nativo) |
-| **Ollama hostname** | `localhost` | `localhost` (nativo o configurabile) |
-| **Qdrant hostname** | `localhost` | `localhost` (nativo o configurabile) |
-| **n8n hostname** | `localhost` | `localhost` (nativo o configurabile) |
-| **Credenziali** | Hardcoded nei default | Variabili d'ambiente obbligatorie |
-| **DDL auto** | `create` (crea tabelle automaticamente) | `validate` (verifica schema esistente) |
-| **SQL logging** | `true` (mostra query nel log) | `false` (nessuna query nei log) |
-| **Livello log** | `DEBUG` | `INFO` |
-| **CORS origins** | `http://localhost:4200` | Configurabile (stesso host o dominio) |
-| **Frontend** | Angular dev server (live reload) | Build statica servita da nginx |
-| **Hot reload** | Abilitato (Spring DevTools) | Disabilitato |
+| Aspetto               | Sviluppo (`dev`)                        | Produzione (`prod`)                    |
+|-----------------------|-----------------------------------------|----------------------------------------|
+| **Database hostname** | `localhost`                             | `localhost` (MySQL nativo)             |
+| **Ollama hostname**   | `localhost`                             | `localhost` (nativo o configurabile)   |
+| **Qdrant hostname**   | `localhost`                             | `localhost` (nativo o configurabile)   |
+| **n8n hostname**      | `localhost`                             | `localhost` (nativo o configurabile)   |
+| **Credenziali**       | Hardcoded nei default                   | Variabili d'ambiente obbligatorie      |
+| **DDL auto**          | `create` (crea tabelle automaticamente) | `validate` (verifica schema esistente) |
+| **SQL logging**       | `true` (mostra query nel log)           | `false` (nessuna query nei log)        |
+| **Livello log**       | `DEBUG`                                 | `INFO`                                 |
+| **CORS origins**      | `http://localhost:4200`                 | Configurabile (stesso host o dominio)  |
+| **Frontend**          | Angular dev server (live reload)        | Build statica servita da nginx         |
+| **Hot reload**        | Abilitato (Spring DevTools)             | Disabilitato                           |
 
 ---
 
@@ -310,10 +310,10 @@ journalctl -u localmind -f
 
 | Risorsa | Minimo | Raccomandato | Note |
 |---|---|---|---|
-| **CPU** | 4 core | 8 core | 8 core raccomandati per Ollama con modelli grandi |
-| **RAM** | 8 GB | 16 GB | 16 GB con modelli LLM di dimensioni superiori a 7B |
-| **Storage** | 20 GB | 50+ GB | Spazio per documenti, modelli LLM, database |
-| **GPU** | Non richiesta | NVIDIA con CUDA | Accelera significativamente l'inference LLM |
+| **CPU**     | 4 core        | 8 core          | 8 core raccomandati per Ollama con modelli grandi  |
+| **RAM**     | 8 GB          | 16 GB           | 16 GB con modelli LLM di dimensioni superiori a 7B |
+| **Storage** | 20 GB         | 50+ GB          | Spazio per documenti, modelli LLM, database        |
+| **GPU**     | Non richiesta | NVIDIA con CUDA | Accelera significativamente l'inference LLM        |
 
 ### Ripartizione della memoria RAM
 
@@ -577,9 +577,9 @@ ls -lh "$BACKUP_DIR"
 
 ### Frequenza di backup raccomandata
 
-| Dato | Frequenza | Motivazione |
-|---|---|---|
-| MySQL | Giornaliero | Contiene conversazioni, metadati, configurazioni |
-| Qdrant | Settimanale | Gli embedding possono essere rigenerati dai documenti |
-| n8n | Settimanale | I workflow cambiano raramente |
-| Modelli Ollama | Non necessario | Scaricabili nuovamente da `ollama pull` |
+| Dato           | Frequenza      | Motivazione                                           |
+|----------------|----------------|-------------------------------------------------------|
+| MySQL          | Giornaliero    | Contiene conversazioni, metadati, configurazioni      |
+| Qdrant         | Settimanale    | Gli embedding possono essere rigenerati dai documenti |
+| n8n            | Settimanale    | I workflow cambiano raramente                         |
+| Modelli Ollama | Non necessario | Scaricabili nuovamente da `ollama pull`               | 

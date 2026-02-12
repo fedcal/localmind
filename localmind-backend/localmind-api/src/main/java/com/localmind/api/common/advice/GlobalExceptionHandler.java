@@ -7,6 +7,7 @@ import com.localmind.domain.common.exception.DocumentProcessingException;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
@@ -29,6 +30,18 @@ public class GlobalExceptionHandler {
         log.error("LLM provider error: {}", ex.getMessage(), ex);
         return ResponseEntity.status(502).body(
                 ErrorResponseDto.of(502, "LLM provider error: " + ex.getMessage(), req.getRequestURI())
+        );
+    }
+
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<ErrorResponseDto> handleValidation(MethodArgumentNotValidException ex, HttpServletRequest req) {
+        String message = ex.getBindingResult().getFieldErrors().stream()
+                .map(fe -> fe.getField() + ": " + fe.getDefaultMessage())
+                .findFirst()
+                .orElse("Validation failed");
+        log.warn("Validation error: {}", message);
+        return ResponseEntity.status(400).body(
+                ErrorResponseDto.of(400, message, req.getRequestURI())
         );
     }
 

@@ -30,6 +30,9 @@ public class ChatMessageEntity {
     @Column(nullable = false, columnDefinition = "TEXT")
     private String content;
 
+    @Column(columnDefinition = "JSON")
+    private String metadata;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "conversation_id", nullable = false)
     private ConversationEntity conversation;

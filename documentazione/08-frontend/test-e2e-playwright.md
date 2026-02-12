@@ -21,15 +21,15 @@ npx playwright install chromium
 
 ## Comandi disponibili
 
-| Comando | Descrizione |
-|---------|-------------|
-| `npm run e2e` | Esegue tutti i test (UI + integrazione) in modalita' headless |
-| `npm run e2e:headed` | Esegue tutti i test con il browser visibile |
-| `npm run e2e:ui` | Apre l'interfaccia grafica di Playwright per eseguire e debuggare i test |
-| `npm run e2e:report` | Apre il report HTML dell'ultima esecuzione |
-| `npm run e2e:ui-only` | Esegue solo i test UI (senza integrazione) |
-| `npm run e2e:integration` | Esegue solo i test di integrazione con il backend |
-| `npm run e2e:integration:headed` | Esegue i test di integrazione con il browser visibile |
+|            Comando               |                               Descrizione                                |
+|----------------------------------|--------------------------------------------------------------------------|
+| `npm run e2e`                    | Esegue tutti i test (UI + integrazione) in modalita' headless            |
+| `npm run e2e:headed`             | Esegue tutti i test con il browser visibile                              |
+| `npm run e2e:ui`                 | Apre l'interfaccia grafica di Playwright per eseguire e debuggare i test |
+| `npm run e2e:report`             | Apre il report HTML dell'ultima esecuzione                               |
+| `npm run e2e:ui-only`            | Esegue solo i test UI (senza integrazione)                               |
+| `npm run e2e:integration`        | Esegue solo i test di integrazione con il backend                        |
+| `npm run e2e:integration:headed` | Esegue i test di integrazione con il browser visibile                    |
 
 ## Esecuzione
 
@@ -139,14 +139,14 @@ Oltre ai test UI che verificano la presenza degli elementi, il progetto include 
 
 ### Copertura
 
-| File | Funzionalita' testate |
-|------|----------------------|
-| `dashboard.integration.spec.ts` | Health check, refresh dati dal backend |
-| `settings.integration.spec.ts` | CRUD provider (crea, testa connessione, verifica dettagli, elimina) |
-| `documents.integration.spec.ts` | Upload documento, lista, eliminazione via modal |
-| `search.integration.spec.ts` | Ricerca semantica, topK, click hint |
-| `chat.integration.spec.ts` | Invio messaggio LLM, conversazione, suggestion |
-| `mcp.integration.spec.ts` | Caricamento lista server e tools |
+|             File                | Funzionalita' testate                                               |
+|---------------------------------|---------------------------------------------------------------------|
+| `dashboard.integration.spec.ts` | Health check, refresh dati dal backend                              |
+| `settings.integration.spec.ts`  | CRUD provider (crea, testa connessione, verifica dettagli, elimina) |
+| `documents.integration.spec.ts` | Upload documento, lista, eliminazione via modal                     |
+| `search.integration.spec.ts`    | Ricerca semantica, topK, click hint                                 |
+| `chat.integration.spec.ts`      | Invio messaggio LLM, conversazione, suggestion                      |
+| `mcp.integration.spec.ts`       | Caricamento lista server e tools                                    |  
 
 ### Esecuzione
 
@@ -163,9 +163,9 @@ npm run e2e
 
 ## Troubleshooting
 
-| Problema | Soluzione |
-|----------|----------|
-| Test falliscono tutti | Verificare che frontend e backend siano attivi |
-| Timeout sui test | Aumentare `timeout` in `playwright.config.ts` |
-| Selettori non trovati | Verificare che il template del componente non sia cambiato |
-| Browser non installato | Eseguire `npx playwright install chromium` |
+|        Problema        |                          Soluzione                         |
+|------------------------|------------------------------------------------------------|
+| Test falliscono tutti  | Verificare che frontend e backend siano attivi             |
+| Timeout sui test       | Aumentare `timeout` in `playwright.config.ts`              |
+| Selettori non trovati  | Verificare che il template del componente non sia cambiato |
+| Browser non installato | Eseguire `npx playwright install chromium`                 |

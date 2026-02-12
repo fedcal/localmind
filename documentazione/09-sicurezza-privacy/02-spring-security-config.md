@@ -1,32 +1,42 @@
 # Configurazione Spring Security
 
-| | |
-|---|---|
+|               |                                |
+|---------------|--------------------------------|
 | **Documento** | Configurazione Spring Security |
-| **Versione** | 0.1.0 |
-| **Data** | 2026-02-09 |
-| **Progetto** | LocalMind |
+| **Versione**  | 0.1.0                          |
+| **Data**      | 2026-02-09                     |
+| **Progetto**  | LocalMind                      |
 
 ---
 
 ## Indice
 
-1. [Panoramica](#1-panoramica)
-2. [SecurityConfig Class](#2-securityconfig-class)
-3. [Configurazione Attuale (v0.1.0)](#3-configurazione-attuale-v010)
-   - 3.1 [CSRF](#31-csrf)
-   - 3.2 [CORS](#32-cors)
-   - 3.3 [Session Management](#33-session-management)
-   - 3.4 [Autorizzazione Endpoint](#34-autorizzazione-endpoint)
-   - 3.5 [Autenticazione](#35-autenticazione)
-4. [Headers di Sicurezza](#4-headers-di-sicurezza)
-5. [CORS Policy Dettagliata](#5-cors-policy-dettagliata)
-6. [Rate Limiting](#6-rate-limiting)
-7. [Evoluzione Pianificata](#7-evoluzione-pianificata)
-   - 7.1 [v0.2.0 - Basic Auth](#71-v020---basic-auth)
-   - 7.2 [v0.3.0 - JWT Authentication](#72-v030---jwt-authentication)
-   - 7.3 [v0.4.0 - RBAC](#73-v040---rbac)
-   - 7.4 [v1.0.0 - OAuth2 / OIDC](#74-v100---oauth2--oidc)
+- [Configurazione Spring Security](#configurazione-spring-security)
+  - [Indice](#indice)
+  - [1. Panoramica](#1-panoramica)
+  - [2. SecurityConfig Class](#2-securityconfig-class)
+  - [3. Configurazione Attuale (v0.1.0)](#3-configurazione-attuale-v010)
+    - [3.1 CSRF](#31-csrf)
+    - [3.2 CORS](#32-cors)
+    - [3.3 Session Management](#33-session-management)
+    - [3.4 Autorizzazione Endpoint](#34-autorizzazione-endpoint)
+    - [3.5 Autenticazione](#35-autenticazione)
+  - [4. Headers di Sicurezza](#4-headers-di-sicurezza)
+    - [Headers pianificati per versioni future](#headers-pianificati-per-versioni-future)
+  - [5. CORS Policy Dettagliata](#5-cors-policy-dettagliata)
+    - [Origini consentite](#origini-consentite)
+    - [Metodi HTTP consentiti](#metodi-http-consentiti)
+    - [Headers consentiti](#headers-consentiti)
+    - [Credenziali](#credenziali)
+    - [Cache Preflight](#cache-preflight)
+  - [6. Rate Limiting](#6-rate-limiting)
+    - [Piano di implementazione](#piano-di-implementazione)
+    - [Limiti pianificati per endpoint](#limiti-pianificati-per-endpoint)
+  - [7. Evoluzione Pianificata](#7-evoluzione-pianificata)
+    - [7.1 v0.2.0 - Basic Auth](#71-v020---basic-auth)
+    - [7.2 v0.3.0 - JWT Authentication](#72-v030---jwt-authentication)
+    - [7.3 v0.4.0 - RBAC](#73-v040---rbac)
+    - [7.4 v1.0.0 - OAuth2 / OIDC](#74-v100---oauth2--oidc)
 
 ---
 

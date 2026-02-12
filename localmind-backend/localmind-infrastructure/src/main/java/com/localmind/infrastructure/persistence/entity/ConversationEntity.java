@@ -28,10 +28,22 @@ public class ConversationEntity {
 
     private String title;
 
+    @Column(columnDefinition = "TEXT")
+    private String systemPrompt;
+
     @OneToMany(mappedBy = "conversation", cascade = CascadeType.ALL, orphanRemoval = true)
     @OrderBy("createdAt ASC")
     @Builder.Default
     private List<ChatMessageEntity> messages = new ArrayList<>();
+
+    private Integer maxContextMessages;
+
+    @OneToMany(mappedBy = "conversation", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Builder.Default
+    private List<ConversationTagEntity> tags = new ArrayList<>();
+
+    @Column(columnDefinition = "JSON")
+    private String metadata;
 
     @Column(nullable = false)
     private Instant createdAt;

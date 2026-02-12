@@ -1,6 +1,7 @@
 export interface ChatMessage {
-  role: 'USER' | 'ASSISTANT' | 'SYSTEM';
+  role: 'USER' | 'ASSISTANT' | 'SYSTEM' | 'TOOL';
   content: string;
+  metadata?: Record<string, unknown>;
 }
 
 export interface ChatRequest {
@@ -8,14 +9,17 @@ export interface ChatRequest {
   provider?: string;
   model?: string;
   conversationId?: string;
+  systemPrompt?: string;
   temperature?: number;
   maxTokens?: number;
+  enableToolCalling?: boolean;
 }
 
 export interface ChatResponse {
   content: string;
   model: string;
   provider: string;
+  conversationId?: string;
   tokenUsage?: TokenUsage;
   latencyMs: number;
 }
@@ -31,4 +35,53 @@ export interface Conversation {
   title: string;
   messages: ChatMessage[];
   createdAt: string;
+}
+
+export interface ConversationSummary {
+  id: string;
+  title: string;
+  messageCount: number;
+  createdAt: string;
+  updatedAt: string;
+  tags?: string[];
+  metadata?: Record<string, unknown>;
+}
+
+export interface ConversationDetail {
+  id: string;
+  title: string;
+  systemPrompt?: string;
+  maxContextMessages?: number;
+  messages: ChatMessage[];
+  createdAt: string;
+  updatedAt: string;
+  tags?: string[];
+  metadata?: Record<string, unknown>;
+}
+
+export interface UpdateSystemPromptRequest {
+  systemPrompt: string | null;
+}
+
+export interface RenameRequest {
+  title: string;
+}
+
+export interface AddToolResultRequest {
+  toolName: string;
+  content: string;
+  metadata?: Record<string, unknown>;
+}
+
+export interface AddTagRequest {
+  tag: string;
+}
+
+export interface PageResponse<T> {
+  content: T[];
+  totalElements: number;
+  totalPages: number;
+  page: number;
+  size: number;
+  hasMore: boolean;
 }

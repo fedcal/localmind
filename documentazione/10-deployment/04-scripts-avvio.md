@@ -1,11 +1,11 @@
 # Script di Setup e Avvio
 
-| | |
-|---|---|
+|               |                                        |
+|---------------|----------------------------------------|
 | **Documento** | Documentazione Script di Setup e Avvio |
-| **Versione** | 0.1.0 |
-| **Data** | 2026-02-09 |
-| **Progetto** | LocalMind |
+| **Versione**  | 0.1.0                                  |
+| **Data**      | 2026-02-09                             |
+| **Progetto**  | LocalMind                              |
 
 ---
 
@@ -52,14 +52,14 @@ Su Windows i file `.bat` sono eseguibili di default.
 
 ## 2. Prerequisiti
 
-| Software | Versione minima | Verifica | Necessario per |
-|---|---|---|---|
-| **Java JDK** | 17+ | `java -version` | Backend |
-| **Maven** | 3.9+ | `mvn -version` | Backend |
-| **Node.js** | 22+ | `node -v` | Frontend |
-| **npm** | 10+ | `npm -v` | Frontend |
-| **MySQL** | 8.0+ | `mysql --version` | Database |
-| **Docker** | 24+ (opzionale) | `docker --version` | MySQL via Docker |
+| Software     | Versione minima | Verifica           | Necessario per   |
+|--------------|-----------------|--------------------|------------------|
+| **Java JDK** | 17+             | `java -version`    | Backend          |
+| **Maven**    | 3.9+            | `mvn -version`     | Backend          |
+| **Node.js**  | 22+             | `node -v`          | Frontend         |
+| **npm**      | 10+             | `npm -v`           | Frontend         |
+| **MySQL**    | 8.0+            | `mysql --version`  | Database         |
+| **Docker**   | 24+ (opzionale) | `docker --version` | MySQL via Docker |
 
 **Nota:** MySQL puo' essere installato nativamente oppure eseguito in un container Docker. Lo script `setup-mysql` rileva automaticamente entrambe le modalita'.
 
@@ -115,11 +115,11 @@ Lo script guida l'utente attraverso i seguenti step:
 
 Lo script verifica automaticamente:
 
-| Controllo | Descrizione |
-|---|---|
-| `command -v mysql` | Verifica se il client MySQL nativo e' nel PATH |
-| `docker ps --filter "ancestor=mysql"` | Cerca container Docker basati sull'immagine `mysql` |
-| `docker exec <container> mysql --version` | Verifica che il container abbia il client MySQL |
+| Controllo                                 | Descrizione                                         |
+|-------------------------------------------|-----------------------------------------------------|
+| `command -v mysql`                        | Verifica se il client MySQL nativo e' nel PATH      |
+| `docker ps --filter "ancestor=mysql"`     | Cerca container Docker basati sull'immagine `mysql` |
+| `docker exec <container> mysql --version` | Verifica che il container abbia il client MySQL     |
 
 Se rileva MySQL in Docker, usa `docker exec -i <container> mysql` per eseguire i comandi SQL.
 
@@ -190,25 +190,25 @@ scripts\start-backend.bat
 
 #### Cosa fa lo script
 
-| Step | Comando | Descrizione |
-|---|---|---|
-| 1. Verifica Java | `java -version` | Controlla che Java 17+ sia installato |
-| 2. Verifica Maven | `mvn -version` | Controlla che Maven sia installato |
-| 3. Compilazione | `mvn install -DskipTests -q` | Compila tutti i moduli e installa i JAR nel repository Maven locale |
-| 4. Avvio | `mvn -pl localmind-app spring-boot:run -Dspring-boot.run.profiles=dev` | Avvia il modulo `localmind-app` con profilo `dev` |
+| Step              | Comando                                                                | Descrizione                                                         |
+|-------------------|------------------------------------------------------------------------|---------------------------------------------------------------------|
+| 1. Verifica Java  | `java -version`                                                        | Controlla che Java 17+ sia installato                               |
+| 2. Verifica Maven | `mvn -version`                                                         | Controlla che Maven sia installato                                  |
+| 3. Compilazione   | `mvn install -DskipTests -q`                                           | Compila tutti i moduli e installa i JAR nel repository Maven locale |
+| 4. Avvio          | `mvn -pl localmind-app spring-boot:run -Dspring-boot.run.profiles=dev` | Avvia il modulo `localmind-app` con profilo `dev`                   |
 
 #### Profilo dev
 
 Il profilo `dev` (definito in `application-dev.yml`) configura:
 
-| Parametro | Valore |
-|---|---|
-| Database | `jdbc:mysql://localhost:3306/localmind` |
-| Ollama | `http://localhost:11434` |
-| Qdrant | `localhost:6334` |
-| n8n | `http://localhost:5678` |
-| Log level | `DEBUG` per `com.localmind` |
-| SQL logging | Abilitato con formattazione |
+| Parametro   | Valore                                  |
+|-------------|-----------------------------------------|
+| Database    | `jdbc:mysql://localhost:3306/localmind` |
+| Ollama      | `http://localhost:11434`                |
+| Qdrant      | `localhost:6334`                        |
+| n8n         | `http://localhost:5678`                 |
+| Log level   | `DEBUG` per `com.localmind`             |
+| SQL logging | Abilitato con formattazione             |
 
 #### Output atteso
 
@@ -259,11 +259,11 @@ scripts\start-frontend.bat
 
 #### Cosa fa lo script
 
-| Step | Comando | Descrizione |
-|---|---|---|
-| 1. Verifica Node.js | `node -v` | Controlla che Node.js 22+ sia installato |
-| 2. Installa dipendenze | `npm ci` | Solo se `node_modules/` non esiste |
-| 3. Avvio | `npm start` (alias di `ng serve`) | Avvia il dev server Angular |
+| Step                   | Comando                           | Descrizione                              |
+|------------------------|-----------------------------------|------------------------------------------|
+| 1. Verifica Node.js    | `node -v`                         | Controlla che Node.js 22+ sia installato |
+| 2. Installa dipendenze | `npm ci`                          | Solo se `node_modules/` non esiste       |
+| 3. Avvio               | `npm start` (alias di `ng serve`) | Avvia il dev server Angular              |
 
 #### Output atteso
 
@@ -281,11 +281,11 @@ Avvio Angular dev server su http://localhost:4200 ...
 
 #### Funzionalita' del dev server
 
-| Funzionalita' | Descrizione |
-|---|---|
-| **Live reload** | Ricarica automatica del browser ad ogni modifica dei file sorgente |
-| **Hot Module Replacement** | Aggiornamento parziale senza ricaricamento completo della pagina |
-| **Source maps** | Mapping tra codice compilato e sorgente per il debugging nel browser |
+| Funzionalita'              | Descrizione                                                          |
+|----------------------------|----------------------------------------------------------------------|
+| **Live reload**            | Ricarica automatica del browser ad ogni modifica dei file sorgente   |
+| **Hot Module Replacement** | Aggiornamento parziale senza ricaricamento completo della pagina     |
+| **Source maps**            | Mapping tra codice compilato e sorgente per il debugging nel browser |
 
 #### Verifica
 
@@ -309,10 +309,10 @@ scripts\start-all.bat
 
 #### Comportamento per piattaforma
 
-| Piattaforma | Comportamento | Come fermare |
-|---|---|---|
-| **Linux/macOS** | Avvia backend e frontend come processi paralleli nello stesso terminale | `Ctrl+C` ferma entrambi |
-| **Windows** | Apre backend e frontend in **finestre cmd separate** | Chiudere le singole finestre |
+| Piattaforma     | Comportamento                                                           | Come fermare                 |
+|-----------------|-------------------------------------------------------------------------|------------------------------|
+| **Linux/macOS** | Avvia backend e frontend come processi paralleli nello stesso terminale | `Ctrl+C` ferma entrambi      |
+| **Windows**     | Apre backend e frontend in **finestre cmd separate**                    | Chiudere le singole finestre |
 
 #### Flusso di avvio
 
@@ -325,8 +325,8 @@ scripts\start-all.bat
 
 #### Porte risultanti
 
-| Servizio | URL |
-|---|---|
+| Servizio    | URL                   |
+|-------------|-----------------------|
 | Backend API | http://localhost:8080 |
 | Frontend UI | http://localhost:4200 |
 
@@ -373,10 +373,10 @@ Dopo il primo setup, e' sufficiente:
 
 ### File di configurazione Spring Boot
 
-| File | Ambiente | Utilizzo |
-|---|---|---|
-| `application.yml` | Base | Profilo attivo, porta server |
-| `application-dev.yml` | Sviluppo | Credenziali localhost, logging DEBUG |
+| File                   | Ambiente   | Utilizzo                               |
+|------------------------|------------|----------------------------------------|
+| `application.yml`      | Base       | Profilo attivo, porta server           |
+| `application-dev.yml`  | Sviluppo   | Credenziali localhost, logging DEBUG   |
 | `application-prod.yml` | Produzione | Credenziali via env vars, logging WARN |
 
 ### Parametri di connessione MySQL
@@ -395,24 +395,24 @@ spring:
         dialect: org.hibernate.dialect.MySQLDialect
 ```
 
-| Parametro URL JDBC | Descrizione |
-|---|---|
-| `useSSL=false` | Disabilita SSL (sviluppo locale) |
+| Parametro URL JDBC             | Descrizione                                                   |
+|--------------------------------|---------------------------------------------------------------|
+| `useSSL=false`                 | Disabilita SSL (sviluppo locale)                              |
 | `allowPublicKeyRetrieval=true` | Consente il recupero della chiave pubblica per autenticazione |
-| `serverTimezone=UTC` | Imposta il timezone del server a UTC |
+| `serverTimezone=UTC`           | Imposta il timezone del server a UTC                          |
 
 ### Flyway Migrations
 
 Le tabelle vengono create automaticamente da Flyway al primo avvio del backend:
 
-| Migration | Tabella | Descrizione |
-|---|---|---|
-| `V1` | `documents` | Documenti caricati e indicizzati |
-| `V2` | `folder_configs` | Configurazioni cartelle monitorate |
-| `V3` | `llm_usage` | Tracking utilizzo e costi LLM |
-| `V4` | `conversations`, `chat_messages` | Conversazioni chat e messaggi |
-| `V5` | `webhooks` | Configurazioni webhook per eventi |
-| `V6` | `mcp_servers` | Registrazioni server MCP |
+| Migration | Tabella                          | Descrizione                        |
+|-----------|----------------------------------|------------------------------------|
+| `V1`      | `documents`                      | Documenti caricati e indicizzati   |
+| `V2`      | `folder_configs`                 | Configurazioni cartelle monitorate |
+| `V3`      | `llm_usage`                      | Tracking utilizzo e costi LLM      |
+| `V4`      | `conversations`, `chat_messages` | Conversazioni chat e messaggi      |
+| `V5`      | `webhooks`                       | Configurazioni webhook per eventi  |
+| `V6`      | `mcp_servers`                    | Registrazioni server MCP           |
 
 ---
 

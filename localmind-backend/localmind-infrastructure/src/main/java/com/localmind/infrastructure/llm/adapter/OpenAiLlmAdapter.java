@@ -61,6 +61,7 @@ public class OpenAiLlmAdapter implements LlmClient {
             case SYSTEM -> new SystemMessage(msg.getContent());
             case USER -> new UserMessage(msg.getContent());
             case ASSISTANT -> new AssistantMessage(msg.getContent());
+            case TOOL -> new UserMessage(msg.getContent());
         };
     }
 

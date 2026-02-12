@@ -255,14 +255,14 @@ LocalMind adotta un'architettura modulare basata su porte e adapter (Hexagonal A
 
 ### Componenti sostituibili
 
-| Componente attuale | Alternative possibili | Porta/Interfaccia |
-|---|---|---|
-| MySQL | PostgreSQL, MariaDB, H2 | Spring Data JPA (astrazione) |
-| Qdrant | Chroma, Milvus, Weaviate, Pinecone | `VectorStorePort` |
-| Ollama | llama.cpp, vLLM, LocalAI | `LlmPort` |
-| Spring AI | LangChain4j | `LlmPort` adapter |
-| n8n | Apache Airflow, Prefect | `AutomationPort` |
-| Angular | React, Vue.js | API REST (disaccoppiato) |
+| Componente attuale |      Alternative possibili         |       Porta/Interfaccia      |
+|--------------------|------------------------------------|------------------------------|
+| MySQL              | PostgreSQL, MariaDB, H2            | Spring Data JPA (astrazione) |
+| Qdrant             | Chroma, Milvus, Weaviate, Pinecone | `VectorStorePort`            |
+| Ollama             | llama.cpp, vLLM, LocalAI           | `LlmPort`                    |
+| Spring AI          | LangChain4j                        | `LlmPort` adapter            |
+| n8n                | Apache Airflow, Prefect            | `AutomationPort`             |
+| Angular            | React, Vue.js                      | API REST (disaccoppiato)     |
 
 ### Migrazione tra componenti
 

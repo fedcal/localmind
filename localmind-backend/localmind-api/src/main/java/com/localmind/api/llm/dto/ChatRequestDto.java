@@ -16,7 +16,9 @@ public class ChatRequestDto {
     private String provider;
     private String model;
     private String conversationId;
+    private String systemPrompt;
     @Builder.Default
     private double temperature = 0.7;
     private int maxTokens;
+    private boolean enableToolCalling;
 }

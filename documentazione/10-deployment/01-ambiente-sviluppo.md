@@ -1,30 +1,55 @@
 # Ambiente di Sviluppo
 
-| | |
-|---|---|
+|               |                                                     |
+|---------------|-----------------------------------------------------|
 | **Documento** | Guida alla Configurazione dell'Ambiente di Sviluppo |
-| **Versione** | 0.1.0 |
-| **Data** | 2026-02-09 |
-| **Progetto** | LocalMind |
+| **Versione**  | 0.1.0                                               |
+| **Data**      | 2026-02-09                                          |
+| **Progetto**  | LocalMind                                           |
 
 ---
 
 ## Indice
 
-1. [Prerequisiti](#1-prerequisiti)
-2. [Step 1: Clonare il Repository](#2-step-1-clonare-il-repository)
-3. [Step 2: Configurare le Variabili d'Ambiente](#3-step-2-configurare-le-variabili-dambiente)
-4. [Step 3: Configurare MySQL](#4-step-3-configurare-mysql)
-5. [Step 4: Scaricare i Modelli Ollama](#5-step-4-scaricare-i-modelli-ollama)
-6. [Step 5: Compilare e Avviare il Backend](#6-step-5-compilare-e-avviare-il-backend)
-7. [Step 6: Installare Dipendenze e Avviare il Frontend](#7-step-6-installare-dipendenze-e-avviare-il-frontend)
-8. [Verifica dell'Installazione](#8-verifica-dellinstallazione)
-9. [Troubleshooting](#9-troubleshooting)
-   - 9.1 [Porta gia' in uso](#91-porta-gia-in-uso)
-   - 9.2 [Ollama non risponde](#92-ollama-non-risponde)
-   - 9.3 [MySQL connection refused](#93-mysql-connection-refused)
-   - 9.4 [Angular build errors](#94-angular-build-errors)
-   - 9.5 [Problemi di memoria con Ollama](#95-problemi-di-memoria-con-ollama)
+- [Ambiente di Sviluppo](#ambiente-di-sviluppo)
+  - [Indice](#indice)
+  - [1. Prerequisiti](#1-prerequisiti)
+    - [Software obbligatorio](#software-obbligatorio)
+    - [Software opzionale (raccomandato)](#software-opzionale-raccomandato)
+    - [Verifica rapida dei prerequisiti](#verifica-rapida-dei-prerequisiti)
+  - [2. Step 1: Clonare il Repository](#2-step-1-clonare-il-repository)
+    - [Struttura del repository dopo la clonazione](#struttura-del-repository-dopo-la-clonazione)
+  - [3. Step 2: Configurare le Variabili d'Ambiente](#3-step-2-configurare-le-variabili-dambiente)
+    - [Contenuto del file .env](#contenuto-del-file-env)
+  - [4. Step 3: Configurare MySQL](#4-step-3-configurare-mysql)
+    - [Configurazione manuale di MySQL](#configurazione-manuale-di-mysql)
+    - [Verifica della connessione](#verifica-della-connessione)
+    - [Servizi infrastrutturali opzionali](#servizi-infrastrutturali-opzionali)
+    - [Servizi e porte](#servizi-e-porte)
+    - [Verifica rapida dell'infrastruttura](#verifica-rapida-dellinfrastruttura)
+  - [5. Step 4: Scaricare i Modelli Ollama](#5-step-4-scaricare-i-modelli-ollama)
+    - [Modello di chat (obbligatorio)](#modello-di-chat-obbligatorio)
+    - [Modello di embedding (obbligatorio per RAG)](#modello-di-embedding-obbligatorio-per-rag)
+    - [Verifica dei modelli installati](#verifica-dei-modelli-installati)
+    - [Modelli alternativi (opzionali)](#modelli-alternativi-opzionali)
+  - [6. Step 5: Compilare e Avviare il Backend](#6-step-5-compilare-e-avviare-il-backend)
+    - [Compilazione](#compilazione)
+    - [Avvio dell'applicazione](#avvio-dellapplicazione)
+    - [Verifica del backend](#verifica-del-backend)
+  - [7. Step 6: Installare Dipendenze e Avviare il Frontend](#7-step-6-installare-dipendenze-e-avviare-il-frontend)
+    - [Installazione dipendenze](#installazione-dipendenze)
+    - [Avvio del dev server Angular](#avvio-del-dev-server-angular)
+    - [Avvio rapido completo](#avvio-rapido-completo)
+    - [Verifica del frontend](#verifica-del-frontend)
+  - [8. Verifica dell'Installazione](#8-verifica-dellinstallazione)
+    - [Checklist di verifica](#checklist-di-verifica)
+    - [Mappa delle porte](#mappa-delle-porte)
+  - [9. Troubleshooting](#9-troubleshooting)
+    - [9.1 Porta gia' in uso](#91-porta-gia-in-uso)
+    - [9.2 Ollama non risponde](#92-ollama-non-risponde)
+    - [9.3 MySQL connection refused](#93-mysql-connection-refused)
+    - [9.4 Angular build errors](#94-angular-build-errors)
+    - [9.5 Problemi di memoria con Ollama](#95-problemi-di-memoria-con-ollama)
 
 ---
 
@@ -211,13 +236,13 @@ docker compose up -d qdrant ollama n8n
 
 ### Servizi e porte
 
-| Servizio | Porta locale | Protocollo | Verifica |
-|---|---|---|---|
-| MySQL | `3306` | TCP | `mysql -h localhost -u localmind -plocalmind localmind` |
-| Qdrant REST | `6333` | HTTP | `curl http://localhost:6333/healthz` |
-| Qdrant gRPC | `6334` | gRPC | - |
-| Ollama | `11434` | HTTP | `curl http://localhost:11434/api/tags` |
-| n8n | `5678` | HTTP | Aprire `http://localhost:5678` nel browser |
+| Servizio    | Porta locale | Protocollo | Verifica                                                |
+|-------------|--------------|------------|---------------------------------------------------------|
+| MySQL       | `3306`       | TCP        | `mysql -h localhost -u localmind -plocalmind localmind` |
+| Qdrant REST | `6333`       | HTTP       | `curl http://localhost:6333/healthz`                    |
+| Qdrant gRPC | `6334`       | gRPC       | -                                                       |
+| Ollama      | `11434`      | HTTP       | `curl http://localhost:11434/api/tags`                  |
+| n8n         | `5678`       | HTTP       | Aprire `http://localhost:5678` nel browser              |
 
 ### Verifica rapida dell'infrastruttura
 
@@ -276,14 +301,14 @@ nomic-embed-text:latest xxxxxxxxx       274 MB    x minutes ago
 
 ### Modelli alternativi (opzionali)
 
-| Modello | Dimensione | Utilizzo | Comando |
-|---|---|---|---|
-| `llama3.2` | ~2 GB | Chat (default, buon bilanciamento) | `ollama pull llama3.2` |
-| `llama3.2:1b` | ~1.3 GB | Chat (leggero, per macchine con poca RAM) | `ollama pull llama3.2:1b` |
-| `mistral` | ~4 GB | Chat (alternativa a Llama) | `ollama pull mistral` |
-| `codellama` | ~3.8 GB | Generazione codice | `ollama pull codellama` |
-| `nomic-embed-text` | ~274 MB | Embedding (default) | `ollama pull nomic-embed-text` |
-| `mxbai-embed-large` | ~670 MB | Embedding (maggiore qualita') | `ollama pull mxbai-embed-large` |
+| Modello             | Dimensione | Utilizzo                                  | Comando                         |
+|---------------------|------------|-------------------------------------------|---------------------------------|
+| `llama3.2`          | ~2 GB      | Chat (default, buon bilanciamento)        | `ollama pull llama3.2`          |
+| `llama3.2:1b`       | ~1.3 GB    | Chat (leggero, per macchine con poca RAM) | `ollama pull llama3.2:1b`       |
+| `mistral`           | ~4 GB      | Chat (alternativa a Llama)                | `ollama pull mistral`           |
+| `codellama`         | ~3.8 GB    | Generazione codice                        | `ollama pull codellama`         |
+| `nomic-embed-text`  | ~274 MB    | Embedding (default)                       | `ollama pull nomic-embed-text`  |
+| `mxbai-embed-large` | ~670 MB    | Embedding (maggiore qualita')             | `ollama pull mxbai-embed-large` |
 
 **Nota:** I modelli vengono salvati nella directory locale di Ollama (`~/.ollama/models`) e persistono tra i riavvii del servizio.
 
@@ -442,16 +467,16 @@ Dopo aver completato tutti gli step, verificare che l'intero stack sia funzionan
 
 ```
 ┌─────────────────────────────────────────────┐
-│                  localhost                     │
-│                                               │
-│   :4200  ─── Angular Dev Server (Frontend)    │
-│   :8080  ─── Spring Boot (Backend API)        │
-│   :3306  ─── MySQL (Database)                 │
-│   :6333  ─── Qdrant REST API (Vector Store)   │
-│   :6334  ─── Qdrant gRPC (Vector Store)       │
-│   :11434 ─── Ollama (LLM Inference)           │
-│   :5678  ─── n8n (Workflow Automation)         │
-│                                               │
+│                  localhost                  │
+│                                             │
+│   :4200  ─── Angular Dev Server (Frontend)  │
+│   :8080  ─── Spring Boot (Backend API)      │
+│   :3306  ─── MySQL (Database)               │
+│   :6333  ─── Qdrant REST API (Vector Store) │
+│   :6334  ─── Qdrant gRPC (Vector Store)     │
+│   :11434 ─── Ollama (LLM Inference)         │
+│   :5678  ─── n8n (Workflow Automation)      │
+│                                             │
 └─────────────────────────────────────────────┘
 ```
 

@@ -58,6 +58,8 @@ spring:
       enabled: false
 
 localmind:
+  chat:
+    default-max-context-messages: 50
   llm:
     ollama:
       enabled: ${LLM_OLLAMA_ENABLED:true}

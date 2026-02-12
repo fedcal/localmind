@@ -13,6 +13,7 @@ public class ChatResponseDto {
     private String content;
     private String model;
     private String provider;
+    private String conversationId;
     private TokenUsageDto tokenUsage;
     private long latencyMs;
 }

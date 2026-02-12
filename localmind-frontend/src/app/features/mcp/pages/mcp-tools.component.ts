@@ -5,6 +5,8 @@ import { McpToolService } from '../services/mcp-tool.service';
 import { McpTool, McpToolExecutionResult } from '../models/mcp.model';
 import { TranslatePipe } from '../../../core/i18n/translate.pipe';
 import { TranslationService } from '../../../core/i18n/translation.service';
+import { ChatStore } from '../../chat/state/chat.store';
+import { ConversationService } from '../../chat/services/conversation.service';
 
 @Component({
   selector: 'app-mcp-tools',
@@ -105,6 +107,20 @@ import { TranslationService } from '../../../core/i18n/translation.service';
               @if (execResult()!.result !== null && execResult()!.result !== undefined) {
                 <pre class="result-data">{{ formatResult(execResult()!.result) }}</pre>
               }
+              @if (execResult()!.success && chatStore.currentConversationId()) {
+                <div class="send-to-chat-area">
+                  <button class="btn btn-send-chat" (click)="sendToChat()" [disabled]="sendingToChat()">
+                    @if (sendingToChat()) { <span class="spinner-sm"></span> }
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/>
+                    </svg>
+                    {{ 'MCP_TOOLS.SEND_TO_CHAT' | translate }}
+                  </button>
+                  @if (sentToChat()) {
+                    <span class="sent-badge">{{ 'MCP_TOOLS.SENT_TO_CHAT' | translate }}</span>
+                  }
+                </div>
+              }
             </div>
           }
         </div>
@@ -187,11 +203,17 @@ import { TranslationService } from '../../../core/i18n/translation.service';
       border-radius: 6px; font-size: 0.8rem; font-family: monospace;
       overflow-x: auto; max-height: 300px; overflow-y: auto;
     }
+    .send-to-chat-area { display: flex; align-items: center; gap: 0.5rem; margin-top: 0.75rem; }
+    .btn-send-chat { background: #8e44ad; color: white; border: none; }
+    .btn-send-chat:hover:not(:disabled) { background: #7d3c98; }
+    .sent-badge { font-size: 0.75rem; color: #2e7d32; background: #e8f5e9; padding: 0.2rem 0.5rem; border-radius: 4px; }
   `]
 })
 export class McpToolsComponent implements OnInit {
   private mcpToolService = inject(McpToolService);
   private i18n = inject(TranslationService);
+  chatStore = inject(ChatStore);
+  private conversationService = inject(ConversationService);
 
   localTools = signal<McpTool[]>([]);
   externalTools = signal<McpTool[]>([]);
@@ -200,6 +222,8 @@ export class McpToolsComponent implements OnInit {
   executing = signal(false);
   execResult = signal<McpToolExecutionResult | null>(null);
   execArgs = '{}';
+  sendingToChat = signal(false);
+  sentToChat = signal(false);
 
   ngOnInit(): void { this.loadAll(); }
 
@@ -219,6 +243,7 @@ export class McpToolsComponent implements OnInit {
     this.selectedTool.set(tool);
     this.execResult.set(null);
     this.execArgs = '{}';
+    this.sentToChat.set(false);
   }
 
   executeTool() {
@@ -255,6 +280,31 @@ export class McpToolsComponent implements OnInit {
           executionTimeMs: 0
         });
         this.executing.set(false);
+      }
+    });
+  }
+
+  sendToChat() {
+    const result = this.execResult();
+    const tool = this.selectedTool();
+    const convId = this.chatStore.currentConversationId();
+    if (!result || !tool || !convId) return;
+
+    this.sendingToChat.set(true);
+    this.conversationService.addToolResult(convId, {
+      toolName: tool.name,
+      content: this.formatResult(result.result),
+      metadata: {
+        serverId: tool.serverId,
+        executionTimeMs: result.executionTimeMs
+      }
+    }).subscribe({
+      next: () => {
+        this.sendingToChat.set(false);
+        this.sentToChat.set(true);
+      },
+      error: () => {
+        this.sendingToChat.set(false);
       }
     });
   }

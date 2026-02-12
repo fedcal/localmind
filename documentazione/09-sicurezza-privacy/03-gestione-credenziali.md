@@ -1,11 +1,11 @@
 # Gestione Credenziali
 
-| | |
-|---|---|
+|               |                      |
+|---------------|----------------------|
 | **Documento** | Gestione Credenziali |
-| **Versione** | 0.1.0 |
-| **Data** | 2026-02-09 |
-| **Progetto** | LocalMind |
+| **Versione**  | 0.1.0                |
+| **Data**      | 2026-02-09           |
+| **Progetto**  | LocalMind            |
 
 ---
 
@@ -44,11 +44,11 @@ Il principio guida nella gestione delle credenziali e' la **separazione tra codi
 
 Le API key dei provider LLM cloud (OpenAI, Anthropic, Google) seguono una strategia di gestione a tre livelli:
 
-| Livello | Meccanismo | Ambiente |
-|---|---|---|
-| 1. Variabili d'ambiente del sistema | `export OPENAI_API_KEY=sk-...` | Produzione |
-| 2. File `.env` | `OPENAI_API_KEY=sk-...` | Sviluppo locale |
-| 3. Docker secrets | `/run/secrets/openai_api_key` | Docker Swarm / Kubernetes |
+|             Livello                 |           Meccanismo           |        Ambiente           |
+|-------------------------------------|--------------------------------|---------------------------|
+| 1. Variabili d'ambiente del sistema | `export OPENAI_API_KEY=sk-...` | Produzione                |
+| 2. File `.env`                      | `OPENAI_API_KEY=sk-...`        | Sviluppo locale           | 
+| 3. Docker secrets                   | `/run/secrets/openai_api_key`  | Docker Swarm / Kubernetes |
 
 La priorita' di risoluzione e':
 
@@ -150,23 +150,23 @@ data:
 La tabella seguente elenca tutte le variabili d'ambiente riconosciute da LocalMind nella v0.1.0:
 
 | Variabile | Obbligatoria | Default | Descrizione |
-|---|---|---|---|
-| `DB_USERNAME` | Si' | `localmind` | Username per la connessione a MySQL |
-| `DB_PASSWORD` | Si' | `localmind` | Password per la connessione a MySQL |
-| `OPENAI_API_KEY` | No | *(vuoto)* | API key per il provider OpenAI |
-| `ANTHROPIC_API_KEY` | No | *(vuoto)* | API key per il provider Anthropic |
-| `GOOGLE_API_KEY` | No | *(vuoto)* | API key per il provider Google AI |
-| `N8N_BASIC_AUTH_USER` | Si' | `admin` | Username per l'interfaccia web di n8n |
-| `N8N_BASIC_AUTH_PASSWORD` | Si' | `admin` | Password per l'interfaccia web di n8n |
+|---------------------------|-----|-------------|---------------------------------------|
+| `DB_USERNAME`             | Si' | `localmind` | Username per la connessione a MySQL   |
+| `DB_PASSWORD`             | Si' | `localmind` | Password per la connessione a MySQL   |
+| `OPENAI_API_KEY`          | No  | *(vuoto)*   | API key per il provider OpenAI        |
+| `ANTHROPIC_API_KEY`       | No  | *(vuoto)*   | API key per il provider Anthropic     |
+| `GOOGLE_API_KEY`          | No  | *(vuoto)*   | API key per il provider Google AI     |
+| `N8N_BASIC_AUTH_USER`     | Si' | `admin`     | Username per l'interfaccia web di n8n |
+| `N8N_BASIC_AUTH_PASSWORD` | Si' | `admin`     | Password per l'interfaccia web di n8n |
 
 ### Variabili pianificate per versioni future
 
-| Variabile | Versione target | Descrizione |
-|---|---|---|
-| `JWT_SECRET_KEY` | v0.3.0 | Chiave segreta per la firma dei JWT |
-| `JWT_EXPIRATION_MS` | v0.3.0 | Durata del token JWT in millisecondi |
-| `ENCRYPTION_KEY` | v0.3.0 | Chiave per la cifratura delle API key nel database |
-| `KEYCLOAK_CLIENT_SECRET` | v1.0.0 | Client secret per integrazione Keycloak |
+|          Variabile       | Versione target |                   Descrizione                      |
+|--------------------------|-----------------|----------------------------------------------------|
+| `JWT_SECRET_KEY`         |      v0.3.0     | Chiave segreta per la firma dei JWT                |
+| `JWT_EXPIRATION_MS`      |      v0.3.0     | Durata del token JWT in millisecondi               |
+| `ENCRYPTION_KEY`         |      v0.3.0     | Chiave per la cifratura delle API key nel database |
+| `KEYCLOAK_CLIENT_SECRET` |      v1.0.0     | Client secret per integrazione Keycloak            |
 
 ---
 
