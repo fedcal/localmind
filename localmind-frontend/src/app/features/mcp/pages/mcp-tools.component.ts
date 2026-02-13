@@ -1,4 +1,4 @@
-import { Component, OnInit, inject, signal } from '@angular/core';
+import { Component, OnInit, inject, signal, computed } from '@angular/core';
 import { SlicePipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { McpToolService } from '../services/mcp-tool.service';
@@ -25,15 +25,49 @@ import { ConversationService } from '../../chat/services/conversation.service';
         </button>
       </div>
 
+      <div class="filter-bar">
+        <div class="search-box">
+          <svg class="search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/>
+          </svg>
+          <input type="text"
+            [placeholder]="'MCP_TOOLS.SEARCH_PLACEHOLDER' | translate"
+            [value]="searchQuery()"
+            (input)="searchQuery.set($any($event.target).value)" />
+          @if (searchQuery()) {
+            <button class="clear-search" (click)="searchQuery.set('')" [attr.aria-label]="'COMMON.CLOSE' | translate">&times;</button>
+          }
+        </div>
+        <div class="category-chips">
+          <button class="chip" [class.active]="selectedCategory() === null" (click)="selectedCategory.set(null)">
+            {{ 'MCP_TOOLS.CATEGORY_ALL' | translate }}
+            <span class="chip-count">{{ localTools().length }}</span>
+          </button>
+          @for (cat of categories; track cat.key) {
+            <button class="chip" [class.active]="selectedCategory() === cat.key" (click)="selectedCategory.set(cat.key)">
+              {{ 'MCP_TOOLS.CATEGORY_' + cat.key | translate }}
+              <span class="chip-count">{{ getCategoryCount(cat.key) }}</span>
+            </button>
+          }
+        </div>
+      </div>
+
       <div class="section">
-        <h3>{{ 'MCP_TOOLS.LOCAL' | translate }} <span class="count">({{ localTools().length }})</span></h3>
-        @if (localTools().length === 0) {
-          <p class="empty">{{ 'MCP_TOOLS.LOCAL_EMPTY' | translate }}</p>
+        <h3>{{ 'MCP_TOOLS.LOCAL' | translate }} <span class="count">({{ filteredLocalTools().length }} / {{ localTools().length }})</span></h3>
+        @if (filteredLocalTools().length === 0) {
+          @if (localTools().length === 0) {
+            <p class="empty">{{ 'MCP_TOOLS.LOCAL_EMPTY' | translate }}</p>
+          } @else {
+            <p class="empty">{{ 'MCP_TOOLS.NO_RESULTS' | translate }}</p>
+          }
         } @else {
           <div class="tool-grid">
-            @for (tool of localTools(); track tool.name) {
+            @for (tool of filteredLocalTools(); track tool.name) {
               <div class="tool-card local" (click)="selectTool(tool)" [class.selected]="selectedTool()?.name === tool.name && selectedTool()?.local">
-                <div class="tool-name">{{ tool.name }}</div>
+                <div class="tool-header">
+                  <div class="tool-name">{{ tool.name }}</div>
+                  <span class="tool-category-badge">{{ 'MCP_TOOLS.CATEGORY_' + getToolCategory(tool.name) | translate }}</span>
+                </div>
                 <div class="tool-desc">{{ tool.description }}</div>
                 <span class="tool-badge local">{{ 'MCP_TOOLS.BADGE_LOCAL' | translate }}</span>
               </div>
@@ -133,6 +167,48 @@ import { ConversationService } from '../../chat/services/conversation.service';
     h3 { color: #333; font-size: 1.05rem; margin: 0 0 1rem 0; }
     .count { font-weight: 400; color: #999; font-size: 0.85rem; }
     .section { margin-bottom: 2rem; }
+
+    .filter-bar { margin-bottom: 1.5rem; display: flex; flex-direction: column; gap: 0.75rem; }
+    .search-box {
+      position: relative; display: flex; align-items: center;
+    }
+    .search-icon { position: absolute; left: 0.75rem; color: #999; pointer-events: none; }
+    .search-box input {
+      width: 100%; padding: 0.6rem 2rem 0.6rem 2.25rem;
+      border: 1px solid #ddd; border-radius: 8px; font-size: 0.9rem;
+      font-family: inherit; background: white; transition: border-color 0.15s;
+      box-sizing: border-box;
+    }
+    .search-box input:focus { outline: none; border-color: #0f3460; box-shadow: 0 0 0 2px rgba(15,52,96,0.1); }
+    .search-box input::placeholder { color: #aaa; }
+    .clear-search {
+      position: absolute; right: 0.5rem; background: none; border: none;
+      font-size: 1.2rem; color: #999; cursor: pointer; padding: 0 0.25rem;
+      line-height: 1;
+    }
+    .clear-search:hover { color: #333; }
+
+    .category-chips { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+    .chip {
+      display: inline-flex; align-items: center; gap: 0.3rem;
+      padding: 0.3rem 0.7rem; border: 1px solid #ddd; border-radius: 20px;
+      background: white; font-size: 0.78rem; cursor: pointer;
+      font-family: inherit; color: #555; transition: all 0.15s; white-space: nowrap;
+    }
+    .chip:hover { border-color: #0f3460; color: #0f3460; }
+    .chip.active { background: #0f3460; color: white; border-color: #0f3460; }
+    .chip-count {
+      font-size: 0.7rem; background: rgba(0,0,0,0.08); padding: 0.05rem 0.35rem;
+      border-radius: 10px; min-width: 1.1rem; text-align: center;
+    }
+    .chip.active .chip-count { background: rgba(255,255,255,0.25); }
+
+    .tool-header { display: flex; justify-content: space-between; align-items: flex-start; gap: 0.5rem; }
+    .tool-category-badge {
+      font-size: 0.6rem; padding: 0.1rem 0.4rem; border-radius: 4px;
+      background: #f0f0f0; color: #666; text-transform: uppercase; font-weight: 600;
+      white-space: nowrap; flex-shrink: 0;
+    }
     .btn { display: inline-flex; align-items: center; gap: 0.4rem; padding: 0.5rem 1rem; border: none; border-radius: 6px; font-size: 0.85rem; cursor: pointer; font-family: inherit; font-weight: 500; }
     .btn-primary { background: #0f3460; color: white; }
     .btn-primary:hover:not(:disabled) { background: #1a4a7a; }
@@ -224,6 +300,66 @@ export class McpToolsComponent implements OnInit {
   execArgs = '{}';
   sendingToChat = signal(false);
   sentToChat = signal(false);
+
+  searchQuery = signal('');
+  selectedCategory = signal<string | null>(null);
+
+  readonly categories: { key: string; prefixes: string[] }[] = [
+    { key: 'CORE', prefixes: ['document_search', 'chat', 'list_models'] },
+    { key: 'UTILITY', prefixes: ['regex', 'http', 'snippet'] },
+    { key: 'CODE', prefixes: ['code', 'dependency', 'scaffold'] },
+    { key: 'TEST', prefixes: ['test', 'benchmark'] },
+    { key: 'DEVOPS', prefixes: ['docker', 'log', 'cicd', 'pipeline'] },
+    { key: 'DATABASE', prefixes: ['schema', 'mock', 'dataset'] },
+    { key: 'DOC', prefixes: ['api_doc', 'codebase'] },
+    { key: 'PROJECT', prefixes: ['sprint', 'story', 'task', 'metric', 'time', 'budget', 'cost', 'retro', 'action'] },
+    { key: 'COMMUNICATION', prefixes: ['standup', 'env', 'get_env', 'compare', 'validate', 'generate_env'] },
+    { key: 'GOVERNANCE', prefixes: ['policy', 'access', 'role', 'audit', 'decision', 'link_decision'] },
+    { key: 'OPERATIONS', prefixes: ['incident', 'workflow', 'toggle'] },
+    { key: 'QUALITY', prefixes: ['gate', 'insight', 'dashboard', 'server_status', 'recent_activity', 'project_summary', 'register', 'discover', 'health', 'capabilities'] }
+  ];
+
+  filteredLocalTools = computed(() => {
+    let tools = this.localTools();
+    const query = this.searchQuery().toLowerCase().trim();
+    const category = this.selectedCategory();
+
+    if (query) {
+      tools = tools.filter(t =>
+        t.name.toLowerCase().includes(query) ||
+        (t.description && t.description.toLowerCase().includes(query))
+      );
+    }
+
+    if (category) {
+      const cat = this.categories.find(c => c.key === category);
+      if (cat) {
+        tools = tools.filter(t => this.matchesCategory(t.name, cat.prefixes));
+      }
+    }
+
+    return tools;
+  });
+
+  getToolCategory(toolName: string): string {
+    for (const cat of this.categories) {
+      if (this.matchesCategory(toolName, cat.prefixes)) {
+        return cat.key;
+      }
+    }
+    return 'CORE';
+  }
+
+  getCategoryCount(categoryKey: string): number {
+    const cat = this.categories.find(c => c.key === categoryKey);
+    if (!cat) return 0;
+    return this.localTools().filter(t => this.matchesCategory(t.name, cat.prefixes)).length;
+  }
+
+  private matchesCategory(toolName: string, prefixes: string[]): boolean {
+    const lowerName = toolName.toLowerCase();
+    return prefixes.some(prefix => lowerName.startsWith(prefix));
+  }
 
   ngOnInit(): void { this.loadAll(); }
 

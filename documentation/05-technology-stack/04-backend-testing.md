@@ -142,9 +142,9 @@ class DocumentRepositoryAdapterTest {
 ## Summary by Module
 
 | Module | Files | Tests | Time |
-|--------|-------|-------|------|
-| localmind-domain | 9 | 59 | ~2s |
-| localmind-api | 9 | 33 | ~2.5s |
-| localmind-infrastructure | 7 | 25 | ~3s |
-| localmind-batch | 1 | 2 | ~1.5s |
-| **Total** | **26** | **119** | **~9s** |
+|--------------------------|--------|---------|---------|
+| localmind-domain         | 9      | 59      | ~2s     |
+| localmind-api            | 9      | 33      | ~2.5s   |
+| localmind-infrastructure | 7      | 25      | ~3s     |
+| localmind-batch          | 1      | 2       | ~1.5s   |
+| **Total**                | **26** | **119** | **~9s** |

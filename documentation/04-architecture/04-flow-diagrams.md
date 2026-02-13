@@ -512,8 +512,8 @@ Cron Scheduler    FolderScanJob    FileSystemScanner   DocumentService    DocRep
       |                |                  |                  |                 |                |
       |                | [End file loop]  |                  |                 |                |
       |                |                  |                  |                 |                |
-      |                | [PENDING documents are processed                      |                |
-      |                |  by DocumentIngestionJob (Flow 2)]                   |                |
+      |                | [PENDING documents are processed    |                 |                |
+      |                |  by DocumentIngestionJob (Flow 2)]  |                 |                |
       |                |                  |                  |                 |                |
       |                | triggerIngestionJob()               |                 |                |
       |                |----------------------------------------------------------------------->|
@@ -601,7 +601,7 @@ EventSource      AutomationService    WebhookRepository   N8nWebhookClient      
       |          |                   |                    | }                       |                    |
       |          |                   |                    |------------------------>|                    |
       |          |                   |                    |                         |                    |
-      |          |                   |                    |                         | [n8n workflow       |
+      |          |                   |                    |                         | [n8n workflow      |
       |          |                   |                    |                         |  execution]        |
       |          |                   |                    |                         |                    |
       |          |                   |                    |                         | Action 1:          |

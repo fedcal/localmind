@@ -1,0 +1,6 @@
+CREATE TABLE mcp_insights (
+    id CHAR(36) NOT NULL PRIMARY KEY,
+    question VARCHAR(2000) NOT NULL,
+    result_json LONGTEXT,
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+);

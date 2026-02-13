@@ -1,0 +1,7 @@
+CREATE TABLE mcp_access_policies (
+    id CHAR(36) NOT NULL PRIMARY KEY,
+    name VARCHAR(200) NOT NULL,
+    effect VARCHAR(10) NOT NULL,
+    rules_json LONGTEXT,
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+);

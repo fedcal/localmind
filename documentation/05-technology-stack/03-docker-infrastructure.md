@@ -110,10 +110,10 @@ The project setup script automatically detects whether MySQL is available native
 
 ### Ports
 
-| Port   | Protocol   | Description                                                                                                 |
-|--------|------------|-------------------------------------------------------------------------------------------------------------|
+| Port   | Protocol   | Description                                                                                                    |
+|--------|------------|----------------------------------------------------------------------------------------------------------------|
 | `6333` | REST/HTTP  | REST API for management and debugging operations; web dashboard available at `http://localhost:6333/dashboard` |
-| `6334` | gRPC       | High-performance protocol used by Spring AI for vector operations                                           |
+| `6334` | gRPC       | High-performance protocol used by Spring AI for vector operations                                              |
 
 ### Healthcheck (Docker)
 

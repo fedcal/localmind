@@ -66,8 +66,8 @@ Java 17 was selected as a Long-Term Support (LTS) version, ensuring stability an
 
 | Alternative | Reason for Rejection                                                                                                                                             |
 |-------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| Java 21     | Advanced features (virtual threads) not needed for v0.1.0; compatibility with Spring AI 1.0.0 not fully verified at the time of development                     |
-| Java 11     | Lacks records, sealed classes, and other modern features essential for domain design                                                                              |
+| Java 21     | Advanced features (virtual threads) not needed for v0.1.0; compatibility with Spring AI 1.0.0 not fully verified at the time of development                      |
+| Java 11     | Lacks records, sealed classes, and other modern features essential for domain design                                                                             |
 
 ---
 
@@ -93,8 +93,8 @@ Spring Boot 3.4.2 is the project's parent POM (`spring-boot-starter-parent`). Th
 
 | Alternative  | Reason for Rejection                                                                                                             |
 |--------------|----------------------------------------------------------------------------------------------------------------------------------|
-| Quarkus      | Excellent for cloud-native microservices and GraalVM, but AI ecosystem less mature; Spring AI integration not available           |
-| Micronaut    | Comparable performance, but smaller community and less extensive documentation; no Spring AI integration                          |
+| Quarkus      | Excellent for cloud-native microservices and GraalVM, but AI ecosystem less mature; Spring AI integration not available          |
+| Micronaut    | Comparable performance, but smaller community and less extensive documentation; no Spring AI integration                         |
 
 ---
 
@@ -103,7 +103,7 @@ Spring Boot 3.4.2 is the project's parent POM (`spring-boot-starter-parent`). Th
 | Property    | Value                                                |
 |-------------|------------------------------------------------------|
 | **Name**    | Spring AI                                            |
-| **Version** | 1.0.0 (managed via `spring-ai-bom` BOM)             |
+| **Version** | 1.0.0 (managed via `spring-ai-bom` BOM)              |
 | **Purpose** | Unified API for LLM providers and vector stores      |
 
 ### Rationale
@@ -124,8 +124,8 @@ Spring AI provides a unified abstraction for interacting with different LLM prov
 
 ### Alternatives Considered
 
-| Alternative   | Reason for Rejection                                                      |
-|---------------|---------------------------------------------------------------------------|
+| Alternative   | Reason for Rejection                                                                                                                                           |
+|---------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | LangChain4j   | Valid and mature library, but lacks native integration with the Spring stack (auto-configuration, starters, profiles); requires more manual configuration code |
 
 ---
@@ -135,7 +135,7 @@ Spring AI provides a unified abstraction for interacting with different LLM prov
 | Property    | Value                                          |
 |-------------|------------------------------------------------|
 | **Name**    | Spring Data JPA with Hibernate ORM             |
-| **Version** | Managed by Spring Boot 3.4.2 (Hibernate 6.x)  |
+| **Version** | Managed by Spring Boot 3.4.2 (Hibernate 6.x)   |
 | **Purpose** | Object-Relational Mapping and data access      |
 
 ### Rationale
@@ -252,10 +252,10 @@ spring:
 
 ### Alternatives Considered
 
-| Alternative          | Reason for Rejection                                                      |
-|----------------------|---------------------------------------------------------------------------|
+| Alternative          | Reason for Rejection                                                                                                                                            |
+|----------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | PostgreSQL           | Advanced features (JSONB, gen_random_uuid) not necessary for the complexity level of LocalMind v0.1.0; MySQL is more widespread and simpler to install natively |
-| H2                   | Suitable only for testing; not adequate for production with JSON and UUID  |
+| H2                   | Suitable only for testing; not adequate for production with JSON and UUID                                                                                       |
 
 ---
 
@@ -296,7 +296,7 @@ spring:
 |-------------|---------------------------------------------------------------------------------------------|
 | Chroma      | Smaller community; no dedicated Spring AI starter available at the time of development      |
 | Milvus      | More complex to configure and operate; overhead for a single-node project                   |
-| Weaviate    | Advanced features not needed; Spring AI starter not available                                |
+| Weaviate    | Advanced features not needed; Spring AI starter not available                               |
 | Pinecone    | Cloud-only service; incompatible with LocalMind's local-first approach                      |
 
 ---
@@ -330,7 +330,7 @@ Apache Tika is the reference library for extracting text from heterogeneous form
 | Alternative | Reason for Rejection                                                                         |
 |-------------|----------------------------------------------------------------------------------------------|
 | PDFBox      | Supports only PDF; Tika offers a unified API for multiple formats                            |
-| iText       | Commercial license (AGPL); oriented towards PDF generation rather than text extraction        |
+| iText       | Commercial license (AGPL); oriented towards PDF generation rather than text extraction       |
 
 ---
 
@@ -369,7 +369,7 @@ spring:
 
 | Alternative | Reason for Rejection                                                                                                 |
 |-------------|----------------------------------------------------------------------------------------------------------------------|
-| Liquibase   | More flexible (XML/YAML/JSON format), but greater complexity; Flyway is sufficient for pure SQL migrations            |
+| Liquibase   | More flexible (XML/YAML/JSON format), but greater complexity; Flyway is sufficient for pure SQL migrations           |
 
 ---
 
@@ -440,7 +440,7 @@ Lombok is a shared dependency (`<optional>true</optional>`) across all project m
 |-------------|------------------------------------------------|
 | **Name**    | Apache Maven                                   |
 | **Version** | 3.x (wrapper not included)                     |
-| **Purpose** | Build tool and dependency management            |
+| **Purpose** | Build tool and dependency management           |
 
 ### Rationale
 

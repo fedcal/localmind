@@ -64,7 +64,7 @@ Angular 21 was selected as the frontend framework for the following reasons:
 
 | Alternative | Reason for Rejection                                                                                                                    |
 |-------------|-----------------------------------------------------------------------------------------------------------------------------------------|
-| React       | Excellent ecosystem, but less opinionated; requires additional architectural choices for routing, state management, and form handling    |
+| React       | Excellent ecosystem, but less opinionated; requires additional architectural choices for routing, state management, and form handling   |
 | Vue.js      | Progressive and accessible framework, but enterprise ecosystem less established compared to Angular                                     |
 | Svelte      | Innovative approach with compilation, but less mature ecosystem for complex enterprise applications                                     |
 
@@ -92,10 +92,10 @@ TypeScript is Angular's native language. Version 5.9.2 is used for:
 
 ## 4. RxJS 7.8.0
 
-| Property    | Value                                          |
-|-------------|------------------------------------------------|
-| **Name**    | RxJS (Reactive Extensions for JavaScript)      |
-| **Version** | 7.8.0                                          |
+| Property    | Value                                            |
+|-------------|--------------------------------------------------|
+| **Name**    | RxJS (Reactive Extensions for JavaScript)        |
+| **Version** | 7.8.0                                            |
 | **Purpose** | Asynchronous streams and HTTP client integration |
 
 ### Usage in the Project
@@ -145,7 +145,7 @@ The adopted pattern includes:
 | Aspect                | Angular Signals (LocalMind)    | NgRx                                  |
 |-----------------------|--------------------------------|---------------------------------------|
 | Boilerplate           | Zero                           | Actions, Reducers, Effects, Selectors |
-| External dependencies | None                           | `@ngrx/store`, `@ngrx/effects`, etc. |
+| External dependencies | None                           | `@ngrx/store`, `@ngrx/effects`, etc.  |
 | Type safety           | Native                         | Requires configuration                |
 | Learning curve        | Low                            | High                                  |
 | Suitability           | Optimal for small-medium apps  | Necessary for very complex apps       |
