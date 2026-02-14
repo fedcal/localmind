@@ -10,7 +10,7 @@ import com.localmind.api.common.advice.GlobalExceptionHandler;
 import com.localmind.domain.common.exception.ResourceNotFoundException;
 import com.localmind.domain.document.model.Document;
 import com.localmind.domain.document.model.DocumentStatus;
-import com.localmind.domain.document.port.in.DocumentIngestionUseCase;
+import com.localmind.domain.document.port.in.DocumentIngestionPipelineUseCase;
 import com.localmind.domain.document.service.DocumentService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -26,15 +26,15 @@ import java.util.List;
 class DocumentControllerTest {
 
     private MockMvc mockMvc;
-    private DocumentIngestionUseCase ingestionUseCase;
+    private DocumentIngestionPipelineUseCase ingestionPipeline;
     private DocumentService documentService;
     private ObjectMapper objectMapper;
 
     @BeforeEach
     void setUp() {
-        ingestionUseCase = mock(DocumentIngestionUseCase.class);
+        ingestionPipeline = mock(DocumentIngestionPipelineUseCase.class);
         documentService = mock(DocumentService.class);
-        DocumentController controller = new DocumentController(ingestionUseCase, documentService);
+        DocumentController controller = new DocumentController(ingestionPipeline, documentService);
         mockMvc = MockMvcBuilders.standaloneSetup(controller)
                 .setControllerAdvice(new GlobalExceptionHandler())
                 .build();
@@ -58,11 +58,14 @@ class DocumentControllerTest {
                 .filePath("/uploads/test-document.pdf")
                 .mimeType("application/pdf")
                 .fileSize(1024L)
-                .status(DocumentStatus.PENDING)
+                .status(DocumentStatus.INDEXED)
                 .createdAt(now)
+                .indexedAt(now)
                 .build();
 
-        when(ingestionUseCase.ingest(eq("test-document.pdf"), any(InputStream.class), eq("application/pdf")))
+        when(ingestionPipeline.ingestFile(
+                eq("test-document.pdf"), any(InputStream.class), eq("application/pdf"),
+                anyLong(), anyString()))
                 .thenReturn(document);
 
         mockMvc.perform(multipart("/api/v1/documents/upload").file(mockFile))
@@ -72,9 +75,11 @@ class DocumentControllerTest {
                 .andExpect(jsonPath("$.filePath").value("/uploads/test-document.pdf"))
                 .andExpect(jsonPath("$.mimeType").value("application/pdf"))
                 .andExpect(jsonPath("$.fileSize").value(1024))
-                .andExpect(jsonPath("$.status").value("PENDING"));
+                .andExpect(jsonPath("$.status").value("INDEXED"));
 
-        verify(ingestionUseCase).ingest(eq("test-document.pdf"), any(InputStream.class), eq("application/pdf"));
+        verify(ingestionPipeline).ingestFile(
+                eq("test-document.pdf"), any(InputStream.class), eq("application/pdf"),
+                anyLong(), anyString());
     }
 
     @Test

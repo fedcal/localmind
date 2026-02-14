@@ -1,0 +1,58 @@
+# ==========================================================
+# LocalMind - Docker Ignore
+# ==========================================================
+
+# Git
+.git
+.gitignore
+
+# IDE
+.idea
+.vscode
+*.iml
+
+# Claude Code
+.claude
+
+# Node
+localmind-frontend/node_modules
+localmind-frontend/dist
+localmind-frontend/.angular
+
+# Maven
+localmind-backend/**/target
+
+# Documentazione / Documentation
+documentazione
+documentation
+Sviluppi
+
+# Environment (contiene segreti / contains secrets)
+.env
+
+# Docker
+docker-compose.yml
+docker-compose.*.yml
+Dockerfile
+Dockerfile.*
+.dockerignore
+
+# Scripts
+scripts
+
+# Nginx config (copiata esplicitamente / copied explicitly)
+# nginx/ - NON ignorare, serve al Dockerfile.frontend
+
+# License e README
+LICENSE
+README.md
+README_EN.md
+CLAUDE.md
+CONTRIBUTING.md
+CHANGELOG.md
+
+# Misc
+*.log
+*.swp
+*.swo
+*~

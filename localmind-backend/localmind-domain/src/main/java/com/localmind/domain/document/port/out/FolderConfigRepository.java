@@ -9,5 +9,6 @@ public interface FolderConfigRepository {
     FolderConfig save(FolderConfig config);
     Optional<FolderConfig> findById(String id);
     List<FolderConfig> findAll();
+    List<FolderConfig> findByWatchEnabled(boolean watchEnabled);
     void deleteById(String id);
 }

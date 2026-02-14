@@ -5,6 +5,8 @@ import com.localmind.domain.llm.model.LlmProviderConfig;
 import com.localmind.domain.llm.port.out.ProviderConfigRepository;
 import com.localmind.infrastructure.persistence.entity.LlmProviderConfigEntity;
 import com.localmind.infrastructure.persistence.repository.JpaProviderConfigRepository;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -21,6 +23,7 @@ public class ProviderConfigRepositoryAdapter implements ProviderConfigRepository
     }
 
     @Override
+    @CacheEvict(value = "providerConfigs", allEntries = true)
     public LlmProviderConfig save(LlmProviderConfig config) {
         LlmProviderConfigEntity entity = toEntity(config);
         LlmProviderConfigEntity saved = jpaRepository.save(entity);
@@ -33,6 +36,7 @@ public class ProviderConfigRepositoryAdapter implements ProviderConfigRepository
     }
 
     @Override
+    @Cacheable("providerConfigs")
     public List<LlmProviderConfig> findAll() {
         return jpaRepository.findAll().stream().map(this::toDomain).toList();
     }
@@ -43,6 +47,7 @@ public class ProviderConfigRepositoryAdapter implements ProviderConfigRepository
     }
 
     @Override
+    @CacheEvict(value = "providerConfigs", allEntries = true)
     public void deleteById(String id) {
         jpaRepository.deleteById(UUID.fromString(id));
     }

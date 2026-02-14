@@ -14,6 +14,9 @@ import { TranslatePipe } from '../../../core/i18n/translate.pipe';
       <div class="tab-nav">
         <a routerLink="servers" routerLinkActive="active" class="tab">{{ 'MCP.TAB_SERVERS' | translate }}</a>
         <a routerLink="tools" routerLinkActive="active" class="tab">{{ 'MCP.TAB_TOOLS' | translate }}</a>
+        <a routerLink="scrum" routerLinkActive="active" class="tab">{{ 'MCP.TAB_SCRUM' | translate }}</a>
+        <a routerLink="incidents" routerLinkActive="active" class="tab">{{ 'MCP.TAB_INCIDENTS' | translate }}</a>
+        <a routerLink="time" routerLinkActive="active" class="tab">{{ 'MCP.TAB_TIME' | translate }}</a>
       </div>
 
       <div class="tab-content">

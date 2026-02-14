@@ -18,6 +18,10 @@ public class FolderConfig {
     private boolean recursive = true;
     @Builder.Default
     private boolean watchEnabled = false;
+    @Builder.Default
+    private String status = "ACTIVE";
     private Instant lastScanAt;
     private int documentCount;
+    @Builder.Default
+    private Instant createdAt = Instant.now();
 }

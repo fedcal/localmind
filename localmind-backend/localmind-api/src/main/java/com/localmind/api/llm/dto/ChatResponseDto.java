@@ -16,4 +16,5 @@ public class ChatResponseDto {
     private String conversationId;
     private TokenUsageDto tokenUsage;
     private long latencyMs;
+    private java.util.List<RagSourceDto> ragSources;
 }

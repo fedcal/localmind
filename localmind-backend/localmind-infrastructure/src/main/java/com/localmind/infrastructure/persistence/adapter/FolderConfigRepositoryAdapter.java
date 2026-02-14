@@ -6,6 +6,7 @@ import com.localmind.infrastructure.persistence.entity.FolderConfigEntity;
 import com.localmind.infrastructure.persistence.repository.JpaFolderConfigRepository;
 import org.springframework.stereotype.Component;
 
+import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -37,6 +38,13 @@ public class FolderConfigRepositoryAdapter implements FolderConfigRepository {
     }
 
     @Override
+    public List<FolderConfig> findByWatchEnabled(boolean watchEnabled) {
+        return jpaRepository.findByWatchEnabled(watchEnabled).stream()
+                .map(this::toDomain)
+                .toList();
+    }
+
+    @Override
     public void deleteById(String id) {
         jpaRepository.deleteById(UUID.fromString(id));
     }
@@ -47,7 +55,9 @@ public class FolderConfigRepositoryAdapter implements FolderConfigRepository {
                 .recursive(config.isRecursive())
                 .watchEnabled(config.isWatchEnabled())
                 .lastScanAt(config.getLastScanAt())
-                .documentCount(config.getDocumentCount());
+                .documentCount(config.getDocumentCount())
+                .status(config.getStatus() != null ? config.getStatus() : "ACTIVE")
+                .createdAt(config.getCreatedAt() != null ? config.getCreatedAt() : Instant.now());
 
         if (config.getId() != null) {
             builder.id(UUID.fromString(config.getId()));
@@ -64,6 +74,8 @@ public class FolderConfigRepositoryAdapter implements FolderConfigRepository {
                 .watchEnabled(entity.isWatchEnabled())
                 .lastScanAt(entity.getLastScanAt())
                 .documentCount(entity.getDocumentCount())
+                .status(entity.getStatus())
+                .createdAt(entity.getCreatedAt())
                 .build();
     }
 }

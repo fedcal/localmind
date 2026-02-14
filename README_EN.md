@@ -8,63 +8,57 @@ Local-first AI platform for document management, semantic search, and multi-prov
 
 ## Prerequisites
 
-| Requirement | Version |
-|-------------|---------|
-| Java | 17+ |
-| Maven | 3.9+ |
-| Node.js | 22+ |
-| npm | 11+ |
-| MySQL | 8.0 (Docker recommended) |
-| Ollama | Latest |
-| Qdrant | Latest |
+| Requirement | Version | Notes |
+|-------------|---------|-------|
+| Docker + Compose | v2+ | **Required** for infrastructure services |
+| Java | 17+ | Native mode only |
+| Maven | 3.9+ | Native mode only |
+| Node.js | 22+ | Native mode only |
+| npm | 11+ | Native mode only |
 
 ## Quick Start
 
-### 1. Clone and configure
+### Option A: Automated Setup (recommended)
+
+```bash
+git clone <repo-url> localmind
+cd localmind
+./scripts/setup.sh
+```
+
+The script guides you step-by-step: creates `.env`, starts MySQL/Qdrant/Ollama in Docker, configures the database and downloads AI models.
+
+### Option B: Full Docker (everything in containers)
+
+```bash
+git clone <repo-url> localmind
+cd localmind
+cp .env.example .env
+# Edit .env with your settings
+
+# Start everything (infra + backend + frontend)
+docker compose --profile full up -d --build
+```
+
+### Option C: Manual (developers)
 
 ```bash
 git clone <repo-url> localmind
 cd localmind
 cp .env.example .env
 # Edit .env with your credentials
-```
 
-### 2. Start external services
+# 1. Start infrastructure services
+docker compose up -d
 
-```bash
-# MySQL (Docker)
-docker run -d --name mysql-db-root \
-  -e MYSQL_ROOT_PASSWORD=<password> \
-  -e MYSQL_DATABASE=localmind \
-  -p 3306:3306 mysql:8.0
+# 2. Download Ollama models
+./scripts/setup-ollama-models.sh
 
-# Qdrant (Docker)
-docker run -d --name qdrant \
-  -p 6333:6333 -p 6334:6334 qdrant/qdrant
-
-# Ollama
-ollama serve
-ollama pull llama3.2
-ollama pull nomic-embed-text
-```
-
-### 3. Start everything
-
-```bash
+# 3. Start backend + frontend
 ./scripts/start-all.sh
 ```
 
-Or separately:
-
-```bash
-# Backend (port 8080)
-./scripts/start-backend.sh
-
-# Frontend (port 4200)
-./scripts/start-frontend.sh
-```
-
-### 4. Access
+### Access
 
 - **Frontend**: http://localhost:4200
 - **API**: http://localhost:8080/api/v1

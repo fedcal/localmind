@@ -1,6 +1,7 @@
 package com.localmind.api.common.advice;
 
 import com.localmind.api.common.dto.ErrorResponseDto;
+import com.localmind.domain.common.exception.AuthenticationException;
 import com.localmind.domain.common.exception.LlmProviderException;
 import com.localmind.domain.common.exception.ResourceNotFoundException;
 import com.localmind.domain.common.exception.DocumentProcessingException;
@@ -50,6 +51,14 @@ public class GlobalExceptionHandler {
         log.error("Document processing error: {}", ex.getMessage(), ex);
         return ResponseEntity.status(500).body(
                 ErrorResponseDto.of(500, ex.getMessage(), req.getRequestURI())
+        );
+    }
+
+    @ExceptionHandler(AuthenticationException.class)
+    public ResponseEntity<ErrorResponseDto> handleAuthentication(AuthenticationException ex, HttpServletRequest req) {
+        log.warn("Authentication error: {}", ex.getMessage());
+        return ResponseEntity.status(401).body(
+                ErrorResponseDto.of(401, ex.getMessage(), req.getRequestURI())
         );
     }
 

@@ -13,6 +13,18 @@ export const MCP_ROUTES: Routes = [
       {
         path: 'tools',
         loadComponent: () => import('./pages/mcp-tools.component').then(m => m.McpToolsComponent)
+      },
+      {
+        path: 'scrum',
+        loadComponent: () => import('./pages/mcp-scrum.component').then(m => m.McpScrumComponent)
+      },
+      {
+        path: 'incidents',
+        loadComponent: () => import('./pages/mcp-incidents.component').then(m => m.McpIncidentsComponent)
+      },
+      {
+        path: 'time',
+        loadComponent: () => import('./pages/mcp-time.component').then(m => m.McpTimeComponent)
       }
     ]
   }

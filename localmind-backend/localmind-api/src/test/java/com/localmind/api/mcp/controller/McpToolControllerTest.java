@@ -13,6 +13,7 @@ import com.localmind.domain.mcp.model.McpToolExecutionRequest;
 import com.localmind.domain.mcp.model.McpToolExecutionResult;
 import com.localmind.domain.mcp.port.in.McpToolDiscoveryUseCase;
 import com.localmind.domain.mcp.port.in.McpToolExecutionUseCase;
+import com.localmind.domain.mcp.port.out.LocalToolDiscoveryPort;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
@@ -27,13 +28,15 @@ class McpToolControllerTest {
     private MockMvc mockMvc;
     private McpToolDiscoveryUseCase discoveryUseCase;
     private McpToolExecutionUseCase executionUseCase;
+    private LocalToolDiscoveryPort localToolDiscoveryPort;
     private ObjectMapper objectMapper;
 
     @BeforeEach
     void setUp() {
         discoveryUseCase = mock(McpToolDiscoveryUseCase.class);
         executionUseCase = mock(McpToolExecutionUseCase.class);
-        McpToolController controller = new McpToolController(discoveryUseCase, executionUseCase);
+        localToolDiscoveryPort = mock(LocalToolDiscoveryPort.class);
+        McpToolController controller = new McpToolController(discoveryUseCase, executionUseCase, localToolDiscoveryPort);
         mockMvc = MockMvcBuilders.standaloneSetup(controller)
                 .setControllerAdvice(new GlobalExceptionHandler())
                 .build();
@@ -91,20 +94,22 @@ class McpToolControllerTest {
     }
 
     @Test
-    void listLocalTools_shouldReturn3Tools() throws Exception {
+    void listLocalTools_shouldReturnDiscoveredTools() throws Exception {
+        when(localToolDiscoveryPort.discoverLocalTools()).thenReturn(List.of(
+                Map.of("name", "analyzeComposeFile", "description", "Analyze Docker Compose", "local", true),
+                Map.of("name", "runPipeline", "description", "Run CI/CD pipeline", "local", true)
+        ));
+
         mockMvc.perform(get("/api/v1/mcp/tools/local"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.length()").value(3))
-                .andExpect(jsonPath("$[0].name").value("document_search"))
-                .andExpect(jsonPath("$[0].description").value("Search documents using RAG"))
+                .andExpect(jsonPath("$.length()").value(2))
+                .andExpect(jsonPath("$[0].name").value("analyzeComposeFile"))
+                .andExpect(jsonPath("$[0].description").value("Analyze Docker Compose"))
                 .andExpect(jsonPath("$[0].local").value(true))
-                .andExpect(jsonPath("$[1].name").value("chat"))
-                .andExpect(jsonPath("$[1].description").value("Send a message to an LLM"))
-                .andExpect(jsonPath("$[1].local").value(true))
-                .andExpect(jsonPath("$[2].name").value("list_models"))
-                .andExpect(jsonPath("$[2].description").value("List available LLM providers"))
-                .andExpect(jsonPath("$[2].local").value(true));
+                .andExpect(jsonPath("$[1].name").value("runPipeline"))
+                .andExpect(jsonPath("$[1].local").value(true));
 
+        verify(localToolDiscoveryPort).discoverLocalTools();
         verifyNoInteractions(discoveryUseCase);
         verifyNoInteractions(executionUseCase);
     }

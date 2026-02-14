@@ -6,6 +6,8 @@ import com.localmind.domain.document.port.out.VectorStorePort;
 import org.springframework.ai.document.Document;
 import org.springframework.ai.vectorstore.SearchRequest;
 import org.springframework.ai.vectorstore.VectorStore;
+import org.springframework.ai.vectorstore.filter.Filter;
+import org.springframework.ai.vectorstore.filter.FilterExpressionBuilder;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -28,7 +30,8 @@ public class QdrantVectorStoreAdapter implements VectorStorePort {
                         chunk.getContent(),
                         Map.of(
                                 "documentId", chunk.getDocumentId(),
-                                "chunkIndex", chunk.getChunkIndex()
+                                "chunkIndex", chunk.getChunkIndex(),
+                                "filename", chunk.getFilename() != null ? chunk.getFilename() : "unknown"
                         )))
                 .toList();
         vectorStore.add(documents);
@@ -56,7 +59,33 @@ public class QdrantVectorStoreAdapter implements VectorStorePort {
 
     @Override
     public void deleteByDocumentId(String documentId) {
-        vectorStore.delete(List.of(documentId));
+        try {
+            // Search for all chunks belonging to this document using metadata filter
+            FilterExpressionBuilder b = new FilterExpressionBuilder();
+            Filter.Expression filter = b.eq("documentId", documentId).build();
+
+            SearchRequest request = SearchRequest.builder()
+                    .query("*")
+                    .topK(1000)
+                    .filterExpression(filter)
+                    .build();
+
+            List<Document> chunks = vectorStore.similaritySearch(request);
+
+            if (!chunks.isEmpty()) {
+                List<String> chunkIds = chunks.stream()
+                        .map(Document::getId)
+                        .toList();
+                vectorStore.delete(chunkIds);
+            }
+        } catch (Exception e) {
+            // Fallback: try deleting by document ID as point ID (legacy behavior)
+            try {
+                vectorStore.delete(List.of(documentId));
+            } catch (Exception ignored) {
+                // Best effort deletion
+            }
+        }
     }
 
     private String getMetadataString(Map<String, Object> metadata, String key) {

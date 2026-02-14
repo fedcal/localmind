@@ -1,6 +1,10 @@
 package com.localmind.domain.mcp.service;
 
 import com.localmind.domain.mcp.model.InsightResult;
+import com.localmind.domain.mcp.port.in.IncidentManagerUseCase;
+import com.localmind.domain.mcp.port.in.ProjectEconomicsUseCase;
+import com.localmind.domain.mcp.port.in.QualityGateUseCase;
+import com.localmind.domain.mcp.port.in.ScrumBoardUseCase;
 import com.localmind.domain.mcp.port.out.InsightRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -11,11 +15,16 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.junit.jupiter.MockitoSettings;
 import org.mockito.quality.Strictness;
 
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.isNull;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -26,14 +35,64 @@ class InsightEngineServiceTest {
 
     @Mock
     private InsightRepository repository;
+    @Mock
+    private ScrumBoardUseCase scrumBoardUseCase;
+    @Mock
+    private ProjectEconomicsUseCase projectEconomicsUseCase;
+    @Mock
+    private IncidentManagerUseCase incidentManagerUseCase;
+    @Mock
+    private QualityGateUseCase qualityGateUseCase;
 
     private InsightEngineService service;
 
     @BeforeEach
     void setUp() {
-        service = new InsightEngineService(repository);
+        service = new InsightEngineService(repository, scrumBoardUseCase,
+                projectEconomicsUseCase, incidentManagerUseCase, qualityGateUseCase);
         when(repository.save(any(InsightResult.class)))
                 .thenAnswer(invocation -> invocation.getArgument(0));
+
+        // Default mocks for backlog
+        Map<String, Object> backlog = new LinkedHashMap<>();
+        List<Map<String, Object>> stories = new ArrayList<>();
+        Map<String, Object> story1 = new LinkedHashMap<>();
+        story1.put("id", "s1");
+        story1.put("storyPoints", 5);
+        List<Map<String, Object>> tasks1 = new ArrayList<>();
+        Map<String, Object> task1 = new LinkedHashMap<>();
+        task1.put("status", "done");
+        tasks1.add(task1);
+        story1.put("tasks", tasks1);
+        stories.add(story1);
+        backlog.put("stories", stories);
+        backlog.put("totalPoints", 5);
+        when(scrumBoardUseCase.getBacklog()).thenReturn(backlog);
+
+        // Default mocks for budget
+        Map<String, Object> budgetStatus = new LinkedHashMap<>();
+        budgetStatus.put("totalBudget", 100000.0);
+        budgetStatus.put("totalSpent", 60000.0);
+        budgetStatus.put("remaining", 40000.0);
+        budgetStatus.put("percentageUsed", 60.0);
+        when(projectEconomicsUseCase.getBudgetStatus(anyString())).thenReturn(budgetStatus);
+
+        // Default mocks for incidents
+        Map<String, Object> incidentData = new LinkedHashMap<>();
+        incidentData.put("incidents", new ArrayList<>());
+        incidentData.put("count", 3);
+        when(incidentManagerUseCase.listIncidents(isNull(), isNull(), anyInt())).thenReturn(incidentData);
+
+        Map<String, Object> openIncidents = new LinkedHashMap<>();
+        openIncidents.put("incidents", new ArrayList<>());
+        openIncidents.put("count", 1);
+        when(incidentManagerUseCase.listIncidents("open", null, 100)).thenReturn(openIncidents);
+
+        // Default mocks for quality gates
+        Map<String, Object> gatesData = new LinkedHashMap<>();
+        gatesData.put("gates", new ArrayList<>());
+        gatesData.put("count", 2);
+        when(qualityGateUseCase.listGates(isNull())).thenReturn(gatesData);
     }
 
     // ========== queryInsight Tests ==========
@@ -44,7 +103,7 @@ class InsightEngineServiceTest {
         Map<String, Object> result = service.queryInsight("How is our team velocity?");
 
         assertThat(result.get("question")).isEqualTo("How is our team velocity?");
-        assertThat((String) result.get("insight")).contains("velocity");
+        assertThat((String) result.get("insight")).containsIgnoringCase("backlog");
         assertThat((double) result.get("confidence")).isGreaterThan(0.5);
         assertThat((List<String>) result.get("suggestedActions")).isNotEmpty();
         assertThat(result.get("queriedAt")).isNotNull();
@@ -111,6 +170,24 @@ class InsightEngineServiceTest {
         Map<String, Object> result = service.queryInsight(null);
 
         assertThat(result.get("error")).isEqualTo("Question is required");
+    }
+
+    @Test
+    void queryInsight_velocityFallback_whenExceptionOccurs() {
+        when(scrumBoardUseCase.getBacklog()).thenThrow(new RuntimeException("DB error"));
+
+        Map<String, Object> result = service.queryInsight("How is our team velocity?");
+
+        assertThat((String) result.get("insight")).containsIgnoringCase("velocity");
+    }
+
+    @Test
+    void queryInsight_budgetFallback_whenExceptionOccurs() {
+        when(projectEconomicsUseCase.getBudgetStatus(anyString())).thenThrow(new RuntimeException("DB error"));
+
+        Map<String, Object> result = service.queryInsight("What is the budget status?");
+
+        assertThat((String) result.get("insight")).containsIgnoringCase("budget");
     }
 
     // ========== correlateMetrics Tests ==========
@@ -226,6 +303,21 @@ class InsightEngineServiceTest {
 
         String health = (String) result.get("overallHealth");
         assertThat(health).isIn("good", "warning", "critical");
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    void healthDashboard_fallsBackOnExceptions() {
+        when(scrumBoardUseCase.getBacklog()).thenThrow(new RuntimeException("DB error"));
+        when(projectEconomicsUseCase.getBudgetStatus(anyString())).thenThrow(new RuntimeException("DB error"));
+        when(incidentManagerUseCase.listIncidents("open", null, 100)).thenThrow(new RuntimeException("DB error"));
+        when(qualityGateUseCase.listGates(isNull())).thenThrow(new RuntimeException("DB error"));
+
+        Map<String, Object> result = service.healthDashboard();
+
+        assertThat(result.get("overallHealth")).isNotNull();
+        List<Map<String, Object>> areas = (List<Map<String, Object>>) result.get("areas");
+        assertThat(areas).hasSize(6);
     }
 
     // ========== parseMetricNames Tests ==========

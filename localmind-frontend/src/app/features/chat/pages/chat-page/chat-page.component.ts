@@ -38,6 +38,15 @@ import { ChatSidebarComponent } from '../../components/chat-sidebar/chat-sidebar
               </svg>
               {{ store.toolCallingEnabled() ? ('CHAT.TOOL_CALLING_ENABLED' | translate) : ('CHAT.TOOL_CALLING_DISABLED' | translate) }}
             </button>
+            <button class="rag-toggle"
+                    [class.active]="store.ragEnabled()"
+                    (click)="store.toggleRag()"
+                    [title]="'CHAT.TOGGLE_RAG' | translate">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M4 19.5A2.5 2.5 0 016.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z"/>
+              </svg>
+              {{ store.ragEnabled() ? ('CHAT.RAG_ON' | translate) : ('CHAT.RAG_OFF' | translate) }}
+            </button>
             <div class="context-window-control">
               <label>{{ 'CHAT.CONTEXT_WINDOW' | translate }}</label>
               <input type="number"
@@ -241,6 +250,21 @@ import { ChatSidebarComponent } from '../../components/chat-sidebar/chat-sidebar
     }
     .tool-calling-toggle:hover { border-color: #8e44ad; color: #8e44ad; }
     .tool-calling-toggle.active { background: #f3e5f5; border-color: #8e44ad; color: #8e44ad; }
+    .rag-toggle {
+      display: flex;
+      align-items: center;
+      gap: 0.3rem;
+      padding: 0.35rem 0.6rem;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      background: white;
+      font-size: 0.75rem;
+      color: #666;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .rag-toggle:hover { border-color: #27ae60; color: #27ae60; }
+    .rag-toggle.active { background: #e8f5e9; border-color: #27ae60; color: #27ae60; }
 
     .context-window-control {
       display: flex;
@@ -570,7 +594,8 @@ export class ChatPageComponent implements AfterViewChecked {
       model: this.store.selectedModel(),
       conversationId: this.store.currentConversationId() ?? undefined,
       systemPrompt: this.store.currentSystemPrompt() ?? undefined,
-      enableToolCalling: this.store.toolCallingEnabled() || undefined
+      enableToolCalling: this.store.toolCallingEnabled() || undefined,
+      enableRag: this.store.ragEnabled() || undefined
     }).subscribe({
       next: (response) => {
         this.store.addMessage({ role: 'ASSISTANT', content: response.content });

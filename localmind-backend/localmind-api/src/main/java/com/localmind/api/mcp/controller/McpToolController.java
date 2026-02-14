@@ -4,22 +4,30 @@ import com.localmind.api.mcp.dto.*;
 import com.localmind.domain.mcp.model.*;
 import com.localmind.domain.mcp.port.in.McpToolDiscoveryUseCase;
 import com.localmind.domain.mcp.port.in.McpToolExecutionUseCase;
+import com.localmind.domain.mcp.port.out.LocalToolDiscoveryPort;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/v1/mcp/tools")
+@Tag(name = "MCP Tools", description = "MCP tool discovery and execution")
 public class McpToolController {
 
     private final McpToolDiscoveryUseCase discoveryUseCase;
     private final McpToolExecutionUseCase executionUseCase;
+    private final LocalToolDiscoveryPort localToolDiscoveryService;
 
-    public McpToolController(McpToolDiscoveryUseCase discoveryUseCase, McpToolExecutionUseCase executionUseCase) {
+    public McpToolController(McpToolDiscoveryUseCase discoveryUseCase,
+                             McpToolExecutionUseCase executionUseCase,
+                             LocalToolDiscoveryPort localToolDiscoveryService) {
         this.discoveryUseCase = discoveryUseCase;
         this.executionUseCase = executionUseCase;
+        this.localToolDiscoveryService = localToolDiscoveryService;
     }
 
     @GetMapping
@@ -38,11 +46,13 @@ public class McpToolController {
 
     @GetMapping("/local")
     public ResponseEntity<List<McpToolDto>> listLocalTools() {
-        List<McpToolDto> localTools = List.of(
-                McpToolDto.builder().name("document_search").description("Search documents using RAG").local(true).build(),
-                McpToolDto.builder().name("chat").description("Send a message to an LLM").local(true).build(),
-                McpToolDto.builder().name("list_models").description("List available LLM providers").local(true).build()
-        );
+        List<McpToolDto> localTools = localToolDiscoveryService.discoverLocalTools().stream()
+                .map(tool -> McpToolDto.builder()
+                        .name((String) tool.get("name"))
+                        .description((String) tool.get("description"))
+                        .local(true)
+                        .build())
+                .collect(Collectors.toList());
         return ResponseEntity.ok(localTools);
     }
 

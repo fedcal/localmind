@@ -15,6 +15,7 @@ export class ChatStore {
   private _conversationsLoading = signal(false);
   private _currentSystemPrompt = signal<string | null>(null);
   private _toolCallingEnabled = signal(false);
+  private _ragEnabled = signal(false);
   private _maxContextMessages = signal<number | null>(null);
   private _filterTag = signal<string | null>(null);
   private _searchQuery = signal('');
@@ -37,6 +38,7 @@ export class ChatStore {
   readonly conversationsLoading = this._conversationsLoading.asReadonly();
   readonly currentSystemPrompt = this._currentSystemPrompt.asReadonly();
   readonly toolCallingEnabled = computed(() => this._toolCallingEnabled());
+  readonly ragEnabled = computed(() => this._ragEnabled());
   readonly maxContextMessages = this._maxContextMessages.asReadonly();
   readonly filterTag = this._filterTag.asReadonly();
   readonly searchQuery = this._searchQuery.asReadonly();
@@ -53,6 +55,10 @@ export class ChatStore {
 
   toggleToolCalling() {
     this._toolCallingEnabled.update(v => !v);
+  }
+
+  toggleRag() {
+    this._ragEnabled.update(v => !v);
   }
 
   setMaxContextMessages(value: number | null) {

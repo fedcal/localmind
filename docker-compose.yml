@@ -1,0 +1,170 @@
+# ==========================================================
+# LocalMind - Docker Compose
+# Infrastruttura locale per sviluppo e produzione.
+#
+# Uso rapido (solo infra):
+#   docker compose up -d
+#
+# Uso completo (tutto in container):
+#   docker compose --profile full up -d --build
+#
+# Quick usage (infra only):
+#   docker compose up -d
+#
+# Full usage (everything in containers):
+#   docker compose --profile full up -d --build
+# ==========================================================
+
+services:
+  # --- MySQL 8.0 ---
+  mysql:
+    image: mysql:8.0
+    container_name: localmind-mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD:-localmind}
+      MYSQL_DATABASE: ${DB_NAME:-localmind}
+      MYSQL_USER: ${DB_USERNAME:-localmind}
+      MYSQL_PASSWORD: ${DB_PASSWORD:-localmind}
+    ports:
+      - "127.0.0.1:${DB_PORT:-3306}:3306"
+    volumes:
+      - localmind-mysql-data:/var/lib/mysql
+    networks:
+      - localmind-net
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "127.0.0.1", "-u", "root", "-p${DB_PASSWORD:-localmind}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+
+  # --- Qdrant (Vector Store) ---
+  qdrant:
+    image: qdrant/qdrant:latest
+    container_name: localmind-qdrant
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:6333:6333"
+      - "127.0.0.1:${QDRANT_PORT:-6334}:6334"
+    volumes:
+      - localmind-qdrant-data:/qdrant/storage
+    networks:
+      - localmind-net
+    healthcheck:
+      test: ["CMD-SHELL", "curl -sf http://localhost:6333/healthz || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+
+  # --- Ollama (LLM locale / Local LLM) ---
+  ollama:
+    image: ollama/ollama:latest
+    container_name: localmind-ollama
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:${OLLAMA_PORT:-11434}:11434"
+    volumes:
+      - localmind-ollama-data:/root/.ollama
+    networks:
+      - localmind-net
+    healthcheck:
+      test: ["CMD-SHELL", "curl -sf http://localhost:11434/api/tags || exit 1"]
+      interval: 15s
+      timeout: 10s
+      retries: 5
+      start_period: 15s
+    # GPU NVIDIA (opzionale / optional) - decommenta se hai una GPU NVIDIA
+    # Uncomment if you have an NVIDIA GPU
+    # deploy:
+    #   resources:
+    #     reservations:
+    #       devices:
+    #         - driver: nvidia
+    #           count: all
+    #           capabilities: [gpu]
+
+  # --- Backend Spring Boot (profilo full / full profile) ---
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: localmind-backend
+    restart: unless-stopped
+    profiles:
+      - full
+    environment:
+      SPRING_PROFILES_ACTIVE: prod
+      DB_HOST: mysql
+      DB_PORT: 3306
+      DB_NAME: ${DB_NAME:-localmind}
+      DB_USERNAME: ${DB_USERNAME:-localmind}
+      DB_PASSWORD: ${DB_PASSWORD:-localmind}
+      OLLAMA_HOST: ollama
+      OLLAMA_PORT: 11434
+      OLLAMA_CHAT_MODEL: ${OLLAMA_CHAT_MODEL:-llama3.2}
+      OLLAMA_EMBED_MODEL: ${OLLAMA_EMBED_MODEL:-nomic-embed-text}
+      QDRANT_HOST: qdrant
+      QDRANT_PORT: 6334
+      QDRANT_COLLECTION: ${QDRANT_COLLECTION:-localmind-documents}
+      LLM_DEFAULT_PROVIDER: ${LLM_DEFAULT_PROVIDER:-OLLAMA}
+      LLM_OLLAMA_ENABLED: ${LLM_OLLAMA_ENABLED:-true}
+      LLM_OPENAI_ENABLED: ${LLM_OPENAI_ENABLED:-false}
+      LLM_ANTHROPIC_ENABLED: ${LLM_ANTHROPIC_ENABLED:-false}
+      LLM_GOOGLE_ENABLED: ${LLM_GOOGLE_ENABLED:-false}
+      OPENAI_API_KEY: ${OPENAI_API_KEY:-}
+      ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY:-}
+      DOCUMENT_UPLOAD_DIR: /data/uploads
+      SERVER_PORT: 8080
+    ports:
+      - "127.0.0.1:8080:8080"
+    volumes:
+      - localmind-uploads:/data/uploads
+    networks:
+      - localmind-net
+    depends_on:
+      mysql:
+        condition: service_healthy
+      qdrant:
+        condition: service_healthy
+      ollama:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "curl -sf http://localhost:8080/api/v1/dashboard/health || exit 1"]
+      interval: 15s
+      timeout: 10s
+      retries: 5
+      start_period: 60s
+
+  # --- Frontend Angular + Nginx (profilo full / full profile) ---
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile.frontend
+    container_name: localmind-frontend
+    restart: unless-stopped
+    profiles:
+      - full
+    ports:
+      - "127.0.0.1:4200:80"
+    networks:
+      - localmind-net
+    depends_on:
+      backend:
+        condition: service_healthy
+
+volumes:
+  localmind-mysql-data:
+    name: localmind-mysql-data
+  localmind-qdrant-data:
+    name: localmind-qdrant-data
+  localmind-ollama-data:
+    name: localmind-ollama-data
+  localmind-uploads:
+    name: localmind-uploads
+
+networks:
+  localmind-net:
+    name: localmind-net
+    driver: bridge

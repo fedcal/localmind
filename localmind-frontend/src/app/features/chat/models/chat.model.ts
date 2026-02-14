@@ -13,6 +13,7 @@ export interface ChatRequest {
   temperature?: number;
   maxTokens?: number;
   enableToolCalling?: boolean;
+  enableRag?: boolean;
 }
 
 export interface ChatResponse {
@@ -22,6 +23,15 @@ export interface ChatResponse {
   conversationId?: string;
   tokenUsage?: TokenUsage;
   latencyMs: number;
+  ragSources?: RagSource[];
+}
+
+export interface RagSource {
+  documentId: string;
+  filename: string;
+  chunkIndex: number;
+  score: number;
+  contentPreview: string;
 }
 
 export interface TokenUsage {

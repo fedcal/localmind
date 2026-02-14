@@ -3,6 +3,7 @@ import { RouterOutlet, RouterLink, RouterLinkActive } from '@angular/router';
 import { TranslatePipe } from '../core/i18n/translate.pipe';
 import { LanguageSwitcherComponent } from '../shared/components/language-switcher/language-switcher.component';
 import { OllamaDownloadService } from '../core/services/ollama-download.service';
+import { AuthService } from '../core/services/auth.service';
 
 @Component({
   selector: 'app-layout',
@@ -98,6 +99,16 @@ import { OllamaDownloadService } from '../core/services/ollama-download.service'
         </ul>
 
         <div class="sidebar-footer">
+          @if (auth.isConfigured()) {
+            <button class="logout-btn" (click)="auth.logout()" [title]="'AUTH.LOGOUT' | translate">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"/>
+                <polyline points="16 17 21 12 16 7"/>
+                <line x1="21" y1="12" x2="9" y2="12"/>
+              </svg>
+              @if (!collapsed()) { <span>{{ 'AUTH.LOGOUT' | translate }}</span> }
+            </button>
+          }
           <app-language-switcher [collapsed]="collapsed()" />
           @if (!collapsed()) {
             <span class="version">v0.1.0</span>
@@ -295,11 +306,45 @@ import { OllamaDownloadService } from '../core/services/ollama-download.service'
     .download-bar.download-error .download-fill { background: #e74c3c; }
     .download-bar.download-done .download-fill { background: #2ecc71; }
     .dl-spinner { display: inline-block; width: 12px; height: 12px; border: 2px solid #ddd; border-top-color: #0f3460; border-radius: 50%; animation: spin 0.6s linear infinite; }
+    .logout-btn {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      width: 100%;
+      padding: 0.5rem 0.75rem;
+      background: rgba(255,255,255,0.05);
+      border: none;
+      border-radius: 6px;
+      color: rgba(255,255,255,0.5);
+      cursor: pointer;
+      font-size: 0.8rem;
+      transition: all 0.2s;
+    }
+    .logout-btn:hover {
+      background: rgba(231,76,60,0.2);
+      color: #e74c3c;
+    }
     @keyframes slideDown { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
     @keyframes spin { to { transform: rotate(360deg); } }
+    @media (max-width: 768px) {
+      .sidebar {
+        position: fixed;
+        z-index: 100;
+        height: 100vh;
+      }
+      .collapsed .sidebar {
+        width: 0;
+        padding: 0;
+        overflow: hidden;
+      }
+      .content {
+        padding: var(--space-md);
+      }
+    }
   `]
 })
 export class LayoutComponent {
   collapsed = signal(false);
   dl = inject(OllamaDownloadService);
+  auth = inject(AuthService);
 }

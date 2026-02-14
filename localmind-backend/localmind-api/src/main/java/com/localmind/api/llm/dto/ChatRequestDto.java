@@ -21,4 +21,5 @@ public class ChatRequestDto {
     private double temperature = 0.7;
     private int maxTokens;
     private boolean enableToolCalling;
+    private boolean enableRag;
 }

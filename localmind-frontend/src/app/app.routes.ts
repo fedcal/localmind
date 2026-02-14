@@ -1,9 +1,15 @@
 import { Routes } from '@angular/router';
+import { authGuard } from './core/guards/auth.guard';
 
 export const routes: Routes = [
   {
+    path: 'login',
+    loadComponent: () => import('./features/auth/pages/login-page/login-page.component').then(m => m.LoginPageComponent)
+  },
+  {
     path: '',
     loadComponent: () => import('./layout/layout.component').then(m => m.LayoutComponent),
+    canActivate: [authGuard],
     children: [
       { path: '', redirectTo: 'chat', pathMatch: 'full' },
       {
@@ -40,5 +46,8 @@ export const routes: Routes = [
       }
     ]
   },
-  { path: '**', redirectTo: 'chat' }
+  {
+    path: '**',
+    loadComponent: () => import('./features/not-found/not-found-page.component').then(m => m.NotFoundPageComponent)
+  }
 ];

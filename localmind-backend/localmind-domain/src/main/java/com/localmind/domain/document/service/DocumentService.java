@@ -2,40 +2,24 @@ package com.localmind.domain.document.service;
 
 import com.localmind.domain.common.exception.ResourceNotFoundException;
 import com.localmind.domain.document.model.Document;
-import com.localmind.domain.document.model.DocumentStatus;
-import com.localmind.domain.document.port.in.DocumentIngestionUseCase;
+import com.localmind.domain.document.port.out.DocumentChunkRepository;
 import com.localmind.domain.document.port.out.DocumentRepository;
-import com.localmind.domain.document.port.out.FolderConfigRepository;
+import com.localmind.domain.document.port.out.VectorStorePort;
 
-import java.io.InputStream;
 import java.util.List;
 
-public class DocumentService implements DocumentIngestionUseCase {
+public class DocumentService {
 
     private final DocumentRepository documentRepository;
-    private final FolderConfigRepository folderConfigRepository;
+    private final VectorStorePort vectorStorePort;
+    private final DocumentChunkRepository documentChunkRepository;
 
     public DocumentService(DocumentRepository documentRepository,
-                           FolderConfigRepository folderConfigRepository) {
+                           VectorStorePort vectorStorePort,
+                           DocumentChunkRepository documentChunkRepository) {
         this.documentRepository = documentRepository;
-        this.folderConfigRepository = folderConfigRepository;
-    }
-
-    @Override
-    public Document ingest(String filename, InputStream content, String mimeType) {
-        Document document = Document.builder()
-                .filename(filename)
-                .mimeType(mimeType)
-                .status(DocumentStatus.PENDING)
-                .build();
-        return documentRepository.save(document);
-    }
-
-    @Override
-    public List<Document> ingestFromFolder(String folderId) {
-        folderConfigRepository.findById(folderId)
-                .orElseThrow(() -> new ResourceNotFoundException("Folder config not found: " + folderId));
-        return List.of();
+        this.vectorStorePort = vectorStorePort;
+        this.documentChunkRepository = documentChunkRepository;
     }
 
     public Document findById(String id) {
@@ -48,6 +32,12 @@ public class DocumentService implements DocumentIngestionUseCase {
     }
 
     public void deleteById(String id) {
+        documentRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Document not found: " + id));
+
+        // Cascade delete: vector store -> MySQL chunks -> document
+        vectorStorePort.deleteByDocumentId(id);
+        documentChunkRepository.deleteByDocumentId(id);
         documentRepository.deleteById(id);
     }
 }

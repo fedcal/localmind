@@ -13,6 +13,8 @@ import com.localmind.domain.common.exception.LlmProviderException;
 import com.localmind.domain.llm.model.*;
 import com.localmind.domain.llm.port.in.ChatUseCase;
 import com.localmind.domain.llm.service.ConversationService;
+import com.localmind.domain.document.model.SearchResult;
+import com.localmind.domain.document.port.in.DocumentSearchUseCase;
 import com.localmind.domain.mcp.model.ToolCallRequest;
 import com.localmind.domain.mcp.model.ToolCallResponse;
 import com.localmind.domain.mcp.port.in.ToolCallingPort;
@@ -34,6 +36,7 @@ class ChatControllerTest {
     private ChatUseCase chatUseCase;
     private ConversationService conversationService;
     private ToolCallingPort toolCallingPort;
+    private DocumentSearchUseCase documentSearchUseCase;
     private ObjectMapper objectMapper;
 
     @BeforeEach
@@ -41,7 +44,8 @@ class ChatControllerTest {
         chatUseCase = mock(ChatUseCase.class);
         conversationService = mock(ConversationService.class);
         toolCallingPort = mock(ToolCallingPort.class);
-        ChatController controller = new ChatController(chatUseCase, conversationService, toolCallingPort, 50);
+        documentSearchUseCase = mock(DocumentSearchUseCase.class);
+        ChatController controller = new ChatController(chatUseCase, conversationService, toolCallingPort, documentSearchUseCase, 50);
         mockMvc = MockMvcBuilders.standaloneSetup(controller)
                 .setControllerAdvice(new GlobalExceptionHandler())
                 .build();
@@ -628,6 +632,127 @@ class ChatControllerTest {
         verify(toolCallingPort, never()).parseToolCallFromResponse(anyString());
     }
 
+    // ===== RAG Tests =====
+
+    @Test
+    void chat_withRagEnabled_shouldSearchAndReturnSources() throws Exception {
+        String convId = "conv-rag";
+        ConversationContext conversation = ConversationContext.builder()
+                .id(convId)
+                .title("RAG test")
+                .messages(List.of(ChatMessage.builder().role(ChatMessage.Role.USER)
+                        .content("Tell me about the report").build()))
+                .createdAt(Instant.now())
+                .updatedAt(Instant.now())
+                .build();
+
+        when(conversationService.getOrCreateForChat(isNull(), eq("Tell me about the report"), any()))
+                .thenReturn(conversation);
+
+        SearchResult sr = SearchResult.builder()
+                .documentId("doc-1").filename("report.pdf")
+                .content("The quarterly report shows growth").score(0.95).chunkIndex(0).build();
+        when(documentSearchUseCase.search("Tell me about the report", 5))
+                .thenReturn(List.of(sr));
+
+        LlmResponse llmResponse = LlmResponse.builder()
+                .content("Based on your documents, the report shows growth")
+                .model("llama3").provider(LlmProvider.OLLAMA).latencyMs(100L).build();
+
+        ArgumentCaptor<LlmRequest> requestCaptor = ArgumentCaptor.forClass(LlmRequest.class);
+        when(chatUseCase.chat(requestCaptor.capture())).thenReturn(llmResponse);
+        when(conversationService.addAssistantMessage(eq(convId), anyString())).thenReturn(conversation);
+
+        ChatRequestDto request = ChatRequestDto.builder()
+                .message("Tell me about the report")
+                .provider("OLLAMA").model("llama3").enableRag(true).build();
+
+        mockMvc.perform(post("/api/v1/chat")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.ragSources").isArray())
+                .andExpect(jsonPath("$.ragSources.length()").value(1))
+                .andExpect(jsonPath("$.ragSources[0].documentId").value("doc-1"))
+                .andExpect(jsonPath("$.ragSources[0].filename").value("report.pdf"))
+                .andExpect(jsonPath("$.ragSources[0].score").value(0.95))
+                .andExpect(jsonPath("$.ragSources[0].chunkIndex").value(0));
+
+        // Verify RAG context was injected into system messages
+        LlmRequest captured = requestCaptor.getValue();
+        boolean hasRagContext = captured.getMessages().stream()
+                .anyMatch(m -> m.getRole() == ChatMessage.Role.SYSTEM
+                        && m.getContent().contains("[Contesto dai tuoi documenti]")
+                        && m.getContent().contains("report.pdf"));
+        assertThat(hasRagContext).isTrue();
+
+        verify(documentSearchUseCase).search("Tell me about the report", 5);
+    }
+
+    @Test
+    void chat_withRagDisabled_shouldNotSearchDocuments() throws Exception {
+        String convId = "conv-no-rag";
+        ConversationContext conversation = ConversationContext.builder()
+                .id(convId)
+                .title("No RAG")
+                .messages(List.of(ChatMessage.builder().role(ChatMessage.Role.USER).content("Hello").build()))
+                .createdAt(Instant.now())
+                .updatedAt(Instant.now())
+                .build();
+
+        when(conversationService.getOrCreateForChat(isNull(), eq("Hello"), any())).thenReturn(conversation);
+
+        LlmResponse llmResponse = LlmResponse.builder()
+                .content("Hi there!").model("llama3").provider(LlmProvider.OLLAMA).latencyMs(100L).build();
+        when(chatUseCase.chat(any())).thenReturn(llmResponse);
+        when(conversationService.addAssistantMessage(eq(convId), eq("Hi there!"))).thenReturn(conversation);
+
+        ChatRequestDto request = ChatRequestDto.builder()
+                .message("Hello").provider("OLLAMA").model("llama3").enableRag(false).build();
+
+        mockMvc.perform(post("/api/v1/chat")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.ragSources").doesNotExist());
+
+        verify(documentSearchUseCase, never()).search(any(), anyInt());
+    }
+
+    @Test
+    void chat_withRagEnabled_noResults_shouldReturnNullRagSources() throws Exception {
+        String convId = "conv-rag-empty";
+        ConversationContext conversation = ConversationContext.builder()
+                .id(convId)
+                .title("RAG empty")
+                .messages(List.of(ChatMessage.builder().role(ChatMessage.Role.USER)
+                        .content("Something obscure").build()))
+                .createdAt(Instant.now())
+                .updatedAt(Instant.now())
+                .build();
+
+        when(conversationService.getOrCreateForChat(isNull(), eq("Something obscure"), any()))
+                .thenReturn(conversation);
+        when(documentSearchUseCase.search("Something obscure", 5)).thenReturn(List.of());
+
+        LlmResponse llmResponse = LlmResponse.builder()
+                .content("I don't have relevant documents").model("llama3")
+                .provider(LlmProvider.OLLAMA).latencyMs(100L).build();
+        when(chatUseCase.chat(any())).thenReturn(llmResponse);
+        when(conversationService.addAssistantMessage(eq(convId), anyString())).thenReturn(conversation);
+
+        ChatRequestDto request = ChatRequestDto.builder()
+                .message("Something obscure").provider("OLLAMA").model("llama3").enableRag(true).build();
+
+        mockMvc.perform(post("/api/v1/chat")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.ragSources").doesNotExist());
+
+        verify(documentSearchUseCase).search("Something obscure", 5);
+    }
+
     // ===== P5 - Memory Window / Context Limit =====
 
     @Test
@@ -636,7 +761,8 @@ class ChatControllerTest {
         ChatUseCase localChatUseCase = mock(ChatUseCase.class);
         ConversationService localConversationService = mock(ConversationService.class);
         ToolCallingPort localToolCallingPort = mock(ToolCallingPort.class);
-        ChatController limitedController = new ChatController(localChatUseCase, localConversationService, localToolCallingPort, 5);
+        DocumentSearchUseCase localDocSearch = mock(DocumentSearchUseCase.class);
+        ChatController limitedController = new ChatController(localChatUseCase, localConversationService, localToolCallingPort, localDocSearch, 5);
         MockMvc limitedMockMvc = MockMvcBuilders.standaloneSetup(limitedController)
                 .setControllerAdvice(new GlobalExceptionHandler())
                 .build();

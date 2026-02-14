@@ -12,6 +12,7 @@ import lombok.NoArgsConstructor;
 public class DocumentChunk {
     private String id;
     private String documentId;
+    private String filename;
     private String content;
     private int chunkIndex;
     private float[] embedding;

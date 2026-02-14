@@ -2,13 +2,17 @@ package com.localmind.api.llm.controller;
 
 import com.localmind.api.llm.dto.ChatRequestDto;
 import com.localmind.api.llm.dto.ChatResponseDto;
+import com.localmind.api.llm.dto.RagSourceDto;
 import com.localmind.api.llm.dto.TokenUsageDto;
+import com.localmind.domain.document.model.SearchResult;
+import com.localmind.domain.document.port.in.DocumentSearchUseCase;
 import com.localmind.domain.llm.model.*;
 import com.localmind.domain.llm.port.in.ChatUseCase;
 import com.localmind.domain.llm.service.ConversationService;
 import com.localmind.domain.mcp.model.ToolCallRequest;
 import com.localmind.domain.mcp.model.ToolCallResponse;
 import com.localmind.domain.mcp.port.in.ToolCallingPort;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
@@ -21,21 +25,26 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/v1/chat")
+@Tag(name = "Chat", description = "LLM Chat and conversation management")
 public class ChatController {
 
     private static final int MAX_TOOL_ITERATIONS = 3;
+    private static final int RAG_TOP_K = 5;
 
     private final ChatUseCase chatUseCase;
     private final ConversationService conversationService;
     private final ToolCallingPort toolCallingService;
+    private final DocumentSearchUseCase documentSearchUseCase;
     private final int defaultMaxContextMessages;
 
     public ChatController(ChatUseCase chatUseCase, ConversationService conversationService,
                           ToolCallingPort toolCallingService,
+                          DocumentSearchUseCase documentSearchUseCase,
                           @Value("${localmind.chat.default-max-context-messages:50}") int defaultMaxContextMessages) {
         this.chatUseCase = chatUseCase;
         this.conversationService = conversationService;
         this.toolCallingService = toolCallingService;
+        this.documentSearchUseCase = documentSearchUseCase;
         this.defaultMaxContextMessages = defaultMaxContextMessages;
     }
 
@@ -51,6 +60,12 @@ public class ChatController {
             toolsSystemPrompt = toolCallingService.buildToolsSystemPrompt();
         }
 
+        // 2b. RAG: cerca documenti rilevanti se abilitato
+        List<SearchResult> ragResults = null;
+        if (request.isEnableRag()) {
+            ragResults = documentSearchUseCase.search(request.getMessage(), RAG_TOP_K);
+        }
+
         // 3. Loop agentico (max iterazioni)
         LlmResponse response = null;
         int iterations = 0;
@@ -58,7 +73,7 @@ public class ChatController {
         while (iterations < MAX_TOOL_ITERATIONS) {
             iterations++;
 
-            List<ChatMessage> allMessages = buildMessageList(conversation, toolsSystemPrompt);
+            List<ChatMessage> allMessages = buildMessageList(conversation, toolsSystemPrompt, ragResults);
 
             LlmRequest llmRequest = LlmRequest.builder()
                     .messages(allMessages)
@@ -110,7 +125,22 @@ public class ChatController {
         // 5. Auto-update metadata conversazione (provider, modello, token)
         updateConversationMetadata(conversation, response);
 
-        // 6. Restituisci con conversationId
+        // 6. Restituisci con conversationId e fonti RAG
+        List<RagSourceDto> ragSourceDtos = null;
+        if (ragResults != null && !ragResults.isEmpty()) {
+            ragSourceDtos = ragResults.stream()
+                    .map(r -> RagSourceDto.builder()
+                            .documentId(r.getDocumentId())
+                            .filename(r.getFilename())
+                            .chunkIndex(r.getChunkIndex())
+                            .score(r.getScore())
+                            .contentPreview(r.getContent() != null && r.getContent().length() > 200
+                                    ? r.getContent().substring(0, 200) + "..."
+                                    : r.getContent())
+                            .build())
+                    .toList();
+        }
+
         ChatResponseDto responseDto = ChatResponseDto.builder()
                 .content(response.getContent())
                 .model(response.getModel())
@@ -122,12 +152,15 @@ public class ChatController {
                         .completionTokens(response.getTokenUsage().getCompletionTokens())
                         .totalTokens(response.getTokenUsage().getTotalTokens())
                         .build() : null)
+                .ragSources(ragSourceDtos)
                 .build();
 
         return ResponseEntity.ok(responseDto);
     }
 
-    private List<ChatMessage> buildMessageList(ConversationContext conversation, String toolsSystemPrompt) {
+    private List<ChatMessage> buildMessageList(ConversationContext conversation,
+                                               String toolsSystemPrompt,
+                                               List<SearchResult> ragResults) {
         List<ChatMessage> allMessages = new java.util.ArrayList<>();
 
         // System prompt della conversazione
@@ -143,6 +176,24 @@ public class ChatController {
             allMessages.add(ChatMessage.builder()
                     .role(ChatMessage.Role.SYSTEM)
                     .content(toolsSystemPrompt)
+                    .build());
+        }
+
+        // RAG context: inietta risultati ricerca documenti
+        if (ragResults != null && !ragResults.isEmpty()) {
+            StringBuilder ragContext = new StringBuilder("[Contesto dai tuoi documenti]\n\n");
+            for (SearchResult result : ragResults) {
+                ragContext.append("--- Fonte: ")
+                        .append(result.getFilename() != null ? result.getFilename() : "sconosciuto")
+                        .append(" (chunk ").append(result.getChunkIndex())
+                        .append(", score: ").append(String.format("%.2f", result.getScore()))
+                        .append(") ---\n")
+                        .append(result.getContent())
+                        .append("\n\n");
+            }
+            allMessages.add(ChatMessage.builder()
+                    .role(ChatMessage.Role.SYSTEM)
+                    .content(ragContext.toString())
                     .build());
         }
 

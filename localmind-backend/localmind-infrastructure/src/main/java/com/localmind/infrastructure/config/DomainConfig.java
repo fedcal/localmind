@@ -1,10 +1,11 @@
 package com.localmind.infrastructure.config;
 
-import com.localmind.domain.document.port.out.DocumentRepository;
-import com.localmind.domain.document.port.out.FolderConfigRepository;
-import com.localmind.domain.document.port.out.VectorStorePort;
-import com.localmind.domain.document.service.DocumentSearchService;
-import com.localmind.domain.document.service.DocumentService;
+import com.localmind.domain.auth.port.out.LocalAuthRepository;
+import com.localmind.domain.auth.port.out.PasswordHasherPort;
+import com.localmind.domain.auth.service.LocalAuthService;
+import com.localmind.domain.document.port.in.DocumentIngestionPipelineUseCase;
+import com.localmind.domain.document.port.out.*;
+import com.localmind.domain.document.service.*;
 import com.localmind.domain.llm.model.LlmProvider;
 import com.localmind.domain.llm.port.out.ConversationRepository;
 import com.localmind.domain.llm.port.out.LlmClient;
@@ -39,6 +40,12 @@ import com.localmind.domain.mcp.port.out.AccessPolicyRepository;
 import com.localmind.domain.mcp.port.out.DecisionLogRepository;
 import com.localmind.domain.mcp.port.out.StandupRepository;
 import com.localmind.domain.mcp.port.out.IncidentRepository;
+import com.localmind.domain.mcp.port.in.AgileMetricsUseCase;
+import com.localmind.domain.mcp.port.in.IncidentManagerUseCase;
+import com.localmind.domain.mcp.port.in.ProjectEconomicsUseCase;
+import com.localmind.domain.mcp.port.in.QualityGateUseCase;
+import com.localmind.domain.mcp.port.in.ScrumBoardUseCase;
+import com.localmind.domain.mcp.port.in.TimeTrackingUseCase;
 import com.localmind.domain.mcp.port.out.InsightRepository;
 import com.localmind.domain.mcp.port.out.QualityGateRepository;
 import com.localmind.domain.mcp.port.out.TimeTrackingRepository;
@@ -85,13 +92,48 @@ public class DomainConfig {
 
     @Bean
     public DocumentService documentService(DocumentRepository documentRepository,
-                                           FolderConfigRepository folderConfigRepository) {
-        return new DocumentService(documentRepository, folderConfigRepository);
+                                           VectorStorePort vectorStorePort,
+                                           DocumentChunkRepository documentChunkRepository) {
+        return new DocumentService(documentRepository, vectorStorePort, documentChunkRepository);
     }
 
     @Bean
     public DocumentSearchService documentSearchService(VectorStorePort vectorStorePort) {
         return new DocumentSearchService(vectorStorePort);
+    }
+
+    @Bean
+    public ChunkingService chunkingService(
+            @Value("${localmind.batch.chunk-size:500}") int chunkSize,
+            @Value("${localmind.batch.chunk-overlap:50}") int chunkOverlap) {
+        return new ChunkingService(chunkSize, chunkOverlap);
+    }
+
+    @Bean
+    public PathValidationService pathValidationService() {
+        return new PathValidationService();
+    }
+
+    @Bean
+    public DocumentIngestionPipelineService documentIngestionPipelineService(
+            DocumentRepository documentRepository,
+            DocumentChunkRepository documentChunkRepository,
+            TextExtractorPort textExtractorPort,
+            ChunkingService chunkingService,
+            VectorStorePort vectorStorePort,
+            FileSystemScannerPort fileSystemScannerPort,
+            FolderConfigRepository folderConfigRepository) {
+        return new DocumentIngestionPipelineService(documentRepository, documentChunkRepository,
+                textExtractorPort, chunkingService, vectorStorePort, fileSystemScannerPort,
+                folderConfigRepository);
+    }
+
+    @Bean
+    public FolderManagementService folderManagementService(
+            FolderConfigRepository folderConfigRepository,
+            DocumentIngestionPipelineUseCase ingestionPipeline,
+            PathValidationService pathValidationService) {
+        return new FolderManagementService(folderConfigRepository, ingestionPipeline, pathValidationService);
     }
 
     @Bean
@@ -266,17 +308,36 @@ public class DomainConfig {
     }
 
     @Bean
-    public InsightEngineService insightEngineService(InsightRepository insightRepository) {
-        return new InsightEngineService(insightRepository);
+    public InsightEngineService insightEngineService(InsightRepository insightRepository,
+                                                       ScrumBoardUseCase scrumBoardUseCase,
+                                                       ProjectEconomicsUseCase projectEconomicsUseCase,
+                                                       IncidentManagerUseCase incidentManagerUseCase,
+                                                       QualityGateUseCase qualityGateUseCase) {
+        return new InsightEngineService(insightRepository, scrumBoardUseCase,
+                                         projectEconomicsUseCase, incidentManagerUseCase,
+                                         qualityGateUseCase);
     }
 
     @Bean
-    public DashboardService dashboardService() {
-        return new DashboardService();
+    public DashboardService dashboardService(ScrumBoardUseCase scrumBoardUseCase,
+                                              AgileMetricsUseCase agileMetricsUseCase,
+                                              TimeTrackingUseCase timeTrackingUseCase,
+                                              ProjectEconomicsUseCase projectEconomicsUseCase,
+                                              IncidentManagerUseCase incidentManagerUseCase,
+                                              QualityGateUseCase qualityGateUseCase) {
+        return new DashboardService(scrumBoardUseCase, agileMetricsUseCase,
+                                     timeTrackingUseCase, projectEconomicsUseCase,
+                                     incidentManagerUseCase, qualityGateUseCase);
     }
 
     @Bean
     public McpInternalRegistryService mcpInternalRegistryService() {
         return new McpInternalRegistryService();
+    }
+
+    @Bean
+    public LocalAuthService localAuthService(LocalAuthRepository localAuthRepository,
+                                              PasswordHasherPort passwordHasherPort) {
+        return new LocalAuthService(localAuthRepository, passwordHasherPort);
     }
 }

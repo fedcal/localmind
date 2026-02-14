@@ -1,20 +1,121 @@
 package com.localmind.domain.mcp.service;
 
+import com.localmind.domain.mcp.port.in.AgileMetricsUseCase;
+import com.localmind.domain.mcp.port.in.IncidentManagerUseCase;
+import com.localmind.domain.mcp.port.in.ProjectEconomicsUseCase;
+import com.localmind.domain.mcp.port.in.QualityGateUseCase;
+import com.localmind.domain.mcp.port.in.ScrumBoardUseCase;
+import com.localmind.domain.mcp.port.in.TimeTrackingUseCase;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.isNull;
+import static org.mockito.Mockito.when;
 
+@ExtendWith(MockitoExtension.class)
+@MockitoSettings(strictness = Strictness.LENIENT)
 class DashboardServiceTest {
+
+    @Mock
+    private ScrumBoardUseCase scrumBoardUseCase;
+    @Mock
+    private AgileMetricsUseCase agileMetricsUseCase;
+    @Mock
+    private TimeTrackingUseCase timeTrackingUseCase;
+    @Mock
+    private ProjectEconomicsUseCase projectEconomicsUseCase;
+    @Mock
+    private IncidentManagerUseCase incidentManagerUseCase;
+    @Mock
+    private QualityGateUseCase qualityGateUseCase;
 
     private DashboardService service;
 
     @BeforeEach
     void setUp() {
-        service = new DashboardService();
+        service = new DashboardService(scrumBoardUseCase, agileMetricsUseCase,
+                timeTrackingUseCase, projectEconomicsUseCase,
+                incidentManagerUseCase, qualityGateUseCase);
+
+        // Default mocks for backlog
+        Map<String, Object> backlog = new LinkedHashMap<>();
+        List<Map<String, Object>> stories = new ArrayList<>();
+        Map<String, Object> story1 = new LinkedHashMap<>();
+        story1.put("id", "s1");
+        story1.put("title", "Story 1");
+        story1.put("storyPoints", 5);
+        List<Map<String, Object>> tasks1 = new ArrayList<>();
+        Map<String, Object> task1 = new LinkedHashMap<>();
+        task1.put("status", "done");
+        tasks1.add(task1);
+        story1.put("tasks", tasks1);
+        stories.add(story1);
+
+        Map<String, Object> story2 = new LinkedHashMap<>();
+        story2.put("id", "s2");
+        story2.put("title", "Story 2");
+        story2.put("storyPoints", 3);
+        List<Map<String, Object>> tasks2 = new ArrayList<>();
+        Map<String, Object> task2 = new LinkedHashMap<>();
+        task2.put("status", "in_progress");
+        tasks2.add(task2);
+        story2.put("tasks", tasks2);
+        stories.add(story2);
+
+        backlog.put("stories", stories);
+        backlog.put("totalPoints", 8);
+        backlog.put("count", 2);
+        when(scrumBoardUseCase.getBacklog()).thenReturn(backlog);
+
+        // Default mocks for timesheet
+        Map<String, Object> timesheet = new LinkedHashMap<>();
+        timesheet.put("totalMinutes", 7200);
+        timesheet.put("totalFormatted", "120:00");
+        when(timeTrackingUseCase.getTimesheet(anyString(), anyString(), isNull())).thenReturn(timesheet);
+
+        // Default mocks for budget
+        Map<String, Object> budgetStatus = new LinkedHashMap<>();
+        budgetStatus.put("totalBudget", 100000.0);
+        budgetStatus.put("totalSpent", 60000.0);
+        budgetStatus.put("remaining", 40000.0);
+        budgetStatus.put("percentageUsed", 60.0);
+        when(projectEconomicsUseCase.getBudgetStatus(anyString())).thenReturn(budgetStatus);
+
+        // Default mocks for incidents
+        Map<String, Object> openIncidents = new LinkedHashMap<>();
+        openIncidents.put("incidents", new ArrayList<>());
+        openIncidents.put("count", 2);
+        when(incidentManagerUseCase.listIncidents("open", null, 100)).thenReturn(openIncidents);
+
+        Map<String, Object> resolvedIncidents = new LinkedHashMap<>();
+        resolvedIncidents.put("incidents", new ArrayList<>());
+        resolvedIncidents.put("count", 5);
+        when(incidentManagerUseCase.listIncidents("resolved", null, 100)).thenReturn(resolvedIncidents);
+
+        Map<String, Object> allIncidents = new LinkedHashMap<>();
+        allIncidents.put("incidents", new ArrayList<>());
+        allIncidents.put("count", 0);
+        when(incidentManagerUseCase.listIncidents(isNull(), isNull(), anyInt())).thenReturn(allIncidents);
+
+        // Default mocks for quality gates
+        Map<String, Object> gatesData = new LinkedHashMap<>();
+        gatesData.put("gates", new ArrayList<>());
+        gatesData.put("count", 3);
+        when(qualityGateUseCase.listGates(isNull())).thenReturn(gatesData);
     }
 
     // ========== getOverview Tests ==========
@@ -28,10 +129,8 @@ class DashboardServiceTest {
 
         Map<String, Object> sprint = (Map<String, Object>) result.get("sprint");
         assertThat(sprint.get("active")).isEqualTo(true);
-        assertThat(sprint.get("name")).isEqualTo("Current Sprint");
-
-        Map<String, Object> velocity = (Map<String, Object>) result.get("velocity");
-        assertThat(velocity.get("trend")).isEqualTo("stable");
+        assertThat(sprint.get("completedStories")).isEqualTo(1);
+        assertThat(sprint.get("totalStories")).isEqualTo(2);
 
         Map<String, Object> budget = (Map<String, Object>) result.get("budget");
         assertThat(budget.get("status")).isEqualTo("on-track");
@@ -44,6 +143,20 @@ class DashboardServiceTest {
         assertThat(result.get("generatedAt")).isNotNull();
     }
 
+    @Test
+    @SuppressWarnings("unchecked")
+    void getOverview_fallsBackOnException() {
+        when(scrumBoardUseCase.getBacklog()).thenThrow(new RuntimeException("DB error"));
+        when(timeTrackingUseCase.getTimesheet(anyString(), anyString(), isNull())).thenThrow(new RuntimeException("DB error"));
+        when(projectEconomicsUseCase.getBudgetStatus(anyString())).thenThrow(new RuntimeException("DB error"));
+
+        Map<String, Object> result = service.getOverview();
+
+        assertThat(result).containsKeys("sprint", "velocity", "time", "budget", "generatedAt");
+        Map<String, Object> sprint = (Map<String, Object>) result.get("sprint");
+        assertThat(sprint.get("active")).isEqualTo("N/A");
+    }
+
     // ========== getServerStatus Tests ==========
 
     @Test
@@ -52,8 +165,8 @@ class DashboardServiceTest {
         Map<String, Object> result = service.getServerStatus(null);
 
         List<Map<String, Object>> servers = (List<Map<String, Object>>) result.get("servers");
-        assertThat(servers).isNotEmpty();
-        assertThat((int) result.get("count")).isEqualTo(servers.size());
+        assertThat(servers).hasSize(12);
+        assertThat((int) result.get("count")).isEqualTo(12);
 
         for (Map<String, Object> server : servers) {
             assertThat(server).containsKeys("name", "status", "lastCheck");
@@ -63,12 +176,12 @@ class DashboardServiceTest {
     @Test
     @SuppressWarnings("unchecked")
     void getServerStatus_withFilter_filtersCorrectly() {
-        Map<String, Object> result = service.getServerStatus("localmind-core");
+        Map<String, Object> result = service.getServerStatus("LocalMindMcpTools");
 
         List<Map<String, Object>> servers = (List<Map<String, Object>>) result.get("servers");
         assertThat(servers).hasSize(1);
-        assertThat(servers.get(0).get("name")).isEqualTo("localmind-core");
-        assertThat(result.get("serverName")).isEqualTo("localmind-core");
+        assertThat(servers.get(0).get("name")).isEqualTo("LocalMindMcpTools");
+        assertThat(result.get("serverName")).isEqualTo("LocalMindMcpTools");
     }
 
     @Test
@@ -89,17 +202,28 @@ class DashboardServiceTest {
         Map<String, Object> result = service.getRecentActivity(0);
 
         List<Map<String, Object>> activities = (List<Map<String, Object>>) result.get("activities");
-        assertThat(activities).hasSize(10); // default limit
+        assertThat(activities).isNotNull();
         assertThat(result.get("limit")).isEqualTo(10);
-
-        for (Map<String, Object> activity : activities) {
-            assertThat(activity).containsKeys("type", "description", "timestamp");
-        }
     }
 
     @Test
     @SuppressWarnings("unchecked")
     void getRecentActivity_withLimit_respectsLimit() {
+        // Setup: mock incidents with 5 items
+        Map<String, Object> incidentData = new LinkedHashMap<>();
+        List<Map<String, Object>> incidentList = new ArrayList<>();
+        for (int i = 0; i < 5; i++) {
+            Map<String, Object> incident = new LinkedHashMap<>();
+            incident.put("title", "Incident " + i);
+            incident.put("severity", "medium");
+            incident.put("status", "open");
+            incident.put("createdAt", "2026-01-01T00:00:00Z");
+            incidentList.add(incident);
+        }
+        incidentData.put("incidents", incidentList);
+        incidentData.put("count", 5);
+        when(incidentManagerUseCase.listIncidents(isNull(), isNull(), anyInt())).thenReturn(incidentData);
+
         Map<String, Object> result = service.getRecentActivity(3);
 
         List<Map<String, Object>> activities = (List<Map<String, Object>>) result.get("activities");
@@ -109,11 +233,15 @@ class DashboardServiceTest {
 
     @Test
     @SuppressWarnings("unchecked")
-    void getRecentActivity_largeLimitReturnsAll() {
-        Map<String, Object> result = service.getRecentActivity(100);
+    void getRecentActivity_exceptionFallback_returnsEmptyList() {
+        when(incidentManagerUseCase.listIncidents(isNull(), isNull(), anyInt()))
+                .thenThrow(new RuntimeException("DB error"));
+
+        Map<String, Object> result = service.getRecentActivity(10);
 
         List<Map<String, Object>> activities = (List<Map<String, Object>>) result.get("activities");
-        assertThat(activities.size()).isGreaterThanOrEqualTo(10);
+        assertThat(activities).isEmpty();
+        assertThat(result.get("count")).isEqualTo(0);
     }
 
     // ========== getProjectSummary Tests ==========
@@ -127,10 +255,10 @@ class DashboardServiceTest {
         assertThat(result).containsKeys("sprint", "velocity", "budget", "incidents", "quality", "generatedAt");
 
         Map<String, Object> sprint = (Map<String, Object>) result.get("sprint");
-        assertThat(sprint).containsKeys("name", "status", "completedPoints", "totalPoints");
+        assertThat(sprint).containsKeys("active", "completedStories", "totalStories");
 
-        Map<String, Object> quality = (Map<String, Object>) result.get("quality");
-        assertThat(quality).containsKeys("coverage", "technicalDebt");
+        Map<String, Object> budget = (Map<String, Object>) result.get("budget");
+        assertThat(budget).containsKeys("total", "spent", "remaining", "status");
     }
 
     @Test

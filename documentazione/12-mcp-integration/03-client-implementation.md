@@ -1,8 +1,8 @@
 # Implementazione MCP Client in LocalMind
 
-**Progetto:** LocalMind - Piattaforma AI Local-First  
-**Versione:** 0.1.0  
-**Ultimo aggiornamento:** 2026-02-09  
+**Progetto:** LocalMind - Piattaforma AI Local-First
+**Versione:** 0.1.0
+**Ultimo aggiornamento:** 2026-02-13
 **Moduli di riferimento:** localmind-domain (`domain.mcp`), localmind-infrastructure (`infrastructure.mcp`), localmind-api (`api.mcp`)
 
 ---
@@ -19,6 +19,8 @@
 8. [Persistenza](#8-persistenza)
 9. [API REST](#9-api-rest)
 10. [Flusso completo](#10-flusso-completo)
+11. [Security](#11-security)
+12. [Dashboard e Insight con dati reali](#12-dashboard-e-insight-con-dati-reali)
 
 ---
 
@@ -35,24 +37,30 @@ separazione tra domain model, ports (use case e SPI) e adapters (infrastructure 
 +-----------------------------------------------------------------+
 |                         localmind-api                           |
 |  McpServerController   McpToolController                        |
+|  McpScrumController    McpIncidentController  McpTimeController |
 |         |                      |                                |
 +---------+----------------------+--------------------------------+
           |                      |
 +---------v----------------------v---------------------------------+
 |                       localmind-domain                           |
 |  McpServerManagementUseCase  McpToolDiscoveryUseCase             |
-|  McpToolExecutionUseCase                                         |
+|  McpToolExecutionUseCase     ScrumBoardUseCase                   |
+|  IncidentManagerUseCase      TimeTrackingUseCase                 |
+|  AccessPolicyUseCase         DashboardUseCase                    |
 |         |                                                        |
 |  McpServerManagementService  McpToolOrchestratorService          |
+|  DashboardService            InsightEngineService                |
 |         |                      |                                 |
 |  McpClientPort (SPI)   McpServerRegistrationRepository (SPI)     |
+|  LocalToolDiscoveryPort (SPI)                                    |
 +---------+----------------------+---------------------------------+
           |                      |
 +---------v----------------------v---------------------------------+
 |                   localmind-infrastructure                       |
 |  SpringAiMcpClientAdapter    McpServerRepositoryAdapter          |
-|  (ConcurrentHashMap)         (JPA -> McpServerEntity)            |
-+-------------------------------------------------------------- ---+
+|  (MCP SDK: McpSyncClient)   (JPA -> McpServerEntity)            |
+|  LocalToolDiscoveryService   McpAccessInterceptor                |
++------------------------------------------------------------------+
 ```
 
 ---
@@ -69,7 +77,9 @@ Il client MCP e' organizzato secondo il pattern Ports & Adapters:
 | **Inbound Ports** | `domain.mcp.port.in`                         | Use case (interfacce)             |
 | **Outbound Ports**| `domain.mcp.port.out`                        | SPI per infrastruttura            |
 | **Services**      | `domain.mcp.service`                         | Implementazione logica di business|
-| **Infra Adapter** | `infrastructure.mcp.adapter`                 | Adapter MCP SDK (Spring AI)       |
+| **Infra Adapter** | `infrastructure.mcp.adapter`                 | Adapter MCP SDK reale (SSE/STDIO) |
+| **Discovery**     | `infrastructure.mcp.discovery`               | Scoperta tool locali @Tool        |
+| **Security**      | `infrastructure.mcp.security`                | Interceptor controllo accesso     |
 | **Persistence**   | `infrastructure.mcp.persistence`             | JPA entity, repository adapter    |
 | **API**           | `api.mcp.controller`, `api.mcp.dto`          | REST controller e DTO             |
 
@@ -260,6 +270,22 @@ public interface McpToolExecutionUseCase {
 }
 ```
 
+### 4.4 `AccessPolicyUseCase`
+
+Gestione delle policy di accesso ai tool MCP.
+
+```java
+public interface AccessPolicyUseCase {
+    Map<String, Object> createPolicy(String name, String effect, String rulesJson);
+    Map<String, Object> checkAccess(String userId, String server, String tool);
+    Map<String, Object> listPolicies();
+    Map<String, Object> assignRole(String userId, String roleName);
+    Map<String, Object> auditAccess(String userId, String server, int limit);
+}
+```
+
+Utilizzato dal `McpAccessInterceptor` per verificare i permessi di accesso durante l'esecuzione dei tool (vedi [sezione 11](#11-security)).
+
 ---
 
 ## 5. Ports di uscita (SPI)
@@ -294,6 +320,24 @@ public interface McpServerRegistrationRepository {
     List<McpServerRegistration> findAll();
 }
 ```
+
+### 5.3 `LocalToolDiscoveryPort`
+
+SPI per la scoperta dinamica dei tool locali annotati con `@Tool`.
+
+```java
+public interface LocalToolDiscoveryPort {
+    /**
+     * Ritorna tutti i metodi @Tool locali scoperti.
+     * Ogni mappa contiene: name (String), description (String), local (Boolean).
+     *
+     * @return lista immutabile di mappe con informazioni sui tool
+     */
+    List<Map<String, Object>> discoverLocalTools();
+}
+```
+
+Questo port e' stato introdotto per sostituire la precedente lista hardcoded di 3 tool locali con una scoperta dinamica basata su reflection. L'implementazione si trova in `LocalToolDiscoveryService` (vedi [sezione 7.2](#72-localttooldiscoveryservice)).
 
 ---
 
@@ -395,9 +439,12 @@ public class McpToolOrchestratorService implements McpToolDiscoveryUseCase,
 
 ## 7. Infrastructure adapter
 
-### 7.1 `SpringAiMcpClientAdapter`
+### 7.1 `SpringAiMcpClientAdapter` (MCP Client Reale SSE/STDIO)
 
-Implementa `McpClientPort` e gestisce le connessioni MCP usando il Spring AI MCP Client SDK.
+Implementa `McpClientPort` e gestisce le connessioni MCP usando il **vero MCP SDK**
+(`io.modelcontextprotocol`). Il vecchio stub e' stato sostituito con chiamate reali a
+`McpSyncClient` per `initialize()`, `listTools()` e `callTool()`.
+
 Si trova in `com.localmind.infrastructure.mcp.adapter`.
 
 ```java
@@ -405,16 +452,14 @@ Si trova in `com.localmind.infrastructure.mcp.adapter`.
 @ConditionalOnProperty(name = "localmind.mcp.client.enabled", havingValue = "true")
 public class SpringAiMcpClientAdapter implements McpClientPort {
 
-    private static final Logger log = LoggerFactory.getLogger(SpringAiMcpClientAdapter.class);
     private final Map<String, McpClientConnection> connections = new ConcurrentHashMap<>();
+    private final ObjectMapper objectMapper = new ObjectMapper();
 
     @Override
     public boolean connect(McpServerRegistration server) {
         try {
-            log.info("Connecting to MCP server: {} ({})", server.getName(), server.getType());
-            McpClientConnection connection = new McpClientConnection(server);
+            McpClientConnection connection = new McpClientConnection(server, objectMapper);
             connections.put(server.getId(), connection);
-            log.info("Connected to MCP server: {}", server.getName());
             return true;
         } catch (Exception e) {
             log.error("Failed to connect to MCP server: {}", server.getName(), e);
@@ -423,54 +468,229 @@ public class SpringAiMcpClientAdapter implements McpClientPort {
     }
 
     @Override
-    public McpToolExecutionResult executeTool(String serverId,
-                                               McpToolExecutionRequest request) {
+    public List<McpExternalTool> discoverTools(String serverId) {
         McpClientConnection connection = connections.get(serverId);
         if (connection == null) {
-            return McpToolExecutionResult.builder()
-                    .toolName(request.getToolName())
-                    .success(false)
-                    .errorMessage("MCP server not connected: " + serverId)
-                    .build();
+            return List.of();
         }
+        return connection.getTools();
+    }
 
-        long start = System.currentTimeMillis();
-        try {
-            Object result = connection.executeTool(
-                request.getToolName(), request.getArguments());
-            return McpToolExecutionResult.builder()
-                    .toolName(request.getToolName())
-                    .result(result)
-                    .success(true)
-                    .executionTimeMs(System.currentTimeMillis() - start)
-                    .build();
-        } catch (Exception e) {
-            return McpToolExecutionResult.builder()
-                    .toolName(request.getToolName())
-                    .success(false)
-                    .errorMessage(e.getMessage())
-                    .executionTimeMs(System.currentTimeMillis() - start)
-                    .build();
-        }
+    // ... executeTool(), disconnect(), testConnection()
+}
+```
+
+#### Classe interna `McpClientConnection`
+
+Wrapper del lifecycle di una singola connessione MCP. Supporta entrambi i trasporti
+SSE e STDIO tramite il vero MCP SDK.
+
+```java
+private static class McpClientConnection {
+    private final McpServerRegistration server;
+    private final McpSyncClient client;
+    private final ObjectMapper objectMapper;
+    private volatile boolean alive;
+
+    McpClientConnection(McpServerRegistration server, ObjectMapper objectMapper) {
+        this.server = server;
+        this.objectMapper = objectMapper;
+        this.client = createClient(server);
+        this.client.initialize();     // Inizializzazione reale MCP
+        this.alive = true;
     }
     // ...
 }
 ```
 
-**Caratteristiche principali:**
-- `ConcurrentHashMap<String, McpClientConnection>` per gestione thread-safe delle connessioni
-- Classe interna `McpClientConnection` come wrapper del lifecycle della singola connessione
-- Attivazione condizionale tramite `@ConditionalOnProperty`
-- Logging strutturato per diagnostica connessioni
+#### Creazione trasporto SSE
+
+Per server di tipo `SSE`, viene creato un `HttpClientSseClientTransport` con l'URL configurato:
+
+```java
+private static McpSyncClient createSseClient(McpServerRegistration server,
+                                               McpServerConfig config,
+                                               Duration timeout) {
+    HttpClientSseClientTransport transport =
+        HttpClientSseClientTransport.builder(config.getUrl()).build();
+    return McpClient.sync(transport)
+            .requestTimeout(timeout)
+            .build();
+}
+```
+
+#### Creazione trasporto STDIO
+
+Per server di tipo `STDIO`, viene creato un `StdioClientTransport` con `ServerParameters`:
+
+```java
+private static McpSyncClient createStdioClient(McpServerRegistration server,
+                                                 McpServerConfig config,
+                                                 Duration timeout) {
+    ServerParameters.Builder paramsBuilder = ServerParameters.builder(config.getCommand());
+    List<String> args = config.getArgs();
+    if (args != null && !args.isEmpty()) {
+        paramsBuilder.args(args.toArray(new String[0]));
+    }
+    StdioClientTransport transport = new StdioClientTransport(paramsBuilder.build());
+    return McpClient.sync(transport)
+            .requestTimeout(timeout)
+            .build();
+}
+```
+
+#### Scoperta tool via MCP SDK
+
+La scoperta dei tool utilizza `client.listTools()` che esegue una vera chiamata JSON-RPC
+`tools/list` al server MCP collegato:
+
+```java
+List<McpExternalTool> getTools() {
+    McpSchema.ListToolsResult toolsResult = client.listTools();
+    return toolsResult.tools().stream()
+            .map(this::mapToExternalTool)
+            .collect(Collectors.toList());
+}
+```
+
+Ogni `McpSchema.Tool` viene mappato a `McpExternalTool` con serializzazione dell'`inputSchema`
+tramite `ObjectMapper`.
+
+#### Esecuzione tool via MCP SDK
+
+L'esecuzione utilizza `client.callTool()` che esegue una vera chiamata JSON-RPC
+`tools/call` al server MCP:
+
+```java
+Object executeTool(String toolName, Map<String, Object> arguments) {
+    McpSchema.CallToolResult result = client.callTool(
+            new McpSchema.CallToolRequest(toolName, arguments != null ? arguments : Map.of()));
+
+    if (Boolean.TRUE.equals(result.isError())) {
+        String errorText = extractTextContent(result);
+        throw new RuntimeException("MCP tool '" + toolName + "' returned error: " + errorText);
+    }
+    return extractContent(result);
+}
+```
+
+Il risultato viene estratto gestendo tre tipi di contenuto MCP:
+- `McpSchema.TextContent` -- contenuto testuale (caso piu' comune)
+- `McpSchema.ImageContent` -- contenuto immagine (con data e mimeType)
+- `McpSchema.EmbeddedResource` -- risorsa embedded
+
+Se il risultato contiene un singolo `TextContent`, viene restituita direttamente la stringa.
+Altrimenti viene restituita una lista di mappe con tipo e contenuto.
+
+#### Chiusura connessione
+
+La chiusura utilizza `client.closeGracefully()` per terminare in modo pulito la connessione:
+
+```java
+void close() {
+    alive = false;
+    client.closeGracefully();
+}
+```
+
+**Dipendenze MCP SDK:**
+- `io.modelcontextprotocol.client.McpClient` -- factory per creare client MCP
+- `io.modelcontextprotocol.client.McpSyncClient` -- client sincrono per chiamate JSON-RPC
+- `io.modelcontextprotocol.client.transport.HttpClientSseClientTransport` -- trasporto SSE
+- `io.modelcontextprotocol.client.transport.StdioClientTransport` -- trasporto STDIO
+- `io.modelcontextprotocol.client.transport.ServerParameters` -- parametri per STDIO
+- `io.modelcontextprotocol.spec.McpSchema` -- schema MCP (Tool, CallToolResult, ListToolsResult, etc.)
 
 ### Gestione delle connessioni in memoria
 
 ```
 ConcurrentHashMap<serverId, McpClientConnection>
    |
-   +-- "abc-123" -> McpClientConnection(filesystem-server, alive=true)
-   +-- "def-456" -> McpClientConnection(database-server, alive=true)
-   +-- "ghi-789" -> McpClientConnection(web-scraper, alive=false)
+   +-- "abc-123" -> McpClientConnection(filesystem-server, McpSyncClient[SSE], alive=true)
+   +-- "def-456" -> McpClientConnection(database-server, McpSyncClient[STDIO], alive=true)
+   +-- "ghi-789" -> McpClientConnection(web-scraper, McpSyncClient[SSE], alive=false)
+```
+
+### 7.2 `LocalToolDiscoveryService`
+
+Implementa `LocalToolDiscoveryPort` e scopre dinamicamente tutti i metodi annotati con `@Tool`
+nel contesto Spring. Si trova in `com.localmind.infrastructure.mcp.discovery`.
+
+```java
+@Component
+public class LocalToolDiscoveryService implements LocalToolDiscoveryPort {
+
+    private final ApplicationContext applicationContext;
+    private volatile List<Map<String, Object>> cachedTools;
+
+    @Override
+    public List<Map<String, Object>> discoverLocalTools() {
+        if (cachedTools != null) {
+            return cachedTools;
+        }
+
+        List<Map<String, Object>> tools = new ArrayList<>();
+        String[] beanNames = applicationContext.getBeanDefinitionNames();
+
+        for (String beanName : beanNames) {
+            Object bean = applicationContext.getBean(beanName);
+            Class<?> beanClass = bean.getClass();
+            String className = beanClass.getSimpleName();
+
+            // Filtra solo i bean LocalMind*Tools
+            if (!className.startsWith("LocalMind") || !className.endsWith("Tools")) {
+                continue;
+            }
+
+            for (Method method : beanClass.getDeclaredMethods()) {
+                Tool toolAnnotation = method.getAnnotation(Tool.class);
+                if (toolAnnotation != null) {
+                    tools.add(Map.of(
+                            "name", method.getName(),
+                            "description", toolAnnotation.description(),
+                            "local", true
+                    ));
+                }
+            }
+        }
+
+        cachedTools = Collections.unmodifiableList(tools);
+        return cachedTools;
+    }
+}
+```
+
+**Caratteristiche principali:**
+
+- **Scoperta via reflection**: Scansiona tutti i bean il cui nome classe inizia con `LocalMind` e termina con `Tools`, cercando metodi annotati con `@Tool` (Spring AI)
+- **Cache lazy**: I risultati vengono calcolati una sola volta e poi memorizzati in una lista immutabile (`volatile` per thread-safety)
+- **135 tool locali scoperti**: Dai 12 bean tool registrati (`LocalMindMcpTools`, `LocalMindUtilityTools`, `LocalMindCodeTools`, `LocalMindTestTools`, `LocalMindDevOpsTools`, `LocalMindDatabaseTools`, `LocalMindDocTools`, `LocalMindProjectTools`, `LocalMindGovernanceTools`, `LocalMindOpsTools`, `LocalMindQualityTools`, `LocalMindCommTools`)
+- **Sostituisce la lista hardcoded**: L'endpoint `GET /api/v1/mcp/tools/local` ora ritorna i tool scoperti dinamicamente, non piu' i 3 tool fissi precedenti
+
+**Port nel dominio (`LocalToolDiscoveryPort`):**
+
+Il port nel dominio `com.localmind.domain.mcp.port.out.LocalToolDiscoveryPort` definisce il contratto:
+
+```java
+public interface LocalToolDiscoveryPort {
+    List<Map<String, Object>> discoverLocalTools();
+}
+```
+
+Il `McpToolController` inietta direttamente questo port per servire l'endpoint `/local`:
+
+```java
+@GetMapping("/local")
+public ResponseEntity<List<McpToolDto>> listLocalTools() {
+    List<McpToolDto> localTools = localToolDiscoveryService.discoverLocalTools().stream()
+            .map(tool -> McpToolDto.builder()
+                    .name((String) tool.get("name"))
+                    .description((String) tool.get("description"))
+                    .local(true)
+                    .build())
+            .collect(Collectors.toList());
+    return ResponseEntity.ok(localTools);
+}
 ```
 
 ---
@@ -613,8 +833,10 @@ Endpoint per la scoperta e l'esecuzione dei tool.
 |--------|-----------------------------------------|---------------------------------|
 | GET    | `/api/v1/mcp/tools`                     | Tutti i tool esterni            |
 | GET    | `/api/v1/mcp/tools/servers/{serverId}`  | Tool di un server specifico     |
-| GET    | `/api/v1/mcp/tools/local`               | Tool locali di LocalMind        |
-| POST   | `/api/v1/mcp/tools/execute`             | Esegui un tool                  |
+| GET    | `/api/v1/mcp/tools/local`               | Tool locali (scoperta dinamica) |
+| POST   | `/api/v1/mcp/tools/execute`             | Esegui un tool (protetto da McpAccessInterceptor) |
+
+**Nota:** L'endpoint `GET /api/v1/mcp/tools/local` ora utilizza `LocalToolDiscoveryPort` per la scoperta dinamica dei tool locali via reflection, restituendo tutti i 135 metodi `@Tool` registrati nel contesto Spring. Il precedente approccio con 3 tool hardcoded e' stato rimosso.
 
 **DTO esecuzione (`McpToolExecutionRequestDto`):**
 
@@ -624,6 +846,133 @@ public class McpToolExecutionRequestDto {
     @NotBlank private String serverId;      // ID del server
     private Map<String, Object> arguments;  // Argomenti del tool
 }
+```
+
+### 9.3 `McpScrumController`
+
+Endpoint per la gestione Scrum (backlog, sprint, storie, task). Delegano a `ScrumBoardUseCase`.
+
+Base path: `/api/v1/mcp/scrum`
+
+| Metodo | Endpoint                                 | Descrizione                      |
+|--------|------------------------------------------|----------------------------------|
+| GET    | `/api/v1/mcp/scrum/backlog`              | Ottieni il backlog completo      |
+| GET    | `/api/v1/mcp/scrum/sprints/{sprintId}`   | Dettagli di uno sprint           |
+| GET    | `/api/v1/mcp/scrum/sprints/{sprintId}/board` | Board visuale dello sprint   |
+| POST   | `/api/v1/mcp/scrum/sprints`              | Crea un nuovo sprint             |
+| POST   | `/api/v1/mcp/scrum/stories`              | Crea una nuova user story        |
+| POST   | `/api/v1/mcp/scrum/tasks`                | Crea un nuovo task               |
+| PUT    | `/api/v1/mcp/scrum/tasks/{taskId}/status`| Aggiorna lo stato di un task     |
+
+**DTO di richiesta:**
+
+- `CreateSprintRequest`: `name`, `startDate`, `endDate`, `goals`
+- `CreateStoryRequest`: `title`, `description`, `acceptanceCriteria`, `storyPoints`, `priority`, `sprintId`
+- `CreateTaskRequest`: `title`, `description`, `storyId`, `assignee`
+- `UpdateTaskStatusRequest`: `status`
+
+**Esempio di utilizzo:**
+
+```bash
+# Ottieni il backlog
+curl -X GET http://localhost:8080/api/v1/mcp/scrum/backlog
+
+# Crea un nuovo sprint
+curl -X POST http://localhost:8080/api/v1/mcp/scrum/sprints \
+  -H "Content-Type: application/json" \
+  -d '{"name":"Sprint 5","startDate":"2026-02-13","endDate":"2026-02-27","goals":"Feature X"}'
+
+# Aggiorna stato task
+curl -X PUT http://localhost:8080/api/v1/mcp/scrum/tasks/abc-123/status \
+  -H "Content-Type: application/json" \
+  -d '{"status":"in_progress"}'
+```
+
+### 9.4 `McpIncidentController`
+
+Endpoint per la gestione degli incidenti. Delegano a `IncidentManagerUseCase`.
+
+Base path: `/api/v1/mcp/incidents`
+
+| Metodo | Endpoint                                    | Descrizione                      |
+|--------|---------------------------------------------|----------------------------------|
+| GET    | `/api/v1/mcp/incidents`                     | Lista incidenti (con filtri)     |
+| POST   | `/api/v1/mcp/incidents`                     | Apri un nuovo incidente          |
+| PUT    | `/api/v1/mcp/incidents/{id}`                | Aggiorna un incidente            |
+| POST   | `/api/v1/mcp/incidents/{id}/timeline`       | Aggiungi entry alla timeline     |
+| POST   | `/api/v1/mcp/incidents/{id}/resolve`        | Risolvi un incidente             |
+| GET    | `/api/v1/mcp/incidents/{id}/postmortem`     | Genera il postmortem             |
+
+**Parametri di query per GET lista:**
+- `status` (opzionale): filtra per stato (es. `open`, `resolved`)
+- `severity` (opzionale): filtra per severita' (es. `critical`, `high`, `medium`, `low`)
+- `limit` (default: 50): numero massimo di risultati
+
+**DTO di richiesta:**
+
+- `OpenIncidentRequest`: `title`, `severity`, `description`, `affectedSystemsJson`
+- `UpdateIncidentRequest`: `status`, `note`
+- `TimelineEntryRequest`: `description`, `source`
+- `ResolveIncidentRequest`: `resolution`, `rootCause`
+
+**Esempio di utilizzo:**
+
+```bash
+# Lista incidenti aperti con severita' critica
+curl -X GET "http://localhost:8080/api/v1/mcp/incidents?status=open&severity=critical&limit=10"
+
+# Apri un nuovo incidente
+curl -X POST http://localhost:8080/api/v1/mcp/incidents \
+  -H "Content-Type: application/json" \
+  -d '{"title":"DB timeout","severity":"high","description":"Timeout queries","affectedSystemsJson":"[\"mysql\"]"}'
+
+# Risolvi un incidente
+curl -X POST http://localhost:8080/api/v1/mcp/incidents/abc-123/resolve \
+  -H "Content-Type: application/json" \
+  -d '{"resolution":"Aumentato pool connessioni","rootCause":"Pool esaurito sotto carico"}'
+```
+
+### 9.5 `McpTimeController`
+
+Endpoint per il time tracking. Delegano a `TimeTrackingUseCase`.
+
+Base path: `/api/v1/mcp/time`
+
+| Metodo | Endpoint                          | Descrizione                      |
+|--------|-----------------------------------|----------------------------------|
+| POST   | `/api/v1/mcp/time/start`          | Avvia un timer                   |
+| POST   | `/api/v1/mcp/time/stop`           | Ferma il timer corrente          |
+| POST   | `/api/v1/mcp/time/log`            | Registra tempo manualmente       |
+| GET    | `/api/v1/mcp/time/timesheet`      | Ottieni il timesheet             |
+
+**Parametri di query per GET timesheet:**
+- `startDate` (opzionale): data di inizio (formato `YYYY-MM-DD`)
+- `endDate` (opzionale): data di fine (formato `YYYY-MM-DD`)
+- `userId` (opzionale): filtra per utente
+
+**DTO di richiesta:**
+
+- `StartTimerRequest`: `taskId`, `description`
+- `LogTimeRequest`: `taskId`, `durationMinutes`, `description`, `date`
+
+**Esempio di utilizzo:**
+
+```bash
+# Avvia timer per un task
+curl -X POST http://localhost:8080/api/v1/mcp/time/start \
+  -H "Content-Type: application/json" \
+  -d '{"taskId":"task-abc","description":"Implementazione feature Y"}'
+
+# Ferma il timer
+curl -X POST http://localhost:8080/api/v1/mcp/time/stop
+
+# Registra tempo manualmente
+curl -X POST http://localhost:8080/api/v1/mcp/time/log \
+  -H "Content-Type: application/json" \
+  -d '{"taskId":"task-abc","durationMinutes":90,"description":"Code review","date":"2026-02-13"}'
+
+# Ottieni timesheet ultimo mese
+curl -X GET "http://localhost:8080/api/v1/mcp/time/timesheet?startDate=2026-01-13&endDate=2026-02-13"
 ```
 
 ---
@@ -642,6 +991,12 @@ public class McpToolExecutionRequestDto {
 4. McpServerRegistrationRepository.save()  --> DB (mcp_servers)
         |
 5. McpClientPort.connect(server)  --> SpringAiMcpClientAdapter
+        |                                  |
+        |                           new McpClientConnection(server)
+        |                                  |
+        |                           createClient(server)  [SSE o STDIO]
+        |                                  |
+        |                           client.initialize()  [handshake MCP]
         |                                  |
         |                           ConcurrentHashMap.put(id, connection)
         |
@@ -662,19 +1017,252 @@ public class McpToolExecutionRequestDto {
 3. McpToolOrchestratorService --> McpClientPort.discoverTools(serverId)
         |
 4. SpringAiMcpClientAdapter --> connection.getTools()
-        |                        (JSON-RPC tools/list)
+        |                        client.listTools()
+        |                        (JSON-RPC tools/list via MCP SDK)
 5. Lista McpExternalTool <-- risposta
         |
 6. Client HTTP --> POST /api/v1/mcp/tools/execute
+        |                  (passa attraverso McpAccessInterceptor)
         |
 7. McpToolController --> McpToolExecutionUseCase.executeTool(request)
         |
 8. McpToolOrchestratorService --> McpClientPort.executeTool(serverId, request)
         |
 9. SpringAiMcpClientAdapter --> connection.executeTool(name, args)
-        |                        (JSON-RPC tools/call)
+        |                        client.callTool(new CallToolRequest(...))
+        |                        (JSON-RPC tools/call via MCP SDK)
 10. McpToolExecutionResult <-- risposta con result, success, executionTimeMs
 ```
+
+### Scoperta tool locali
+
+```
+1. Client HTTP --> GET /api/v1/mcp/tools/local
+        |
+2. McpToolController --> localToolDiscoveryService.discoverLocalTools()
+        |
+3. LocalToolDiscoveryService --> ApplicationContext.getBeanDefinitionNames()
+        |                        (scansione bean LocalMind*Tools)
+        |
+4. Per ogni bean: Method.getAnnotation(@Tool)
+        |              -> estrai name, description
+        |
+5. Lista Map<name, description, local=true> <-- cache immutabile
+        |
+6. McpToolController --> map a McpToolDto
+        |
+7. Risposta --> Lista di 135 McpToolDto (local=true)
+```
+
+---
+
+## 11. Security
+
+### 11.1 `McpAccessInterceptor`
+
+`HandlerInterceptor` che protegge l'endpoint `POST /api/v1/mcp/tools/execute` con controllo
+di accesso basato su policy. Si trova in `com.localmind.infrastructure.mcp.security`.
+
+```java
+@Component
+public class McpAccessInterceptor implements HandlerInterceptor {
+
+    private static final String USER_ID_HEADER = "X-User-Id";
+    private static final String DEFAULT_USER = "anonymous";
+
+    private final AccessPolicyUseCase accessPolicyUseCase;
+    private final ObjectMapper objectMapper;
+
+    @Override
+    public boolean preHandle(HttpServletRequest request,
+                             HttpServletResponse response,
+                             Object handler) throws Exception {
+        // Filtra solo POST su /mcp/tools/execute
+        if (!"POST".equalsIgnoreCase(request.getMethod())) return true;
+        if (!request.getRequestURI().endsWith("/mcp/tools/execute")) return true;
+
+        // Estrai userId dall'header (default: "anonymous")
+        String userId = request.getHeader(USER_ID_HEADER);
+        if (userId == null || userId.isBlank()) userId = DEFAULT_USER;
+
+        // Estrai toolName e serverId dal body (richiede CachedBodyHttpServletRequest)
+        String toolName = null;
+        String serverId = null;
+        if (request instanceof CachedBodyHttpServletRequest cachedRequest) {
+            byte[] body = cachedRequest.getCachedBody();
+            JsonNode node = objectMapper.readTree(body);
+            toolName = node.has("toolName") ? node.get("toolName").asText() : null;
+            serverId = node.has("serverId") ? node.get("serverId").asText() : null;
+        }
+
+        if (toolName == null || toolName.isBlank()) return true;
+
+        String serverForPolicy = serverId != null && !serverId.isBlank() ? serverId : "local";
+
+        // Verifica accesso tramite AccessPolicyUseCase
+        Map<String, Object> checkResult =
+            accessPolicyUseCase.checkAccess(userId, serverForPolicy, toolName);
+
+        Boolean allowed = (Boolean) checkResult.get("allowed");
+        if (allowed != null && !allowed) {
+            response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+            response.setContentType("application/json");
+            String errorJson = objectMapper.writeValueAsString(Map.of(
+                    "error", "Access denied by policy: " + policyName,
+                    "userId", userId,
+                    "tool", toolName,
+                    "server", serverForPolicy
+            ));
+            response.getWriter().write(errorJson);
+            return false;   // Blocca la richiesta
+        }
+
+        return true;        // Accesso consentito
+    }
+}
+```
+
+**Flusso di controllo accesso:**
+
+```
+1. POST /api/v1/mcp/tools/execute
+        |
+2. OncePerRequestFilter (cachedBodyFilter)
+        |   wrappa il request in CachedBodyHttpServletRequest
+        |
+3. McpAccessInterceptor.preHandle()
+        |   legge X-User-Id header (default: "anonymous")
+        |   legge toolName e serverId dal body cached
+        |
+4. accessPolicyUseCase.checkAccess(userId, server, tool)
+        |
+5a. allowed=true  --> prosegui al controller
+5b. allowed=false --> 403 Forbidden con JSON errore
+5c. nessuna policy corrispondente --> accesso consentito (default allow)
+```
+
+### 11.2 `CachedBodyHttpServletRequest`
+
+Wrapper di `HttpServletRequest` che permette la rilettura del body della richiesta.
+Necessario perche' il body dello `HttpServletRequest` standard puo' essere letto una sola volta.
+
+```java
+public class CachedBodyHttpServletRequest extends HttpServletRequestWrapper {
+
+    private final byte[] cachedBody;
+
+    public CachedBodyHttpServletRequest(HttpServletRequest request) throws IOException {
+        super(request);
+        this.cachedBody = request.getInputStream().readAllBytes();
+    }
+
+    @Override
+    public ServletInputStream getInputStream() {
+        // Restituisce un nuovo stream dal body cachato
+        return new ServletInputStream() { /* ... ByteArrayInputStream wrapper ... */ };
+    }
+
+    public byte[] getCachedBody() {
+        return cachedBody;
+    }
+}
+```
+
+### 11.3 Registrazione dell'interceptor
+
+L'interceptor e il filtro di caching del body sono registrati in `WebMvcConfig`:
+
+```java
+@Configuration
+public class WebMvcConfig implements WebMvcConfigurer {
+
+    private final McpAccessInterceptor mcpAccessInterceptor;
+
+    @Override
+    public void addInterceptors(InterceptorRegistry registry) {
+        registry.addInterceptor(mcpAccessInterceptor)
+                .addPathPatterns("/api/v1/mcp/tools/execute");
+    }
+
+    @Bean
+    public FilterRegistrationBean<OncePerRequestFilter> cachedBodyFilter() {
+        // Crea CachedBodyHttpServletRequest solo per POST su /mcp/tools/execute
+        // Ordine: 1 (eseguito prima dell'interceptor)
+    }
+}
+```
+
+**Comportamento default:**
+- Nessun header `X-User-Id` --> l'utente e' considerato `anonymous`
+- Nessuna policy che corrisponde a userId/server/tool --> accesso consentito
+- Policy con `effect=deny` che corrisponde --> 403 Forbidden con dettagli JSON
+
+**Esempio di risposta 403:**
+
+```json
+{
+    "error": "Access denied by policy: restrict-admin-tools",
+    "userId": "user-123",
+    "tool": "deleteDatabase",
+    "server": "local"
+}
+```
+
+---
+
+## 12. Dashboard e Insight con dati reali
+
+### 12.1 `DashboardService`
+
+Il `DashboardService` e' un domain service (POJO puro) che implementa `DashboardUseCase`.
+Aggrega dati reali da 6 use case per fornire una vista unificata dello stato del progetto.
+
+**Use case iniettati:**
+
+| Use Case                  | Dati forniti                                  |
+|---------------------------|-----------------------------------------------|
+| `ScrumBoardUseCase`       | Backlog, storie, stato sprint, story points   |
+| `AgileMetricsUseCase`     | Metriche agili (velocity, burndown, etc.)     |
+| `TimeTrackingUseCase`     | Timesheet, ore tracciate, periodo             |
+| `ProjectEconomicsUseCase` | Budget status, percentuale utilizzo           |
+| `IncidentManagerUseCase`  | Lista incidenti, conteggio open/resolved      |
+| `QualityGateUseCase`      | Quality gates definite, monitoraggio          |
+
+**Metodi principali:**
+
+- `getOverview()`: Aggregazione di sprint, velocity, time tracking e budget. Calcola progresso sprint in base alle storie completate dal backlog reale.
+- `getServerStatus(serverName)`: Stato dei 12 server tool locali con filtro opzionale per nome.
+- `getRecentActivity(limit)`: Attivita' recenti basate su incidenti reali da `IncidentManagerUseCase`.
+- `getProjectSummary(project)`: Sommario completo con sprint, velocity, budget, incidenti e quality, tutti da dati reali.
+
+**Gestione errori con fallback graceful:** Ogni sezione dati e' wrappata in try-catch con fallback a valori `"N/A"` in caso di errore, garantendo che la dashboard non fallisca anche se uno dei servizi sottostanti non e' disponibile.
+
+### 12.2 `InsightEngineService`
+
+Il `InsightEngineService` e' un domain service (POJO puro) che implementa `InsightEngineUseCase`.
+Fornisce insight basati su domande in linguaggio naturale, correlazione metriche, spiegazione trend e health dashboard.
+
+**Use case iniettati:**
+
+| Use Case                  | Dati forniti                                  |
+|---------------------------|-----------------------------------------------|
+| `ScrumBoardUseCase`       | Dati backlog per insight velocity/sprint      |
+| `ProjectEconomicsUseCase` | Dati budget per insight economici             |
+| `IncidentManagerUseCase`  | Dati incidenti per insight stabilita'         |
+| `QualityGateUseCase`      | Dati quality gates per insight qualita'       |
+| `InsightRepository`       | Persistenza dei risultati delle query         |
+
+**Metodi principali:**
+
+- `queryInsight(question)`: Analisi basata su parole chiave (velocity, budget, sprint, incident, quality) con dati reali. Restituisce insight testuale, livello di confidence e azioni suggerite. I risultati vengono persistiti via `InsightRepository`.
+- `correlateMetrics(metricsJson, period)`: Genera correlazioni tra coppie di metriche con forza e direzione.
+- `explainTrend(metric, direction, period)`: Spiega un trend con fattori contribuenti e confidence.
+- `healthDashboard()`: Dashboard salute del progetto con scoring per 6 aree (Sprint Progress, Code Quality, CI/CD, Budget, Incident Response, Team Velocity). Calcola `overallHealth` come media pesata degli score individuali con soglie `good/warning/critical`.
+
+**Health scoring:**
+- Score >= 75 e nessun warning/critical --> `good`
+- Score >= 50 o presenza warning --> `warning`
+- Score < 50 o presenza critical --> `critical`
 
 ---
 
