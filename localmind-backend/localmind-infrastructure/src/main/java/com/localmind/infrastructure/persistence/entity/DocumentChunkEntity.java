@@ -24,7 +24,7 @@ public class DocumentChunkEntity {
     @JdbcTypeCode(SqlTypes.CHAR)
     private UUID id;
 
-    @Column(name = "document_id", nullable = false, length = 36)
+    @Column(name = "document_id", nullable = false, columnDefinition = "CHAR(36)")
     private String documentId;
 
     @Column(nullable = false, columnDefinition = "TEXT")

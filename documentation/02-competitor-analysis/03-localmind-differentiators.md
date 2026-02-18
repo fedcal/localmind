@@ -3,8 +3,8 @@
 | Field        | Value                                |
 |--------------|--------------------------------------|
 | **Document** | LocalMind Unique Differentiators     |
-| **Version**  | 0.1.0                                |
-| **Date**     | 2026-02-09                           |
+| **Version**  | 1.0.0                                |
+| **Date**     | 2026-02-18                           |
 | **Project**  | LocalMind                            |
 
 ---
@@ -42,13 +42,17 @@
     - [8.1 Technical Description](#81-technical-description)
     - [8.2 Competitive Advantage](#82-competitive-advantage)
     - [8.3 User Impact](#83-user-impact)
+  - [8.5 Native MCP Tools (135+ Tools in 14 Categories)](#85-native-mcp-tools-135-tools-in-14-categories)
+    - [Technical Description](#technical-description)
+    - [Competitive Advantage](#competitive-advantage)
+    - [User Impact](#user-impact)
   - [9. Differentiators Summary](#9-differentiators-summary)
 
 ---
 
 ## 1. Introduction
 
-This document analyzes in detail the seven key differentiators that make LocalMind a unique proposition in the AI platform landscape. For each differentiator, a technical description, the competitive advantage over alternatives and the concrete impact for the end user are provided.
+This document analyzes in detail the eight key differentiators that make LocalMind a unique proposition in the AI platform landscape. For each differentiator, a technical description, the competitive advantage over alternatives and the concrete impact for the end user are provided.
 
 ---
 
@@ -305,6 +309,31 @@ LocalMind is the only solution with an enterprise-grade web UI on Angular, the m
 
 ---
 
+## 8.5 Native MCP Tools (135+ Tools in 14 Categories)
+
+### Technical Description
+
+LocalMind implements 135+ native MCP (Model Context Protocol) tools distributed across 14 categories: Code Tools (6), DevOps & Monitoring (5), Testing & Quality (2), Project Management & Agile (6), Governance & Decision Making (7), Utility & Infrastructure (6), and others.
+
+### Competitive Advantage
+
+| Product | MCP Tools | Categories | Enterprise DevOps |
+|---|---|---|---|
+| Dify.ai | ~30 | Generic | Limited |
+| AnythingLLM | ~20 | Generic | Minimal |
+| Flowise | ~15 | Generic | Minimal |
+| Open WebUI | ~5 | Chat-only | None |
+| **LocalMind** | **135+** | **14 specialized** | **Complete** |
+
+### User Impact
+
+- 135+ tools ready to use without additional configuration
+- Complete DevOps cycle coverage: code review, test generation, CI/CD monitoring, incident management
+- MCP is the de facto standard (97M+ SDK downloads/month), ensuring interoperability
+- Specialized tools for Agile project management (sprint, story, retrospective)
+
+---
+
 ## 9. Differentiators Summary
 
 | # | Differentiator                     | Closest competitor          | LocalMind gap                          |
@@ -316,5 +345,6 @@ LocalMind is the only solution with an enterprise-grade web UI on Angular, the m
 | 5 | n8n integration                    | None                        | Only AI platform with automations      |
 | 6 | Complete folder scanning           | GPT4All (partial)           | Incremental + scheduling + watcher     |
 | 7 | Angular UI with Signals            | LibreChat (partial)         | Enterprise-grade + UI modes            |
+| 8 | Native MCP Tools (135+)            | Dify.ai (~30)               | 135+ tools in 14 specialized categories |
 
-These seven differentiators, taken together, define LocalMind as a unique proposition with no direct competitors in the local-first AI platform landscape.
+These eight differentiators, taken together, define LocalMind as a unique proposition with no direct competitors in the local-first AI platform landscape.

@@ -3,8 +3,8 @@
 | Campo        | Valore                                |
 |--------------|---------------------------------------|
 | **Documento**| Differenziatori Unici di LocalMind    |
-| **Versione** | 0.1.0                                 |
-| **Data**     | 2026-02-09                            |
+| **Versione** | 1.0.0                                 |
+| **Data**     | 2026-02-18                            |
 | **Progetto** | LocalMind                             |
 
 ---
@@ -42,13 +42,14 @@
     - [8.1 Descrizione Tecnica](#81-descrizione-tecnica)
     - [8.2 Vantaggio Competitivo](#82-vantaggio-competitivo)
     - [8.3 Impatto Utente](#83-impatto-utente)
+  - [8.5 MCP Tools Nativi (135+ Tool in 14 Categorie)](#85-mcp-tools-nativi-135-tool-in-14-categorie)
   - [9. Riepilogo Differenziatori](#9-riepilogo-differenziatori)
 
 ---
 
 ## 1. Introduzione
 
-Il presente documento analizza in dettaglio i sette differenziatori chiave che rendono LocalMind una proposta unica nel panorama delle piattaforme AI. Per ciascun differenziatore viene fornita una descrizione tecnica, il vantaggio competitivo rispetto alle alternative e l'impatto concreto per l'utente finale.
+Il presente documento analizza in dettaglio gli otto differenziatori chiave che rendono LocalMind una proposta unica nel panorama delle piattaforme AI. Per ciascun differenziatore viene fornita una descrizione tecnica, il vantaggio competitivo rispetto alle alternative e l'impatto concreto per l'utente finale.
 
 ---
 
@@ -305,6 +306,34 @@ LocalMind e' l'unica soluzione con UI web enterprise-grade su Angular, la tecnol
 
 ---
 
+## 8.5 MCP Tools Nativi (135+ Tool in 14 Categorie)
+
+### 8.5.1 Descrizione Tecnica
+
+LocalMind implementa 135+ tool MCP (Model Context Protocol) nativi distribuiti in 14 categorie specializzate: Code Tools (6), DevOps & Monitoring (5), Testing & Quality (2), Project Management & Agile (6), Governance & Decision Making (7), Utility & Infrastruttura (6), e altre categorie a copertura dell'intero ciclo DevOps e di sviluppo software. Tutti i tool sono implementati in Java con architettura esagonale e integrati nel gateway MCP esposto via REST.
+
+### 8.5.2 Vantaggio Competitivo
+
+| Prodotto | MCP Tool | Categorie | Enterprise DevOps |
+|---|---|---|---|
+| Dify.ai | ~30 | Generici | Limitato |
+| AnythingLLM | ~20 | Generici | Minimo |
+| Flowise | ~15 | Generici | Minimo |
+| Open WebUI | ~5 | Chat-only | Nessuno |
+| **LocalMind** | **135+** | **14 specializzate** | **Completo** |
+
+LocalMind e' l'unica piattaforma AI local-first con una copertura MCP enterprise-grade che spazia dal code review alla gestione sprint, dal CI/CD monitoring alla governance delle decisioni.
+
+### 8.5.3 Impatto Utente
+
+- **135+ tool pronti all'uso** senza configurazione aggiuntiva, utilizzabili via API REST o interfaccia MCP
+- **Copertura completa del ciclo DevOps**: code review automatizzato, generazione test, monitoraggio CI/CD, gestione incident
+- **MCP e' standard de facto** con 97M+ SDK downloads/mese, garantendo interoperabilita' con client AI compatibili (Claude Desktop, Continue.dev, ecc.)
+- **Tool specializzati per Agile**: gestione sprint, user story, retrospective, time tracking integrati nella piattaforma
+- **Audit e compliance**: tool di governance per decision tracking, access audit e vulnerability scanning
+
+---
+
 ## 9. Riepilogo Differenziatori
 
 | # | Differenziatore                    | Competitor piu' vicino | Gap di LocalMind                    |
@@ -316,5 +345,6 @@ LocalMind e' l'unica soluzione con UI web enterprise-grade su Angular, la tecnol
 | 5 | Integrazione n8n                   | Nessuno               | Unica piattaforma AI con automazioni |
 | 6 | Folder scanning completo           | GPT4All (parziale)    | Incrementale + scheduling + watcher  |
 | 7 | Angular UI con Signals             | LibreChat (parziale)  | Enterprise-grade + modalita' UI      |
+| 8 | MCP Tools Nativi (135+)            | Dify.ai (~30, parziale)| 135+ tool, 14 categorie, DevOps completo |
 
-Questi sette differenziatori, presi nel loro insieme, definiscono LocalMind come una proposta unica e senza concorrenti diretti nel panorama delle piattaforme AI local-first.
+Questi otto differenziatori, presi nel loro insieme, definiscono LocalMind come una proposta unica e senza concorrenti diretti nel panorama delle piattaforme AI local-first.

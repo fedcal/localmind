@@ -32,7 +32,7 @@ public class SchemaExplorationEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     @JdbcTypeCode(SqlTypes.CHAR)
-    @Column(name = "id", length = 36)
+    @Column(name = "id", columnDefinition = "CHAR(36)")
     private UUID id;
 
     @Column(name = "jdbc_url", nullable = false, length = 500)

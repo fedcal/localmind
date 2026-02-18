@@ -1,0 +1,142 @@
+name: Deploy Documentation to GitHub Pages
+
+on:
+  push:
+    branches: [ master ]
+    paths:
+      - 'documentation/**'
+      - 'documentazione/**'
+      - 'README.md'
+      - 'README_EN.md'
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
+
+jobs:
+  build:
+    name: Build Documentation Site
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build documentation index
+        run: |
+          mkdir -p _site
+
+          # Create index.html
+          cat > _site/index.html << 'HTMLEOF'
+          <!DOCTYPE html>
+          <html lang="en">
+          <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>LocalMind - Documentation</title>
+            <style>
+              :root { --primary: #2563eb; --bg: #f8fafc; --text: #1e293b; --card-bg: #ffffff; }
+              * { margin: 0; padding: 0; box-sizing: border-box; }
+              body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: var(--bg); color: var(--text); line-height: 1.6; }
+              .container { max-width: 900px; margin: 0 auto; padding: 2rem; }
+              h1 { font-size: 2.5rem; margin-bottom: 0.5rem; }
+              .tagline { color: #64748b; font-size: 1.1rem; margin-bottom: 2rem; }
+              .lang-section { background: var(--card-bg); border-radius: 12px; padding: 1.5rem; margin-bottom: 1.5rem; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+              .lang-section h2 { color: var(--primary); margin-bottom: 1rem; }
+              .lang-section ul { list-style: none; }
+              .lang-section li { padding: 0.4rem 0; }
+              .lang-section a { color: var(--primary); text-decoration: none; }
+              .lang-section a:hover { text-decoration: underline; }
+              .badges { margin-bottom: 1.5rem; }
+              .badges img { margin-right: 4px; }
+              footer { text-align: center; color: #94a3b8; margin-top: 3rem; font-size: 0.9rem; }
+            </style>
+          </head>
+          <body>
+            <div class="container">
+              <h1>LocalMind</h1>
+              <div class="badges">
+                <img src="https://img.shields.io/badge/Java-17-orange.svg" alt="Java 17">
+                <img src="https://img.shields.io/badge/Angular-21-red.svg" alt="Angular 21">
+                <img src="https://img.shields.io/badge/Spring_Boot-3.4.2-green.svg" alt="Spring Boot">
+                <img src="https://img.shields.io/badge/Spring_AI-1.0.0-green.svg" alt="Spring AI">
+              </div>
+              <p class="tagline">Your AI, your data, your machine.</p>
+
+              <div class="lang-section">
+                <h2>English Documentation</h2>
+                <ul>
+                  <li><a href="documentation/01-project-overview/">01 - Project Overview</a></li>
+                  <li><a href="documentation/02-competitor-analysis/">02 - Competitor Analysis</a></li>
+                  <li><a href="documentation/03-functional-analysis/">03 - Functional Analysis</a></li>
+                  <li><a href="documentation/04-architecture/">04 - Architecture</a></li>
+                  <li><a href="documentation/05-technology-stack/">05 - Technology Stack</a></li>
+                  <li><a href="documentation/06-data-model/">06 - Data Model</a></li>
+                  <li><a href="documentation/06-security/">06 - Security</a></li>
+                  <li><a href="documentation/07-api-reference/">07 - API Reference</a></li>
+                  <li><a href="documentation/08-frontend/">08 - Frontend</a></li>
+                  <li><a href="documentation/09-security-privacy/">09 - Security &amp; Privacy</a></li>
+                  <li><a href="documentation/10-deployment/">10 - Deployment</a></li>
+                  <li><a href="documentation/11-roadmap/">11 - Roadmap</a></li>
+                  <li><a href="documentation/12-mcp-integration/">12 - MCP Integration</a></li>
+                  <li><a href="documentation/13-user-guide/">13 - User Guide</a></li>
+                </ul>
+              </div>
+
+              <div class="lang-section">
+                <h2>Documentazione Italiana</h2>
+                <ul>
+                  <li><a href="documentazione/01-overview-progetto/">01 - Overview Progetto</a></li>
+                  <li><a href="documentazione/02-analisi-competitor/">02 - Analisi Competitor</a></li>
+                  <li><a href="documentazione/03-analisi-funzionale/">03 - Analisi Funzionale</a></li>
+                  <li><a href="documentazione/04-architettura/">04 - Architettura</a></li>
+                  <li><a href="documentazione/05-stack-tecnologico/">05 - Stack Tecnologico</a></li>
+                  <li><a href="documentazione/06-modello-dati/">06 - Modello Dati</a></li>
+                  <li><a href="documentazione/06-sicurezza/">06 - Sicurezza</a></li>
+                  <li><a href="documentazione/07-api-reference/">07 - API Reference</a></li>
+                  <li><a href="documentazione/08-frontend/">08 - Frontend</a></li>
+                  <li><a href="documentazione/09-sicurezza-privacy/">09 - Sicurezza e Privacy</a></li>
+                  <li><a href="documentazione/10-deployment/">10 - Deployment</a></li>
+                  <li><a href="documentazione/11-roadmap/">11 - Roadmap</a></li>
+                  <li><a href="documentazione/12-mcp-integration/">12 - Integrazione MCP</a></li>
+                  <li><a href="documentazione/13-guida-utente/">13 - Guida Utente</a></li>
+                  <li><a href="documentazione/14-reference-img/">14 - Screenshot</a></li>
+                </ul>
+              </div>
+
+              <footer>
+                <p>LocalMind &copy; 2024-2026 - Licensed under AGPL v3</p>
+              </footer>
+            </div>
+          </body>
+          </html>
+          HTMLEOF
+
+          # Copy documentation directories
+          cp -r documentation _site/documentation
+          cp -r documentazione _site/documentazione
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v5
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: '_site'
+
+  deploy:
+    name: Deploy to GitHub Pages
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    needs: build
+
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

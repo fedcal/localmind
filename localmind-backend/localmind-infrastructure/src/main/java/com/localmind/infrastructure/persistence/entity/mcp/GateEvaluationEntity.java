@@ -30,7 +30,7 @@ public class GateEvaluationEntity {
     @JdbcTypeCode(SqlTypes.CHAR)
     private UUID id;
 
-    @Column(name = "gate_id", nullable = false, length = 36)
+    @Column(name = "gate_id", nullable = false, columnDefinition = "CHAR(36)")
     private String gateId;
 
     @Column(name = "passed", nullable = false)

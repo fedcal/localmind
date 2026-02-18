@@ -30,7 +30,7 @@ public class WorkflowRunEntity {
     @JdbcTypeCode(SqlTypes.CHAR)
     private UUID id;
 
-    @Column(name = "workflow_id", nullable = false, length = 36)
+    @Column(name = "workflow_id", nullable = false, columnDefinition = "CHAR(36)")
     private String workflowId;
 
     @Column(name = "status", nullable = false, length = 30)

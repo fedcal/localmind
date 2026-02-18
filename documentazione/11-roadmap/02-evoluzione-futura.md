@@ -3,8 +3,8 @@
 |               |                             |
 |---------------|-----------------------------|
 | **Documento** | Evoluzione Futura e Visione |
-| **Versione**  | 0.1.0                       |
-| **Data**      | 2026-02-09                  |
+| **Versione**  | 1.0.0                       |
+| **Data**      | 2026-02-18                  |
 | **Progetto**  | LocalMind                   |
 
 ---
@@ -52,6 +52,8 @@
 
 ## 1. Panoramica
 
+**Aggiornamento Febbraio 2026**: Con il completamento di tutte le 6 fasi originali, questo documento e' stato aggiornato per riflettere lo stato attuale del progetto. Le priorita' sono state ricalcolate utilizzando il framework RICE (Reach x Impact x Confidence / Effort) e allineate con l'analisi competitor e trend 2026.
+
 Questo documento descrive la visione a lungo termine di LocalMind, delineando le feature pianificate per le versioni successive alla v1.0.0, le evoluzioni architetturali previste e la strategia per la community e l'open source.
 
 Le feature elencate rappresentano un'aspirazione progettuale e non un impegno vincolante. La loro implementazione sara' guidata da:
@@ -60,6 +62,32 @@ Le feature elencate rappresentano un'aspirazione progettuale e non un impegno vi
 - **Maturita' tecnologica**: alcune feature dipendono dall'evoluzione di tecnologie esterne (modelli LLM, framework, librerie).
 - **Risorse disponibili**: lo sviluppo sara' calibrato sulle risorse effettivamente disponibili.
 - **Coerenza architetturale**: ogni feature deve integrarsi armoniosamente con l'architettura esistente.
+
+---
+
+## 1.5 Prerequisiti v1.0.0 GA (Hardening Sprint)
+
+**Target**: Marzo 2026 (4 settimane)
+
+Prima del rilascio v1.0.0 GA, i seguenti gap critici devono essere risolti:
+
+| # | Gap | RICE Score | Priorita' | Effort |
+|---|-----|-----------|----------|--------|
+| 1 | **i18n JSON files** - File it.json/en.json mancanti | 333 | P0 | 3-5gg |
+| 2 | **Loading skeleton loaders** - Applicazione parziale | 300 | P0 | 2gg |
+| 3 | **Dark mode toggle** - Non implementato | 267 | P0 | 2-3gg |
+| 4 | **Form validation frontend** - Incompleta | 210 | P1 | 2-3gg |
+| 5 | **Chat streaming SSE** - Non implementato | 191 | P1 | 5-7gg |
+| 6 | **Simple/Advanced mode** - Non implementato | 95 | P1 | 4-5gg |
+
+**Criteri GO-LIVE v1.0.0:**
+- Tutti i 1306 test backend passano
+- Tutti i 19 file test Playwright passano
+- i18n completo IT/EN funzionante
+- Dark/light mode con toggle e persistenza localStorage
+- Chat streaming SSE per risposte token-by-token
+- Swagger/OpenAPI aggiornato
+- Docker image funzionante e testata
 
 ---
 
@@ -592,6 +620,17 @@ Pianificazione di un sito di documentazione dedicato:
 ## 5. Matrice Priorita' e Impatto
 
 La seguente matrice classifica le feature per priorita' di implementazione e impatto sull'esperienza utente:
+
+### Priorita' Critica (pre-release v1.0.0 GA)
+
+| # | Feature | Target | RICE Score |
+|---|---------|--------|------------|
+| - | i18n JSON files (IT/EN) | v1.0.0 | 333 |
+| - | Loading skeleton loaders | v1.0.0 | 300 |
+| - | Dark mode toggle | v1.0.0 | 267 |
+| - | Chat streaming SSE | v1.0.0 | 191 |
+| - | Form validation | v1.0.0 | 210 |
+| - | Simple/Advanced mode | v1.0.0 | 95 |
 
 ### Alta priorita', alto impatto
 

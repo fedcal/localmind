@@ -32,7 +32,7 @@ public class UserStoryEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     @JdbcTypeCode(SqlTypes.CHAR)
-    @Column(name = "id", length = 36)
+    @Column(name = "id", columnDefinition = "CHAR(36)")
     private UUID id;
 
     @Column(name = "title", nullable = false, length = 500)
@@ -50,7 +50,7 @@ public class UserStoryEntity {
     @Column(name = "priority", length = 20)
     private String priority;
 
-    @Column(name = "sprint_id", length = 36)
+    @Column(name = "sprint_id", columnDefinition = "CHAR(36)")
     private String sprintId;
 
     @Column(name = "created_at", nullable = false)

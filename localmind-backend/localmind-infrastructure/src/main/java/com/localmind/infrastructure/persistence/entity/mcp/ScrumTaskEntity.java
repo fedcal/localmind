@@ -32,7 +32,7 @@ public class ScrumTaskEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     @JdbcTypeCode(SqlTypes.CHAR)
-    @Column(name = "id", length = 36)
+    @Column(name = "id", columnDefinition = "CHAR(36)")
     private UUID id;
 
     @Column(name = "title", nullable = false, length = 500)
@@ -41,7 +41,7 @@ public class ScrumTaskEntity {
     @Column(name = "description", columnDefinition = "LONGTEXT")
     private String description;
 
-    @Column(name = "story_id", length = 36)
+    @Column(name = "story_id", columnDefinition = "CHAR(36)")
     private String storyId;
 
     @Column(name = "assignee", length = 200)

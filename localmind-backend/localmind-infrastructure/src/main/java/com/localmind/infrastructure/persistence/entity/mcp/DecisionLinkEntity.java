@@ -30,7 +30,7 @@ public class DecisionLinkEntity {
     @JdbcTypeCode(SqlTypes.CHAR)
     private UUID id;
 
-    @Column(name = "decision_id", nullable = false, length = 36)
+    @Column(name = "decision_id", nullable = false, columnDefinition = "CHAR(36)")
     private String decisionId;
 
     @Column(name = "link_type", nullable = false, length = 50)

@@ -42,7 +42,7 @@ public class AccessAuditEntity {
     @Column(name = "allowed", nullable = false)
     private boolean allowed;
 
-    @Column(name = "policy_id", length = 36)
+    @Column(name = "policy_id", columnDefinition = "CHAR(36)")
     @JdbcTypeCode(SqlTypes.CHAR)
     private String policyId;
 

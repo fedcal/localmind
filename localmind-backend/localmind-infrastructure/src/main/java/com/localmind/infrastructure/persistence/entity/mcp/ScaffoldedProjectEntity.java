@@ -28,7 +28,7 @@ public class ScaffoldedProjectEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     @JdbcTypeCode(SqlTypes.CHAR)
-    @Column(name = "id", length = 36)
+    @Column(name = "id", columnDefinition = "CHAR(36)")
     private UUID id;
 
     @Column(name = "template_name", nullable = false, length = 100)

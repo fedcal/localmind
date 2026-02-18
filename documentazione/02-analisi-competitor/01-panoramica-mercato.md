@@ -3,8 +3,8 @@
 | Campo        | Valore                          |
 |--------------|---------------------------------|
 | **Documento**| Panoramica del Mercato          |
-| **Versione** | 0.1.0                           |
-| **Data**     | 2026-02-09                      |
+| **Versione** | 1.0.0                           |
+| **Data**     | 2026-02-18                      |
 | **Progetto** | LocalMind                       |
 
 ---
@@ -16,7 +16,8 @@
 3. [Soluzioni SaaS Cloud-Only](#3-soluzioni-saas-cloud-only)
 4. [Soluzioni Open-Source Python](#4-soluzioni-open-source-python)
 5. [Soluzioni Local-First](#5-soluzioni-local-first)
-6. [Gap di Mercato](#6-gap-di-mercato)
+6. [Piattaforme AI Development (Segmento Emergente 2025-2026)](#6-piattaforme-ai-development-segmento-emergente-2025-2026)
+7. [Gap di Mercato](#7-gap-di-mercato)
 
 ---
 
@@ -35,8 +36,9 @@ Il mercato delle piattaforme AI si articola in tre segmenti principali, ciascuno
 | **SaaS Cloud-Only**    | Servizio gestito, zero infrastruttura       | ChatGPT, Claude, Gemini, Notion AI, Copilot         |
 | **Open-Source Python** | Framework programmabile, alta flessibilita' | LangChain, LlamaIndex, PrivateGPT, Haystack         |
 | **Local-First**        | Esecuzione locale, privacy nativa           | AnythingLLM, Jan.ai, GPT4All, LM Studio, LibreChat  |
+| **AI Dev Platforms**   | Piattaforme unificate visual + code         | Dify.ai, Flowise, CrewAI, LangGraph                 |
 
-Nessuno di questi segmenti copre interamente le esigenze di un utente che richieda simultaneamente: privacy dei dati, funzionalita' AI avanzate, automazioni, stack enterprise e interfaccia utente completa.
+Nessuno di questi QUATTRO segmenti copre interamente le esigenze di un utente che richieda simultaneamente: privacy dei dati, funzionalita' AI avanzate, automazioni, stack enterprise e interfaccia utente completa.
 
 ---
 
@@ -191,7 +193,39 @@ Nessuno di questi segmenti copre interamente le esigenze di un utente che richie
 
 ---
 
-## 6. Gap di Mercato
+## 6. Piattaforme AI Development (Segmento Emergente 2025-2026)
+
+### Segmento Emergente: Piattaforme AI Development All-in-One
+
+Questo nuovo segmento, emerso nel 2025-2026, combina visual builder, RAG, agents e deployment in piattaforme unificate.
+
+| Prodotto | GitHub Stars | Tipo | Caratteristica Principale |
+|----------|-------------|------|--------------------------|
+| **Dify.ai** | 34.8K | Open-source | RAG enterprise, workflow visuale, 130K+ app create |
+| **Flowise** (Workday) | 40K+ | Open-source (acquisito) | Visual builder drag-drop, 100+ integrazioni |
+| **Open WebUI** | Alta | Open-source | Analytics v0.8.0, Ollama-native, community forte |
+| **CrewAI** | Alta | Framework Python | Multi-agent role-based, 100K+ sviluppatori certificati |
+| **LangGraph** | Alta | Framework Python | Graph-based agents, performante, LangChain backing |
+| **Continue.dev** | Alta | Open-source | Pivot a CLI PR agents, code review automation |
+| **Langflow** (IBM) | Media | Open-source | Visual builder Python, partnership IBM |
+| **Microsoft Agent Framework** | N/A | Proprietario | .NET, convergenza AutoGen+SemanticKernel, GA Q1 2026 |
+
+**Consolidamento Mercato 2025-2026:**
+- Workday ha acquisito Flowise (agosto 2025) — ora sotto roadmap enterprise
+- IBM ha stretto partnership con Langflow — integrazione watsonx
+- Microsoft converge AutoGen + Semantic Kernel nel nuovo Agent Framework
+
+**Dimensionamento del Mercato:**
+| Segmento | Valore 2025 | Atteso 2030 | CAGR |
+|---|---|---|---|
+| RAG Globale | USD 1.96B | USD 9.86B | 38-39% |
+| Multi-Agent Framework | ~USD 800M | ~USD 4B | ~40% |
+| Enterprise AI Security | USD 12B | USD 24B | ~15% |
+| Self-Hosted AI | USD 2.38B | USD 18.86B (2035) | 23% |
+
+---
+
+## 7. Gap di Mercato
 
 L'analisi dei tre segmenti evidenzia un gap significativo nel mercato:
 

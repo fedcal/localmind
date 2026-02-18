@@ -30,7 +30,7 @@ public class RetroItemEntity {
     @JdbcTypeCode(SqlTypes.CHAR)
     private UUID id;
 
-    @Column(name = "retro_id", nullable = false, length = 36)
+    @Column(name = "retro_id", nullable = false, columnDefinition = "CHAR(36)")
     private String retroId;
 
     @Column(name = "category", nullable = false, length = 50)

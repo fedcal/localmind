@@ -3,8 +3,8 @@
 | Field        | Value                              |
 |--------------|------------------------------------|
 | **Document** | Detailed Competitor Comparison     |
-| **Version**  | 0.1.0                              |
-| **Date**     | 2026-02-09                         |
+| **Version**  | 1.0.0                              |
+| **Date**     | 2026-02-18                         |
 | **Project**  | LocalMind                          |
 
 ---
@@ -19,7 +19,12 @@
 6. [LangChain Analysis](#6-langchain-analysis)
 7. [Jan.ai Analysis](#7-janai-analysis)
 8. [LibreChat Analysis](#8-librechat-analysis)
-9. [Competitive Summary](#9-competitive-summary)
+9. [Dify.ai Analysis](#9-difyai-analysis)
+10. [Flowise (Workday) Analysis](#10-flowise-workday-analysis)
+11. [CrewAI Analysis](#11-crewai-analysis)
+12. [Open WebUI Analysis](#12-open-webui-analysis)
+13. [Continue.dev Analysis](#13-continuedev-analysis)
+14. [Competitive Summary](#14-competitive-summary)
 
 ---
 
@@ -31,24 +36,25 @@ This document provides a detailed comparison between LocalMind and the main comp
 
 ## 2. Comparison Matrix
 
-| Criterion                | ChatGPT           | Claude.ai            | Notion AI           | PrivateGPT  | LangChain       | AnythingLLM   | Jan.ai      | GPT4All     | LM Studio | LibreChat     | n8n          | **LocalMind**           |
-|--------------------------|-------------------|----------------------|---------------------|-------------|-----------------|---------------|-------------|-------------|-----------|---------------|--------------|-------------------------|
-| **Type**                 | SaaS              | SaaS                 | SaaS                | Open-source | Framework       | Open-source   | Open-source | Open-source | Freeware  | Open-source   | Open-source  | **Self-hosted**         |
-| **Data privacy**         | Cloud             | Cloud                | Cloud               | Local       | Configurable    | Local         | Local       | Local       | Local     | Configurable  | Self-hosted  | **Local/Hybrid**        |
-| **Local LLMs**           | No                | No                   | No                  | Yes         | Yes             | Yes           | Yes         | Yes         | Yes       | No            | No           | **Yes**                 |
-| **Cloud LLMs**           | Yes (OpenAI only) | Yes (Anthropic only) | Yes (OpenAI only)   | Partial     | Yes             | Yes           | Partial     | No          | No        | Yes           | No           | **Yes**                 |
-| **Multi-provider**       | No                | No                   | No                  | Partial     | Yes             | Yes           | Partial     | No          | No        | Yes           | No           | **Yes (with fallback)** |
-| **RAG/Doc Intelligence** | Partial (upload)  | Partial (upload)     | Partial (workspace) | Yes         | Yes (framework) | Yes           | No          | Basic       | No        | No            | No           | **Yes (complete)**      |
-| **Semantic search**      | No                | No                   | No                  | Yes         | Yes (framework) | Yes           | No          | Basic       | No        | No            | No           | **Yes**                 |
-| **Agents/Tool calling**  | Yes               | Yes                  | No                  | No          | Yes (framework) | Partial       | No          | No          | No        | Partial       | No           | **Yes**                 |
-| **Automations/Workflow** | No                | No                   | No                  | No          | No              | No            | No          | No          | No        | No            | Yes (only)   | **Yes (via n8n)**       |
-| **Batch processing**     | No                | No                   | No                  | No          | Possible        | No            | No          | No          | No        | No            | Yes          | **Yes (Spring Batch)**  |
-| **Complete UI**          | Yes               | Yes                  | Yes                 | Minimal     | No              | Yes           | Yes         | Yes         | Yes       | Yes           | Yes          | **Yes**                 |
-| **Technology stack**     | Proprietary       | Proprietary          | Proprietary         | Python      | Python          | Node.js/React | Electron/TS | C++/Qt      | Electron  | Node.js/React | Node.js/Vue  | **Java/Angular**        |
-| **Cost**                 | $0-$20/month      | $0-$20/month         | $10/month/user      | Free        | Free            | Free          | Free        | Free        | Free      | Free          | Free         | **Free**                |
-| **Offline mode**         | No                | No                   | No                  | Yes         | Possible        | Yes           | Yes         | Yes         | Yes       | No            | Yes          | **Yes**                 |
-| **Extensibility**        | Plugin (limited)  | No                   | No                  | Low         | High            | Medium        | Low         | Low         | Low       | Medium        | High (nodes) | **High (hexagonal)**    |
-| **Community/Support**    | Enterprise        | Enterprise           | Enterprise          | Medium      | Very high       | Medium        | Medium      | Medium      | Medium    | Medium        | High         | **Growing**             |
+| Criterion                | ChatGPT           | Claude.ai            | Notion AI           | PrivateGPT  | LangChain       | AnythingLLM   | Jan.ai      | GPT4All     | LM Studio | LibreChat     | n8n          | Dify.ai         | Flowise       | CrewAI     | Open WebUI   | **LocalMind**           |
+|--------------------------|-------------------|----------------------|---------------------|-------------|-----------------|---------------|-------------|-------------|-----------|---------------|--------------|-----------------|---------------|------------|--------------|-------------------------|
+| **Type**                 | SaaS              | SaaS                 | SaaS                | Open-source | Framework       | Open-source   | Open-source | Open-source | Freeware  | Open-source   | Open-source  | Open-source     | Open-source   | Framework  | Open-source  | **Self-hosted**         |
+| **Data privacy**         | Cloud             | Cloud                | Cloud               | Local       | Configurable    | Local         | Local       | Local       | Local     | Configurable  | Self-hosted  | Configurable    | Configurable  | Local      | Local        | **Local/Hybrid**        |
+| **Local LLMs**           | No                | No                   | No                  | Yes         | Yes             | Yes           | Yes         | Yes         | Yes       | No            | No           | Yes             | Yes           | Yes        | Yes          | **Yes**                 |
+| **Cloud LLMs**           | Yes (OpenAI only) | Yes (Anthropic only) | Yes (OpenAI only)   | Partial     | Yes             | Yes           | Partial     | No          | No        | Yes           | No           | Yes             | Yes           | Yes        | Partial      | **Yes**                 |
+| **Multi-provider**       | No                | No                   | No                  | Partial     | Yes             | Yes           | Partial     | No          | No        | Yes           | No           | Yes             | Yes           | Yes        | Partial      | **Yes (with fallback)** |
+| **RAG/Doc Intelligence** | Partial (upload)  | Partial (upload)     | Partial (workspace) | Yes         | Yes (framework) | Yes           | No          | Basic       | No        | No            | No           | Yes (advanced)  | Yes           | No         | Basic        | **Yes (complete)**      |
+| **Semantic search**      | No                | No                   | No                  | Yes         | Yes (framework) | Yes           | No          | Basic       | No        | No            | No           | Yes             | Yes           | No         | No           | **Yes**                 |
+| **Agents/Tool calling**  | Yes               | Yes                  | No                  | No          | Yes (framework) | Partial       | No          | No          | No        | Partial       | No           | Yes             | Yes           | Yes (10/10) | No          | **Yes**                 |
+| **MCP Support**          | No                | Partial              | No                  | No          | No              | Partial       | No          | No          | No        | No            | No           | Partial (7/10)  | Partial (6/10) | Minimal (3/10) | Minimal (2/10) | **Yes (10/10, 135+ tools)** |
+| **Automations/Workflow** | No                | No                   | No                  | No          | No              | No            | No          | No          | No        | No            | Yes (only)   | Yes (visual)    | Yes (visual)  | No         | No           | **Yes (via n8n)**       |
+| **Batch processing**     | No                | No                   | No                  | No          | Possible        | No            | No          | No          | No        | No            | Yes          | No              | No            | No         | No           | **Yes (Spring Batch)**  |
+| **Complete UI**          | Yes               | Yes                  | Yes                 | Minimal     | No              | Yes           | Yes         | Yes         | Yes       | Yes           | Yes          | Yes (excellent) | Yes           | No         | Yes          | **Yes**                 |
+| **Technology stack**     | Proprietary       | Proprietary          | Proprietary         | Python      | Python          | Node.js/React | Electron/TS | C++/Qt      | Electron  | Node.js/React | Node.js/Vue  | Python/TS       | Node.js       | Python     | Python/TS    | **Java/Angular**        |
+| **Cost**                 | $0-$20/month      | $0-$20/month         | $10/month/user      | Free        | Free            | Free          | Free        | Free        | Free      | Free          | Free         | Free/Enterprise | Free/Enterprise | Free      | Free         | **Free**                |
+| **Offline mode**         | No                | No                   | No                  | Yes         | Possible        | Yes           | Yes         | Yes         | Yes       | No            | Yes          | Partial         | Partial       | Yes        | Yes          | **Yes**                 |
+| **Extensibility**        | Plugin (limited)  | No                   | No                  | Low         | High            | Medium        | Low         | Low         | Low       | Medium        | High (nodes) | High (plugins)  | High (nodes)  | High       | Medium       | **High (hexagonal)**    |
+| **Community/Support**    | Enterprise        | Enterprise           | Enterprise          | Medium      | Very high       | Medium        | Medium      | Medium      | Medium    | Medium        | High         | High            | High          | High       | High         | **Growing**             |
 
 ---
 
@@ -238,29 +244,163 @@ LibreChat is the closest solution to LocalMind in terms of multi-provider approa
 
 ---
 
-## 9. Competitive Summary
+## 9. Dify.ai Analysis
 
-### 9.1 Positioning Map
+### 9.1 Overview
+
+Open-source AI-native platform for LLM app development with visual workflow. 34.8K GitHub stars, 130K+ apps created.
+
+### 9.2 Strengths
+
+- **Advanced enterprise RAG**: one of the most complete RAG pipelines among open-source solutions
+- **Visual workflow builder**: drag-drop interface for building LLM pipelines without code
+- **Multi-model support**: broad compatibility with cloud and local models
+- **Plugin marketplace**: extensible with a growing ecosystem of plugins
+- **Excellent UX**: polished, professional interface with strong community
+
+### 9.3 Limitations Compared to LocalMind
+
+- **No enterprise Java stack**: monolithic Python/TypeScript architecture, incompatible with Java ecosystems
+- **Partial MCP support**: approximately 7/10 vs LocalMind's 10/10 with 135+ native tools
+- **Limited DevOps tools**: 5/10 vs LocalMind's 10/10 — no specialized CI/CD, incident, or code review tools
+- **Complex self-hosting deployment**: multi-container Docker setup with significant operational overhead
+- **No Spring Batch**: no enterprise batch processing for large document volumes
+
+### 9.4 Positioning Relative to LocalMind
+
+Dify is the most dangerous competitor for feature completeness, but positions in the Python/cloud segment. LocalMind differentiates through Java stack, MCP depth (135 vs ~30 tools), and enterprise security.
+
+---
+
+## 10. Flowise (Workday) Analysis
+
+### 10.1 Overview
+
+No-code visual builder for LLM chains. 40K+ GitHub stars. Acquired by Workday in August 2025.
+
+### 10.2 Strengths
+
+- **Intuitive drag-drop visual builder**: the most accessible no-code LLM workflow tool
+- **100+ integrations**: broad connector ecosystem covering major services
+- **Consumer-friendly UX**: low barrier to entry for non-technical users
+- **Enterprise backing**: now under Workday's enterprise roadmap post-acquisition
+
+### 10.3 Limitations Compared to LocalMind
+
+- **Post-acquisition enterprise-only roadmap**: open-source community stalling since Workday acquisition
+- **No hexagonal architecture**: no formal domain/infrastructure separation
+- **Limited MCP support**: approximately 6/10 — no deep native MCP tooling
+- **No batch processing**: no asynchronous processing for large document volumes
+- **Workday roadmap dependency**: future direction tied to HR/Finance enterprise priorities
+
+### 10.4 Positioning Relative to LocalMind
+
+Flowise under Workday targets enterprise HR/Finance market. LocalMind differentiates through independence, DevOps focus, and MCP depth.
+
+---
+
+## 11. CrewAI Analysis
+
+### 11.1 Overview
+
+Python framework for multi-agent AI with role-based approach. 100K+ certified developers.
+
+### 11.2 Strengths
+
+- **Excellent multi-agent orchestration**: 10/10 for role-based agent design and coordination
+- **Role-based agent design**: intuitive model for defining agent responsibilities and collaboration
+- **Python ecosystem**: seamless integration with the Python AI/ML library landscape
+- **Active community**: 100K+ certified developers and strong adoption
+
+### 11.3 Limitations Compared to LocalMind
+
+- **Framework not a product**: no UI, requires significant development to build a usable application
+- **No built-in RAG**: 5/10 — RAG must be added manually with external libraries
+- **No MCP support**: 3/10 — very limited Model Context Protocol integration
+- **No simple self-hosting**: no turnkey deployment option
+- **Python stack incompatible with enterprise Java**: cannot be adopted by Java-centric organizations
+
+### 11.4 Positioning Relative to LocalMind
+
+CrewAI is complementary rather than a direct competitor. It is a potential future integration as orchestration engine for LocalMind agents.
+
+---
+
+## 12. Open WebUI Analysis
+
+### 12.1 Overview
+
+Open-source web interface for Ollama with advanced analytics introduced in v0.8.0.
+
+### 12.2 Strengths
+
+- **Clean UX**: well-designed, Ollama-native chat interface
+- **Strong community**: active user base and contributor ecosystem
+- **Analytics dashboard**: v0.8.0 introduced analytics and usage tracking
+- **Zero setup with Ollama**: integrates directly with Ollama without additional configuration
+
+### 12.3 Limitations Compared to LocalMind
+
+- **Chat only**: no agents, no automation, no workflow orchestration
+- **No advanced RAG**: 3/10 — basic document handling, no configurable chunking or vector search tuning
+- **No MCP support**: 2/10 — minimal Model Context Protocol tooling
+- **No enterprise security**: 4/10 — limited authentication and authorization options
+- **No batch processing**: no asynchronous processing for large document archives
+
+### 12.4 Positioning Relative to LocalMind
+
+Open WebUI is a chat interface. LocalMind is a complete AI platform. The two tools occupy different tiers of capability and target different user needs.
+
+---
+
+## 13. Continue.dev Analysis
+
+### 13.1 Overview
+
+AI tool for developers, pivoted in 2025 toward CLI PR agents and code review automation.
+
+### 13.2 Strengths
+
+- **Code review automation**: highly effective automated PR review workflows
+- **Effective PR agent**: CLI-based agent for pull request analysis and suggestions
+- **Native IDE integration**: deep integration with VS Code and JetBrains IDEs
+
+### 13.3 Limitations Compared to LocalMind
+
+- **DevOps/code focus only**: no document RAG, no general-purpose chat
+- **No visual workflow**: no drag-drop or automation builder
+- **No general chat**: purpose-built for code contexts only
+- **Much narrower scope**: single-vertical tool vs LocalMind's full-platform approach
+
+### 13.4 Positioning Relative to LocalMind
+
+Continue.dev represents a HIGH threat in the DevOps vertical. LocalMind covers DevOps more broadly with 135 MCP tools, but Continue.dev excels in specific PR automation workflows.
+
+---
+
+## 14. Competitive Summary
+
+### 14.1 Positioning Map
 
 ```
                     Complete Features
                            ^
                            |
-                  ChatGPT  |
+                  ChatGPT  |   * Dify.ai
                     *      |           * LocalMind
                            |
-         Notion AI *       |     * AnythingLLM
+         Notion AI *  Flowise*    * AnythingLLM
                            |
     Cloud-Only ----+-------+-------+---- Local-First
                            |
-              LibreChat *  |  * Jan.ai
+              LibreChat *  |  * Jan.ai      * Open WebUI
                            |
           LangChain *      |     * GPT4All
-          (framework)      |
+          (framework) CrewAI*
                            |
                     Limited Features
 ```
 
-### 9.2 Conclusion
+### 14.2 Conclusion
 
-LocalMind occupies a unique positioning in the "Complete Features + Local-First" quadrant, where no direct competitor is present. Cloud-only solutions (ChatGPT, Claude.ai) offer complete features but sacrifice privacy and control. Existing local-first solutions (Jan.ai, GPT4All) guarantee privacy but offer limited features. LocalMind combines the advantages of both worlds in an enterprise Java stack.
+LocalMind occupies a unique positioning in the "Complete Features + Local-First" quadrant, reinforced by the emergence of the AI Dev Platforms segment. Cloud-only solutions (ChatGPT, Claude.ai) offer complete features but sacrifice privacy and control. Existing local-first solutions (Jan.ai, GPT4All) guarantee privacy but offer limited features. New AI dev platforms (Dify.ai, Flowise) broaden the competitive landscape but remain in the Python/cloud segment. LocalMind combines the advantages of all worlds in an enterprise Java stack with unmatched MCP depth (135+ tools), Spring Batch processing, and native n8n automation.

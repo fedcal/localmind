@@ -1,8 +1,41 @@
 # LocalMind
 
+[![CI](https://github.com/fedcal/localmind/actions/workflows/ci.yml/badge.svg)](https://github.com/fedcal/localmind/actions/workflows/ci.yml)
+[![License: AGPL v3](https://img.shields.io/badge/License-AGPL_v3-blue.svg)](https://www.gnu.org/licenses/agpl-3.0)
+[![Java](https://img.shields.io/badge/Java-17-orange.svg)](https://openjdk.org/projects/jdk/17/)
+[![Angular](https://img.shields.io/badge/Angular-21-red.svg)](https://angular.dev/)
+[![Spring Boot](https://img.shields.io/badge/Spring_Boot-3.4.2-green.svg)](https://spring.io/projects/spring-boot)
+[![Spring AI](https://img.shields.io/badge/Spring_AI-1.0.0-green.svg)](https://spring.io/projects/spring-ai)
+
 **Your AI, your data, your machine.**
 
 Piattaforma AI local-first per gestione documenti, ricerca semantica e chat multi-provider LLM.
+
+## Screenshot
+
+### Setup Password
+![Setup Password](documentazione/14-reference-img/01.CreazionePassword.png)
+
+### Dashboard - Stato servizi e azioni rapide
+![Dashboard](documentazione/14-reference-img/02-dashboard.png)
+
+### Chat AI - Conversazione multi-provider
+![Chat AI](documentazione/14-reference-img/03-chatsection.png)
+
+### Gestione Documenti - Upload e indicizzazione
+![Documenti](documentazione/14-reference-img/04-documentisection.png)
+
+### Ricerca Semantica - Query in linguaggio naturale
+![Ricerca Semantica](documentazione/14-reference-img/05-semanticSearch.png)
+
+### MCP Integration - 132+ tool nativi
+![MCP](documentazione/14-reference-img/06-mcp.png)
+
+### Impostazioni - Configurazione provider LLM
+![Impostazioni](documentazione/14-reference-img/07-settings.png)
+
+### Guida Utente integrata
+![Guida](documentazione/14-reference-img/08-guide.png)
 
 ---
 
@@ -191,4 +224,4 @@ LocalMind integra nativamente 132+ tool MCP organizzati in 9 classi:
 
 ## Licenza
 
-Progetto privato. Tutti i diritti riservati.
+Questo progetto e' distribuito sotto la licenza [GNU AGPL v3](LICENSE).

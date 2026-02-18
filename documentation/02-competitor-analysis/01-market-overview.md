@@ -3,8 +3,8 @@
 | Field        | Value                           |
 |--------------|---------------------------------|
 | **Document** | Market Overview                 |
-| **Version**  | 0.1.0                           |
-| **Date**     | 2026-02-09                      |
+| **Version**  | 1.0.0                           |
+| **Date**     | 2026-02-18                      |
 | **Project**  | LocalMind                       |
 
 ---
@@ -16,7 +16,8 @@
 3. [SaaS Cloud-Only Solutions](#3-saas-cloud-only-solutions)
 4. [Python Open-Source Solutions](#4-python-open-source-solutions)
 5. [Local-First Solutions](#5-local-first-solutions)
-6. [Market Gap](#6-market-gap)
+6. [AI Development Platforms (Emerging Segment 2025-2026)](#6-ai-development-platforms-emerging-segment-2025-2026)
+7. [Market Gap](#7-market-gap)
 
 ---
 
@@ -35,8 +36,9 @@ The AI platform market is divided into three main segments, each with distinctiv
 | **SaaS Cloud-Only**     | Managed service, zero infrastructure        | ChatGPT, Claude, Gemini, Notion AI, Copilot         |
 | **Python Open-Source**  | Programmable framework, high flexibility    | LangChain, LlamaIndex, PrivateGPT, Haystack         |
 | **Local-First**         | Local execution, native privacy             | AnythingLLM, Jan.ai, GPT4All, LM Studio, LibreChat  |
+| **AI Dev Platforms**    | Unified visual + code platforms             | Dify.ai, Flowise, CrewAI, LangGraph                 |
 
-None of these segments fully covers the needs of a user who simultaneously requires: data privacy, advanced AI features, automations, enterprise stack and a complete user interface.
+None of these four segments fully covers the needs of a user who simultaneously requires: data privacy, advanced AI features, automations, enterprise stack and a complete user interface.
 
 ---
 
@@ -191,9 +193,41 @@ None of these segments fully covers the needs of a user who simultaneously requi
 
 ---
 
-## 6. Market Gap
+## 6. AI Development Platforms (Emerging Segment 2025-2026)
 
-The analysis of the three segments reveals a significant market gap:
+### Emerging Segment: All-in-One AI Development Platforms
+
+This new segment, emerged in 2025-2026, combines visual builders, RAG, agents and deployment in unified platforms.
+
+| Product | GitHub Stars | Type | Main Characteristic |
+|---------|-------------|------|---------------------|
+| **Dify.ai** | 34.8K | Open-source | Enterprise RAG, visual workflow, 130K+ apps created |
+| **Flowise** (Workday) | 40K+ | Open-source (acquired) | Drag-drop visual builder, 100+ integrations |
+| **Open WebUI** | High | Open-source | Analytics v0.8.0, Ollama-native, strong community |
+| **CrewAI** | High | Python Framework | Multi-agent role-based, 100K+ certified developers |
+| **LangGraph** | High | Python Framework | Graph-based agents, performant, LangChain backing |
+| **Continue.dev** | High | Open-source | Pivot to CLI PR agents, code review automation |
+| **Langflow** (IBM) | Medium | Open-source | Python visual builder, IBM partnership |
+| **Microsoft Agent Framework** | N/A | Proprietary | .NET, AutoGen+SemanticKernel convergence, GA Q1 2026 |
+
+**Market Consolidation 2025-2026:**
+- Workday acquired Flowise (August 2025) — now under enterprise roadmap
+- IBM partnered with Langflow — watsonx integration
+- Microsoft converges AutoGen + Semantic Kernel into new Agent Framework
+
+**Market Sizing:**
+| Segment | 2025 Value | Expected 2030 | CAGR |
+|---|---|---|---|
+| Global RAG | USD 1.96B | USD 9.86B | 38-39% |
+| Multi-Agent Framework | ~USD 800M | ~USD 4B | ~40% |
+| Enterprise AI Security | USD 12B | USD 24B | ~15% |
+| Self-Hosted AI | USD 2.38B | USD 18.86B (2035) | 23% |
+
+---
+
+## 7. Market Gap
+
+The analysis of the four segments reveals a significant market gap:
 
 **No existing solution unifies in a single platform:**
 
