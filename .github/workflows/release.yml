@@ -143,11 +143,15 @@ jobs:
           server-id: central
           server-username: CENTRAL_USERNAME
           server-password: CENTRAL_TOKEN
-          gpg-private-key: ${{ secrets.GPG_PRIVATE_KEY }}
-          gpg-passphrase: MAVEN_GPG_PASSPHRASE
+
+      - name: Import GPG key
+        run: |
+          echo "$GPG_PRIVATE_KEY" | gpg --batch --import
+        env:
+          GPG_PRIVATE_KEY: ${{ secrets.GPG_PRIVATE_KEY }}
 
       - name: Publish to Maven Central
-        run: cd localmind-sdk-java && mvn deploy -Prelease -B
+        run: cd localmind-sdk-java && mvn deploy -Prelease -B -Dgpg.passphrase="$MAVEN_GPG_PASSPHRASE"
         env:
           CENTRAL_USERNAME: ${{ secrets.CENTRAL_USERNAME }}
           CENTRAL_TOKEN: ${{ secrets.CENTRAL_TOKEN }}
@@ -161,21 +165,19 @@ jobs:
     if: ${{ vars.PUBLISH_PYPI == 'true' }}
 
     steps:
-      - name: Download artifacts
-        uses: actions/download-artifact@v4
-        with:
-          name: release-artifacts
-          path: ./artifacts
+      - uses: actions/checkout@v4
 
       - name: Set up Python 3.12
         uses: actions/setup-python@v5
         with:
           python-version: '3.12'
 
-      - name: Publish to PyPI
+      - name: Build and publish to PyPI
         run: |
-          pip install twine
-          twine upload ./artifacts/localmind-sdk-python-*.tar.gz ./artifacts/localmind-sdk-python-*.whl
+          cd localmind-sdk-python
+          pip install build twine
+          python -m build
+          twine upload dist/*
         env:
           TWINE_USERNAME: __token__
           TWINE_PASSWORD: ${{ secrets.PYPI_API_TOKEN }}
