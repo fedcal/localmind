@@ -23,6 +23,12 @@ localmind-frontend/.angular/
 .env
 *.env.local
 
+# Maven local settings (credentials)
+localmind-sdk-java/.mvn/settings.xml
+
+# Release artifacts
+release/
+
 # OS
 .DS_Store
 Thumbs.db

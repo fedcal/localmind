@@ -57,8 +57,26 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 ## [Unreleased]
 
 ### Da Fare / To Do
-- Integrazione Prometheus/Grafana per metriche
 - Backup automatico database e vector store
 - Compressione file uploadati
 - Export/import configurazioni
 - API versioning (v2)
+
+## [1.0.0] - 2026-02-21
+
+### Aggiunto / Added
+- GitHub Actions CI: test automatici backend, frontend, SDK su ogni push/PR
+- GitHub Actions Release: build + publish su tag v* (Maven Central, PyPI, npm, GHCR)
+- Script `scripts/build-release.sh` per build locale di tutti gli artefatti
+- SDK Java: metadati Maven Central (licenses, scm, developers, distributionManagement, profilo release con GPG)
+- SDK Python: fix build-backend, aggiunto authors, URLs corretti per monorepo
+- SDK JS: aggiunto publishConfig.access:public, repository, homepage, bugs, author
+- Docker images push su GitHub Container Registry (GHCR)
+- Dockerfile OCI labels per compatibilita' GHCR
+
+### Modificato / Changed
+- Monitoring: integrazione Prometheus + Grafana con profilo Docker `monitoring`
+- OpenAPI: 23/23 controller annotati con @Tag, 117 @Operation con @ApiResponse
+- Docker: layer caching completo per tutti gli 8 moduli Maven
+- Test backend: aggiunti 27 test di integrazione con Testcontainers
+- Test frontend: aggiunti 77 test Vitest (15 file spec)

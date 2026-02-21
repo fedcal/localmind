@@ -1,0 +1,54 @@
+@options
+@packages
+-classpath
+'/home/federicocalo/.m2/repository/com/fasterxml/jackson/core/jackson-databind/2.17.0/jackson-databind-2.17.0.jar:/home/federicocalo/.m2/repository/com/fasterxml/jackson/core/jackson-annotations/2.17.0/jackson-annotations-2.17.0.jar:/home/federicocalo/.m2/repository/com/fasterxml/jackson/core/jackson-core/2.17.0/jackson-core-2.17.0.jar:/home/federicocalo/.m2/repository/net/bytebuddy/byte-buddy/1.14.9/byte-buddy-1.14.9.jar:/home/federicocalo/.m2/repository/com/fasterxml/jackson/datatype/jackson-datatype-jsr310/2.17.0/jackson-datatype-jsr310-2.17.0.jar'
+-encoding
+'UTF-8'
+-protected
+-source
+'17'
+-sourcepath
+'/media/federicocalo/D/prj/localmind/localmind-sdk-java/src/main/java:/media/federicocalo/D/prj/localmind/localmind-sdk-java/target/generated-sources/annotations'
+-author
+-bottom
+'Copyright &#169; 2026. All rights reserved.'
+-charset
+'UTF-8'
+-d
+'/media/federicocalo/D/prj/localmind/localmind-sdk-java/target/apidocs'
+-docencoding
+'UTF-8'
+-doctitle
+'LocalMind SDK for Java 1.0.0 API'
+-use
+-version
+-windowtitle
+'LocalMind SDK for Java 1.0.0 API'
+com.localmind.sdk
+/home/federicocalo/.m2/repository/com/fasterxml/jackson/core/jackson-databind/2.17.0/jackson-databind-2.17.0.jar = 1771634486358
+/home/federicocalo/.m2/repository/com/fasterxml/jackson/core/jackson-annotations/2.17.0/jackson-annotations-2.17.0.jar = 1771634486278
+/home/federicocalo/.m2/repository/com/fasterxml/jackson/core/jackson-core/2.17.0/jackson-core-2.17.0.jar = 1771634486434
+/home/federicocalo/.m2/repository/net/bytebuddy/byte-buddy/1.14.9/byte-buddy-1.14.9.jar = 1771634486578
+/home/federicocalo/.m2/repository/com/fasterxml/jackson/datatype/jackson-datatype-jsr310/2.17.0/jackson-datatype-jsr310-2.17.0.jar = 1771634486330
+/media/federicocalo/D/prj/localmind/localmind-sdk-java/src/main/java = 1771634175042
+/media/federicocalo/D/prj/localmind/localmind-sdk-java/target/generated-sources/annotations = 1771634492005
+/media/federicocalo/D/prj/localmind/localmind-sdk-java/target/apidocs/help-doc.html = 1771668840612
+/media/federicocalo/D/prj/localmind/localmind-sdk-java/target/apidocs/overview-tree.html = 1771668840564
+/media/federicocalo/D/prj/localmind/localmind-sdk-java/target/apidocs/search.js = 1771668840615
+/media/federicocalo/D/prj/localmind/localmind-sdk-java/target/apidocs/tag-search-index.js = 1771668840581
+/media/federicocalo/D/prj/localmind/localmind-sdk-java/target/apidocs/allclasses-index.html = 1771668840579
+/media/federicocalo/D/prj/localmind/localmind-sdk-java/target/apidocs/search-page.js = 1771668840616
+/media/federicocalo/D/prj/localmind/localmind-sdk-java/target/apidocs/element-list = 1771668840508
+/media/federicocalo/D/prj/localmind/localmind-sdk-java/target/apidocs/serialized-form.html = 1771668840526
+/media/federicocalo/D/prj/localmind/localmind-sdk-java/target/apidocs/member-search-index.js = 1771668840581
+/media/federicocalo/D/prj/localmind/localmind-sdk-java/target/apidocs/package-search-index.js = 1771668840581
+/media/federicocalo/D/prj/localmind/localmind-sdk-java/target/apidocs/stylesheet.css = 1771668840613
+/media/federicocalo/D/prj/localmind/localmind-sdk-java/target/apidocs/index-all.html = 1771668840607
+/media/federicocalo/D/prj/localmind/localmind-sdk-java/target/apidocs/index.html = 1771668840610
+/media/federicocalo/D/prj/localmind/localmind-sdk-java/target/apidocs/script.js = 1771668840614
+/media/federicocalo/D/prj/localmind/localmind-sdk-java/target/apidocs/copy.svg = 1771668840614
+/media/federicocalo/D/prj/localmind/localmind-sdk-java/target/apidocs/search.html = 1771668840608
+/media/federicocalo/D/prj/localmind/localmind-sdk-java/target/apidocs/link.svg = 1771668840614
+/media/federicocalo/D/prj/localmind/localmind-sdk-java/target/apidocs/allpackages-index.html = 1771668840580
+/media/federicocalo/D/prj/localmind/localmind-sdk-java/target/apidocs/module-search-index.js = 1771668840580
+/media/federicocalo/D/prj/localmind/localmind-sdk-java/target/apidocs/type-search-index.js = 1771668840581

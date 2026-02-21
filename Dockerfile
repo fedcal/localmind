@@ -37,7 +37,10 @@ FROM eclipse-temurin:17-jre
 # Metadata
 LABEL maintainer="LocalMind" \
       description="LocalMind Backend - Spring Boot" \
-      version="0.1.0"
+      version="1.0.0" \
+      org.opencontainers.image.source="https://github.com/fedcal/localmind" \
+      org.opencontainers.image.description="LocalMind Backend - Spring Boot" \
+      org.opencontainers.image.licenses="MIT"
 
 # Utente non-root / Non-root user
 RUN groupadd -r appuser && useradd -r -g appuser -d /app appuser
