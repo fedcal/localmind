@@ -43,13 +43,13 @@ jobs:
         run: |
           cd localmind-backend
           mvn install -DskipTests -B
-          cp localmind-app/target/*.jar ../localmind-backend-${{ steps.version.outputs.version }}.jar
+          cp localmind-app/target/localmind-app-*.jar ../localmind-backend-${{ steps.version.outputs.version }}.jar
 
       - name: Build SDK Java
         run: |
           cd localmind-sdk-java
           mvn package -B
-          cp target/*.jar ../localmind-sdk-java-${{ steps.version.outputs.version }}.jar
+          cp target/localmind-sdk-java-${{ steps.version.outputs.version }}.jar ../localmind-sdk-java-${{ steps.version.outputs.version }}.jar
 
       # ── Frontend ──
       - name: Set up Node.js 22
