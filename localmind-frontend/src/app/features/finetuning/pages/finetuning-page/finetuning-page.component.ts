@@ -5,11 +5,12 @@ import { TranslatePipe } from '../../../../core/i18n/translate.pipe';
 import { TranslationService } from '../../../../core/i18n/translation.service';
 import { LoadingSkeletonComponent } from '../../../../shared/components/loading-skeleton/loading-skeleton.component';
 import { FormsModule } from '@angular/forms';
+import { DatePipe } from '@angular/common';
 
 @Component({
   selector: 'app-finetuning-page',
   standalone: true,
-  imports: [TranslatePipe, LoadingSkeletonComponent, FormsModule],
+  imports: [TranslatePipe, LoadingSkeletonComponent, FormsModule, DatePipe],
   template: `
     <div class="finetuning-page">
       <div class="header">
