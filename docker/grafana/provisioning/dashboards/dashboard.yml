@@ -1,0 +1,17 @@
+# ==========================================================
+# Grafana - Provider dashboard auto-provisionato
+# Grafana - Auto-provisioned dashboard provider
+# ==========================================================
+
+apiVersion: 1
+
+providers:
+  - name: 'LocalMind'
+    orgId: 1
+    folder: 'LocalMind'
+    type: file
+    disableDeletion: false
+    editable: true
+    options:
+      path: /etc/grafana/provisioning/dashboards
+      foldersFromFilesStructure: false

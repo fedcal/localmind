@@ -1,0 +1,32 @@
+{
+  "name": "@localmind/sdk",
+  "version": "1.0.0",
+  "description": "JavaScript/TypeScript SDK for LocalMind API - chat, documents, semantic search, and conversation management",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "prepublishOnly": "npm run build",
+    "clean": "rm -rf dist"
+  },
+  "devDependencies": {
+    "@types/node": "^25.3.0",
+    "typescript": "~5.5.0"
+  },
+  "files": [
+    "dist/"
+  ],
+  "keywords": [
+    "localmind",
+    "llm",
+    "sdk",
+    "ai",
+    "rag",
+    "semantic-search",
+    "chat"
+  ],
+  "license": "MIT",
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}

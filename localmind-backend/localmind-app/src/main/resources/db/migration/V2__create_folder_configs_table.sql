@@ -1,0 +1,8 @@
+CREATE TABLE folder_configs (
+    id CHAR(36) NOT NULL DEFAULT (UUID()) PRIMARY KEY,
+    path VARCHAR(1000) NOT NULL,
+    `recursive` BOOLEAN NOT NULL DEFAULT TRUE,
+    watch_enabled BOOLEAN NOT NULL DEFAULT FALSE,
+    last_scan_at TIMESTAMP NULL,
+    document_count INTEGER NOT NULL DEFAULT 0
+);

@@ -1,0 +1,1 @@
+ALTER TABLE documents ADD COLUMN ocr_confidence DOUBLE DEFAULT NULL;

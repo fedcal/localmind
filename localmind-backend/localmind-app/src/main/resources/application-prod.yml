@@ -1,0 +1,28 @@
+spring:
+  datasource:
+    url: jdbc:mysql://${DB_HOST:localhost}:${DB_PORT:3306}/localmind?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    show-sql: false
+  ai:
+    ollama:
+      base-url: http://${OLLAMA_HOST:localhost}:11434
+    vectorstore:
+      qdrant:
+        host: ${QDRANT_HOST:localhost}
+        port: 6334
+
+localmind:
+  llm:
+    default-provider: OLLAMA
+  n8n:
+    base-url: http://${N8N_HOST:localhost}:5678
+
+logging:
+  level:
+    com.localmind: INFO
+    org.springframework.ai: WARN

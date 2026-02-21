@@ -1,0 +1,1 @@
+ALTER TABLE chat_messages ADD COLUMN mime_type VARCHAR(50) DEFAULT NULL;

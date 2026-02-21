@@ -1,0 +1,7 @@
+CREATE TABLE mcp_project_budgets (
+    id CHAR(36) NOT NULL PRIMARY KEY,
+    project_name VARCHAR(200) NOT NULL,
+    total_budget DECIMAL(15,2) NOT NULL DEFAULT 0.00,
+    currency VARCHAR(10) NOT NULL DEFAULT 'EUR',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+)

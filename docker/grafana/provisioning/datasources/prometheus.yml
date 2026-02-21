@@ -1,0 +1,14 @@
+# ==========================================================
+# Grafana - Datasource Prometheus auto-provisionata
+# Grafana - Auto-provisioned Prometheus datasource
+# ==========================================================
+
+apiVersion: 1
+
+datasources:
+  - name: Prometheus
+    type: prometheus
+    url: http://prometheus:9090
+    access: proxy
+    isDefault: true
+    editable: false

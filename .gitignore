@@ -1,0 +1,51 @@
+# Java / Maven
+localmind-backend/**/target/
+*.class
+*.jar
+*.war
+*.log
+.mvn/wrapper/maven-wrapper.jar
+
+# IDE
+.idea/
+*.iml
+.vscode/
+.project
+.classpath
+.settings/
+
+# Angular / Node
+localmind-frontend/node_modules/
+localmind-frontend/dist/
+localmind-frontend/.angular/
+
+# Environment
+.env
+*.env.local
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Docker volumes
+postgres_data/
+qdrant_data/
+ollama_data/
+n8n_data/
+
+# Playwright
+localmind-frontend/playwright-report/
+localmind-frontend/test-results/
+localmind-frontend/blob-report/
+
+# Docusaurus
+docs-site/node_modules/
+docs-site/build/
+docs-site/.docusaurus/
+docs-site/docs/
+docs-site/i18n/it/docusaurus-plugin-content-docs/
+
+.claude
+CLAUDE.md
+
+Sviluppi

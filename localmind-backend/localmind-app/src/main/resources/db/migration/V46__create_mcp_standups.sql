@@ -1,0 +1,8 @@
+CREATE TABLE mcp_standups (
+    id CHAR(36) NOT NULL PRIMARY KEY,
+    yesterday VARCHAR(2000) NOT NULL,
+    today VARCHAR(2000) NOT NULL,
+    blockers VARCHAR(2000),
+    standup_date VARCHAR(10) NOT NULL,
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+);

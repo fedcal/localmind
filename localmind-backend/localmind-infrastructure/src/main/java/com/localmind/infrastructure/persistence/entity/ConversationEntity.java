@@ -1,0 +1,63 @@
+package com.localmind.infrastructure.persistence.entity;
+
+import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
+
+import java.time.Instant;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
+
+@Entity
+@Table(name = "conversations")
+@Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+public class ConversationEntity {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.UUID)
+    @JdbcTypeCode(SqlTypes.CHAR)
+    private UUID id;
+
+    private String title;
+
+    @Column(columnDefinition = "TEXT")
+    private String systemPrompt;
+
+    @OneToMany(mappedBy = "conversation", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OrderBy("createdAt ASC")
+    @Builder.Default
+    private List<ChatMessageEntity> messages = new ArrayList<>();
+
+    private Integer maxContextMessages;
+
+    @OneToMany(mappedBy = "conversation", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Builder.Default
+    private List<ConversationTagEntity> tags = new ArrayList<>();
+
+    @Column(columnDefinition = "JSON")
+    private String metadata;
+
+    @Column(nullable = false)
+    private Instant createdAt;
+
+    private Instant updatedAt;
+
+    @PrePersist
+    protected void onCreate() {
+        createdAt = Instant.now();
+        updatedAt = Instant.now();
+    }
+
+    @PreUpdate
+    protected void onUpdate() {
+        updatedAt = Instant.now();
+    }
+}
