@@ -1,0 +1,25 @@
+{
+  "source_path": "/run/media/federicocalo/D1/prj/localmind/documentazione/03-analisi-funzionale/01-llm-gateway.md",
+  "type": "DOC",
+  "confidence": "high",
+  "manifest_override": true,
+  "title": "Specifica Funzionale: LLM Gateway",
+  "summary": "Functional specification of the LocalMind LLM Gateway covering provider routing, fallback chain, retry logic, cost tracking, and data models.",
+  "scope": [
+    "LLM Gateway",
+    "LlmGatewayService",
+    "ChatUseCase",
+    "LlmClient",
+    "CostTrackingService",
+    "LlmUsageRepository",
+    "ChatController",
+    "Ollama",
+    "OpenAI",
+    "Anthropic",
+    "Google"
+  ],
+  "cross_refs": [],
+  "locked": false,
+  "precedence": null,
+  "notes": "Manifest declared DOC; however content exhibits strong SPEC signals: Java interface contracts (ChatUseCase, LlmClient, LlmUsageRepository), request/response schema tables (ChatRequest, ChatResponse), YAML configuration parameters with typed fields, and HTTP error-code handling tables. Synthesizer may wish to promote to SPEC for technical-constraint extraction."
+}

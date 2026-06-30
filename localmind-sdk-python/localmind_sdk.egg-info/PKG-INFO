@@ -1,0 +1,178 @@
+Metadata-Version: 2.4
+Name: localmind-sdk
+Version: 1.0.0
+Summary: Python SDK for LocalMind API - chat, documents, semantic search, and conversation management
+Author: Federico Calo
+License: MIT
+Project-URL: Homepage, https://github.com/fedcal/localmind
+Project-URL: Repository, https://github.com/fedcal/localmind
+Project-URL: Documentation, https://github.com/fedcal/localmind#readme
+Project-URL: Bug Tracker, https://github.com/fedcal/localmind/issues
+Keywords: localmind,llm,sdk,ai,rag,semantic-search
+Classifier: Development Status :: 4 - Beta
+Classifier: Intended Audience :: Developers
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Classifier: Topic :: Software Development :: Libraries :: Python Modules
+Requires-Python: >=3.9
+Description-Content-Type: text/markdown
+Requires-Dist: requests>=2.31.0
+
+# LocalMind SDK for Python
+
+Python SDK for integrating with the [LocalMind](https://github.com/localmind) API. Provides a simple client for chat, document management, semantic search, and conversation operations.
+
+## Requirements
+
+- Python 3.9+
+- `requests` library
+
+## Installation
+
+```bash
+pip install localmind-sdk
+```
+
+### Install from source
+
+```bash
+cd localmind-sdk-python
+pip install -e .
+```
+
+## Quick Start
+
+```python
+from localmind import LocalMindClient
+
+# Create client (defaults to http://localhost:8080/api/v1)
+client = LocalMindClient()
+
+# Authenticate (if auth is configured on the server)
+client.login("your-password")
+
+# Simple chat
+response = client.chat("Riassumi il documento...")
+print(response["content"])
+
+# Chat with provider/model selection
+response = client.chat("Explain this concept", provider="OLLAMA", model="llama3")
+
+# Chat with RAG enabled
+response = client.chat(
+    "What does the deployment guide say?",
+    enable_rag=True,
+    temperature=0.3,
+)
+print(response["content"])
+if response.get("ragSources"):
+    for source in response["ragSources"]:
+        print(f"  Source: {source['filename']} (score: {source['score']:.2f})")
+```
+
+## Document Management
+
+```python
+# List all documents
+documents = client.documents.list()
+
+# Upload a document
+doc = client.documents.upload("/path/to/report.pdf")
+print(f"Uploaded: {doc['filename']} (status: {doc['status']})")
+
+# Get document details
+doc = client.documents.get("document-id")
+
+# Delete a document
+client.documents.delete("document-id")
+```
+
+## Semantic Search
+
+```python
+# Search with default topK (5)
+results = client.search("deployment procedure")
+
+# Search with custom topK
+results = client.search("security policy", top_k=10)
+for result in results:
+    print(f"{result['score']:.2f} - {result['filename']}: {result['content'][:100]}")
+```
+
+## Conversation Management
+
+```python
+# List all conversations
+conversations = client.conversations.list()
+
+# List by tag
+tagged = client.conversations.list(tag="project-x")
+
+# Get full conversation with messages
+convo = client.conversations.get("conversation-id")
+for msg in convo["messages"]:
+    print(f"{msg['role']}: {msg['content']}")
+
+# Continue a conversation
+reply = client.chat("Follow-up question", conversation_id=convo["id"])
+
+# Rename a conversation
+client.conversations.rename("conversation-id", "New Title")
+
+# Update system prompt
+client.conversations.update_system_prompt("conversation-id", "You are a helpful assistant.")
+
+# Tag management
+client.conversations.add_tag("conversation-id", "important")
+client.conversations.remove_tag("conversation-id", "old-tag")
+
+# Export to PDF
+pdf_bytes = client.conversations.export("conversation-id", format="pdf")
+with open("conversation.pdf", "wb") as f:
+    f.write(pdf_bytes)
+
+# Delete a conversation
+client.conversations.delete("conversation-id")
+```
+
+## Health Check
+
+```python
+health = client.health()
+print(f"Status: {health['status']}")          # UP or DEGRADED
+print(f"Services: {health['services']}")      # {"api": "UP", "ollama": "UP"}
+```
+
+## Configuration
+
+```python
+client = LocalMindClient(
+    base_url="http://my-server:8080/api/v1",   # Custom server URL
+    auth_token="pre-existing-jwt-token",        # Pre-set auth token
+    timeout=300,                                 # Request timeout in seconds (default: 120)
+)
+```
+
+## Error Handling
+
+All API errors raise `LocalMindException` with the HTTP status code and response body:
+
+```python
+from localmind import LocalMindClient, LocalMindException
+
+client = LocalMindClient()
+try:
+    client.chat("Hello")
+except LocalMindException as e:
+    print(f"Status: {e.status_code}")          # e.g. 401, 500
+    print(f"Body: {e.response_body}")          # Raw server response
+    print(f"Message: {e}")
+```
+
+## License
+
+MIT

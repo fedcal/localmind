@@ -1,0 +1,16 @@
+LocalMind Test Document
+
+This document is used for end-to-end integration testing of the LocalMind platform.
+It contains information about artificial intelligence, machine learning, and natural language processing.
+
+Artificial intelligence (AI) is the simulation of human intelligence processes by computer systems.
+These processes include learning, reasoning, and self-correction.
+Machine learning is a subset of AI that provides systems the ability to automatically learn
+and improve from experience without being explicitly programmed.
+
+Natural language processing (NLP) is a branch of AI that helps computers understand,
+interpret, and manipulate human language. NLP draws from many disciplines including
+computer science and computational linguistics.
+
+This content is specifically designed to be searchable via semantic search queries
+about AI, machine learning, NLP, and related topics.

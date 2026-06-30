@@ -1,0 +1,22 @@
+{
+  "source_path": "/run/media/federicocalo/D1/prj/localmind/documentazione/15-ambiti-estensione/17-ticketing-decisioni-it.md",
+  "type": "PRD",
+  "confidence": "high",
+  "manifest_override": false,
+  "title": "Ticketing & decisioni (ADR)",
+  "summary": "PRD for a LocalMind enterprise vertical building a causal/decisional knowledge graph over tickets and Architecture Decision Records, queried via local GraphRAG.",
+  "scope": [
+    "Graph node types: Ticket/Issue, Bug, Feature/Story, Epic/Iniziativa, Task/Sotto-task, Incident/Postmortem, Decisione (ADR), Alternativa, Requisito, Change Request, Repository/Servizio/Componente, Commit/Pull Request, Persona, Team/Unita, Commento/Discussione, Chunk/Frammento",
+    "Graph relation/edge types: causa, blocca/e_bloccato_da, dipende_da, duplica, e_correlato_a, parent_di/sotto_task_di, motiva, scarta_alternativa, supera/superato_da, contraddice, implementa, impatta, risolve, decisa_da/approvata_da, assegnato_a/segnalato_da, soddisfa, discusso_in",
+    "Edge weight factors: origine esplicita, confidenza estrazione AI, conferma/rifiuto umano, prossimita temporale, co-occorrenza, similarita semantica Qdrant, frequenza navigazione, autorevolezza/ruolo, stato decisione, recenza/decadimento",
+    "MVP features: dominio decisions/knowledge extension, CRUD ADR strutturato (MADR), import ADR Markdown, ingestione ticket Jira/GitHub, costruzione grafo nodi+link espliciti, deduzione AI collegamenti impliciti, revisione human-in-the-loop, visualizzazione interattiva grafo causale, GraphRAG perche/cosa-se con citazioni, collegamento automatico ADR-contesto, i18n IT/EN",
+    "Evolution features: workflow approvazione ADR, root-cause assistita, analisi impatto what-if, verifica coerenza decisionale, proposta AI bozze ADR, connettori aggiuntivi, collegamento commit/PR-decisione, export audit/compliance, timeline/analytics, suggerimento link/lacune, esposizione MCP",
+    "Data connectors: File ADR Markdown (Nygard/MADR via Tika), creazione ADR da UI, Jira (PF4J plugin + REST), GitHub Issues/Projects (REST/GraphQL), GitLab Issues/MR, Azure DevOps/Redmine, Repository Git commit/PR, PagerDuty/Opsgenie incident, ServiceNow ITSM, Confluence/Wiki, Email",
+    "GraphRAG local-first reasoning (Ollama default, Qdrant semantic retrieval), personas (Architect, EM, Developer, SRE, PO, Auditor, onboarding), KPIs and risks",
+    "Integration with existing LocalMind modules: knowledge, document, llm, vectorstore/Qdrant, batch, mcp, agent, automation, email, calendar, marketplace/PF4J, messaging, auth, common, finetuning, frontend"
+  ],
+  "cross_refs": [],
+  "locked": false,
+  "precedence": null,
+  "notes": "Title 'Ticketing & decisioni (ADR)' and filename 'decisioni' superficially suggest an ADR, but the document is not a single locked architectural decision (no Status/Context/Decision/Consequences for itself). Content is overwhelmingly PRD: personas table, input requirements (sec 3), step-by-step flow, MVP-vs-evolution feature set (sec 7), KPIs (sec 9), risks (sec 10). 'ADR' refers to the subject matter (the product manages Architecture Decision Records as graph nodes), not the document type. Ambiguity resolved in favor of PRD."
+}

@@ -1,0 +1,26 @@
+{
+  "source_path": "/run/media/federicocalo/D1/prj/localmind/documentazione/15-ambiti-estensione/18-onboarding-formazione-it.md",
+  "type": "PRD",
+  "confidence": "medium",
+  "manifest_override": false,
+  "title": "Onboarding & formazione interna",
+  "summary": "Defines the enterprise onboarding and internal training vertical of LocalMind, built on an internal knowledge graph with a GraphRAG tutor and adaptive learning paths.",
+  "scope": [
+    "graph node types: Persona, Team/Dipartimento, Ruolo/Job profile, Competenza/Skill, Concetto, Documento/Materiale, Chunk/Frammento, Procedura/Runbook, Processo aziendale, Sistema/Servizio/Strumento, Decisione (ADR), Percorso di onboarding/formazione, Tappa/Modulo, Autoverifica/Quiz, Evento/Scadenza, Glossario/Termine",
+    "graph relation types: e_prerequisito_di, richiede_competenza, documenta, e_responsabile_di/owner_di, e_esperto_di, dipende_da, fa_parte_di, copre/insegna, verifica, mentor_di/buddy_di, fa_parte_del_processo, succede_a/passo_dopo, deriva_da/motiva, collegato_a/correlato, obsoleto_rispetto_a",
+    "weighted edges with configurable weight factors (AI extraction confidence, knowledge-owner confirmation, source authority, co-occurrence, semantic similarity, usage frequency, freshness/decay)",
+    "MVP features: onboarding domain/knowledge extension, org-structure CRUD + CSV import, permissioned internal-knowledge ingestion, AI entity/competence extraction + edge deduction, human-in-the-loop graph review, interactive graph visualization, role-based onboarding paths (template + instance), GraphRAG tutor with permissions and source citation, base quizzes/self-checks, graph permission/visibility model, IT/EN i18n",
+    "evolution features: adaptive knowledge tracing, spaced repetition for compliance, PF4J enterprise connectors, manager/HR analytics dashboard, mentor/buddy matching, obsolete-knowledge detection, gap suggestion, offboarding tacit-knowledge capture, path/template marketplace, onboarding agent",
+    "data connectors/sources: manual file upload (MVP), monitored local folders (MVP), CSV org-chart/HRIS (MVP), audio/video transcription via Whisper (MVP/early), calendar (early), internal email/IMAP (early), Git repo (evolution), Confluence/Notion wiki (evolution), Jira/GitHub Issues (evolution), LMS (evolution), HRIS/directory (evolution), cloud storage Drive/SharePoint/OneDrive (evolution), Slack/Teams chat export (evolution); all external connectors via PF4J plugin + marketplace",
+    "ingestion pipeline: Tika + Tesseract OCR + Whisper, chunking, Qdrant embedding, MySQL persistence with provenance and visibility metadata",
+    "personas: nuovo assunto tecnico/non-tecnico, hiring manager/team lead, HR/L&D, knowledge owner/SME, dipendente in formazione continua, CTO/IT/Security",
+    "KPIs: time-to-productivity, tutor autonomy, tutor answer quality and groundedness, graph quality, documentation coverage, path progress, compliance completion, early retention, freshness, local latency, zero non-consented cloud data",
+    "existing LocalMind modules integrated: knowledge, document, llm, vectorstore/Qdrant, batch, calendar, email, messaging, mcp, agent, automation, marketplace/PF4J, finetuning, auth, common, Angular frontend"
+  ],
+  "cross_refs": [
+    "documentation/14-ambiti-estensione/"
+  ],
+  "locked": false,
+  "precedence": null,
+  "notes": "Strong PRD signals (personas, input requirements, MVP scope, KPIs, use cases). Also contains a domain graph model (sec 5) and a connector catalog (sec 6) which carry SPEC-like detail, but there are no API/schema contracts; PRD chosen as the dominant, highest-precedence matching type. Confidence medium: no frontmatter type or filename convention, classification rests on content signals only."
+}

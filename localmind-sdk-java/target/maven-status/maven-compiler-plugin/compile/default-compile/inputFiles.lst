@@ -1,0 +1,15 @@
+/media/federicocalo/D/prj/localmind/localmind-sdk-java/src/main/java/com/localmind/sdk/ChatMessage.java
+/media/federicocalo/D/prj/localmind/localmind-sdk-java/src/main/java/com/localmind/sdk/SearchClient.java
+/media/federicocalo/D/prj/localmind/localmind-sdk-java/src/main/java/com/localmind/sdk/LocalMindException.java
+/media/federicocalo/D/prj/localmind/localmind-sdk-java/src/main/java/com/localmind/sdk/DocumentClient.java
+/media/federicocalo/D/prj/localmind/localmind-sdk-java/src/main/java/com/localmind/sdk/ConversationSummary.java
+/media/federicocalo/D/prj/localmind/localmind-sdk-java/src/main/java/com/localmind/sdk/ConversationClient.java
+/media/federicocalo/D/prj/localmind/localmind-sdk-java/src/main/java/com/localmind/sdk/SearchResult.java
+/media/federicocalo/D/prj/localmind/localmind-sdk-java/src/main/java/com/localmind/sdk/HealthStatus.java
+/media/federicocalo/D/prj/localmind/localmind-sdk-java/src/main/java/com/localmind/sdk/TokenUsage.java
+/media/federicocalo/D/prj/localmind/localmind-sdk-java/src/main/java/com/localmind/sdk/Conversation.java
+/media/federicocalo/D/prj/localmind/localmind-sdk-java/src/main/java/com/localmind/sdk/ChatOptions.java
+/media/federicocalo/D/prj/localmind/localmind-sdk-java/src/main/java/com/localmind/sdk/Document.java
+/media/federicocalo/D/prj/localmind/localmind-sdk-java/src/main/java/com/localmind/sdk/LocalMindClient.java
+/media/federicocalo/D/prj/localmind/localmind-sdk-java/src/main/java/com/localmind/sdk/RagSource.java
+/media/federicocalo/D/prj/localmind/localmind-sdk-java/src/main/java/com/localmind/sdk/ChatResponse.java

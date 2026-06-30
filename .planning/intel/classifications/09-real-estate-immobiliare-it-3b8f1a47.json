@@ -1,0 +1,29 @@
+{
+  "source_path": "/run/media/federicocalo/D1/prj/localmind/documentazione/15-ambiti-estensione/09-real-estate-immobiliare-it.md",
+  "type": "PRD",
+  "confidence": "medium",
+  "manifest_override": false,
+  "title": "Real estate & immobiliare",
+  "summary": "Product definition for LocalMind's real-estate vertical: a weighted, AI-navigable knowledge graph linking properties, zones, services, and prices for explainable, profile-aware home search.",
+  "scope": [
+    "graph_node_types: Immobile, Edificio, Via, ZonaOMI, Quartiere, Comune/Citta, Quotazione, Servizio/POI, Scuola, Trasporto, AreaVerde, ProfiloUtente, LuogoAncora, Recensione, RicercaSalvata",
+    "graph_edge_types: SI_TROVA_IN, APPARTIENE_A, VICINO_A (weighted, real travel-time), RAGGIUNGE (weighted), QUOTATO_DA (weighted, price-vs-market), SIMILE_A, ZONA_GEMELLA, SERVITA_DA, CERCA, VIVE_A/LAVORA_A, RECENSISCE, PREFERISCE/SCARTA (feedback re-weighting)",
+    "edge_weighting_criteria: real travel-time decay, profile relevance, price-vs-OMI deviation, semantic+structural similarity, community consensus/reputation, user feedback, freshness decay",
+    "mvp_features: real-estate graph schema (Flyway), OMI CSV connector (ZonaOMI+Quotazione), OSM/Overpass POI connector, geocoding + point-in-polygon zone assignment, manual/CSV property import with description embeddings, VICINO_A weighted edges via self-hosted routing, price-vs-OMI deviation linkage, hybrid search (graph filters + semantic) with base scoring, user profile + anchor places + weighted priorities, GraphRAG explanation citing nodes/paths, Angular realestate search/results UI, base zone-services-property graph visualization, bilingual IT/EN enums, Flyway migrations",
+    "data_connectors: OMI Agenzia delle Entrate CSV (semestral), OpenStreetMap/Overpass (monthly), GTFS public transit, routing engine (OSRM/Valhalla/GraphHopper self-host), geocoder (Nominatim self-host or API), portal listings (scraping/feed/import), municipal open data (air/noise/safety), community contributions, user CSV/manual import",
+    "ai_usecases: conversational multi-constraint search, price explanation, alternative-zone discovery (twin zones), neighborhood dossier, investor advisory, guided comparison, what-if, community synthesis",
+    "evolution_roadmap: derived zone indices, twin zones/AI link suggestion, multi-criteria comparison + PDF dossier, matching-property alerts, feedback re-weighting loop, community ranking, rental yield estimation, photo multimodal analysis, partner feed connectors, price/service trends, what-if scenarios",
+    "personas: Giulia first-home, Marco upgrade, Sara relocation/rent, Davide investor, real-estate agent, community contributor, self-hoster/data analyst",
+    "stack_reuse: Spring Boot hexagonal, Angular 21, MySQL 8.0, Qdrant, Ollama, PF4J plugins + marketplace, new 'realestate' domain, /api/v1/realestate/*"
+  ],
+  "cross_refs": [
+    "documentation/14-ambiti-estensione/",
+    "documentazione/",
+    "documentation/",
+    "Sviluppi/",
+    "DomainConfig.java"
+  ],
+  "locked": false,
+  "precedence": null,
+  "notes": "PRD vs SPEC ambiguity resolved toward PRD: dominant signals are personas, input requirements, MVP feature set, KPIs/success metrics, and explicit goals/non-goals. Section 5 contains a SPEC-like graph data model (node/edge types, weighting), but it is embedded within a product-vertical definition rather than being a standalone implementation contract. No frontmatter and no filename/path convention, hence medium confidence."
+}

@@ -1,0 +1,21 @@
+{
+  "source_path": "/run/media/federicocalo/D1/prj/localmind/documentazione/15-ambiti-estensione/13-processi-workflow-it.md",
+  "type": "PRD",
+  "confidence": "medium",
+  "manifest_override": false,
+  "title": "Processi & workflow",
+  "summary": "Scope/PRD for the LocalMind 'Processi & workflow' enterprise extension: an AI-queryable weighted knowledge graph unifying designed, executed, tribal and automated process views.",
+  "scope": [
+    "Graph node types: Processo, Passo/Attivita, Evento, Gateway/Decisione, Ruolo/Funzione, Persona, Sistema/Applicativo, Dato/Documento, Regola/Policy/SOP, Automazione, Deviazione, Eccezione, Annotazione, IstanzaProcesso/Caso, KPI/Metrica",
+    "Graph edge/relation types: PRECEDE, INNESCA, CONDIZIONATO_DA, RESPONSABILE(R), APPROVA(A), CONSULTATO(C), INFORMATO(I), RICOPRE, ESEGUITO_IN, PRODUCE, RICHIEDE, GOVERNATO_DA, AUTOMATIZZATO_DA, DEVIA_DA, PASSA_A(handoff), DIPENDE_DA, SIMILE_A, ANNOTA, MISURA",
+    "Edge weighting criteria: execution frequency (process mining), time/criticality bottlenecks, RACI strength, role coverage/bus factor, automation level, deviation severity, experiential reliability/consensus, dependency strength, semantic+structural similarity, freshness decay",
+    "MVP feature set: process graph schema (domain module), new 'process' domain in localmind-domain, BPMN 2.0 import (BPMN2KG), AI extraction of steps/roles/systems from SOP/policy, process/steps/roles/systems/RACI editor-CRUD, generic event-log connector (CSV/DB) + normalization, process discovery (as-is frequencies/times), base conformance checking (to-be vs as-is), bottleneck and lead-time analysis, bus factor and step-role-system map, hybrid GraphRAG conversational Q&A with citations, Angular 'process' feature UI, process-role-system graph visualization, tribal annotations, bilingual IT/EN enums, Flyway migrations",
+    "Data connectors (PF4J extension points): BPMN 2.0/XML import, SOP/policy/quality-manual upload (Tika/OCR), ERP/gestionale event log, CRM event log, Ticketing/ITSM (Jira, ServiceNow, GLPI, Zammad), Workflow/BPM engine logs, Mail & calendar (IMAP/API), Automation/RPA/cron logs, HR/AD/LDAP directory, CMDB/IT catalog, RACI matrix (CSV), internal tribal contributions UI",
+    "Concepts: GraphRAG (hybrid graph + Qdrant vector retrieval), process mining (discovery, conformance, enhancement), event log (Case ID/Activity/Timestamp/Resource), RACI, SoD (separation of duties), tribal knowledge, what-if impact simulation",
+    "LocalMind module integration: knowledge/graph core, document, Qdrant vectorstore, llm+Ollama, batch, automation, messaging, calendar, email, marketplace+PF4J, auth, agent, common, Angular frontend, MySQL+Flyway"
+  ],
+  "cross_refs": [],
+  "locked": false,
+  "precedence": null,
+  "notes": "No frontmatter or filename convention. Dominant PRD signals (personas, input requirements, value-per-user, MVP feature set, KPIs, risks). Significant SPEC overlap in the detailed graph data model (section 5) and connector contracts (section 6); per ambiguity rule SPEC outranks PRD, but PRD framing dominates the document so classified PRD with medium confidence. Synthesizer may wish to extract section 5/6 as technical constraints. External source URLs in references are citations, not internal doc cross-refs."
+}

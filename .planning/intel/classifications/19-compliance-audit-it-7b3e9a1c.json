@@ -1,0 +1,23 @@
+{
+  "source_path": "/run/media/federicocalo/D1/prj/localmind/documentazione/15-ambiti-estensione/19-compliance-audit-it.md",
+  "type": "PRD",
+  "confidence": "medium",
+  "manifest_override": false,
+  "title": "Compliance & audit",
+  "summary": "Product-direction PRD for the enterprise Compliance & audit vertical built on LocalMind's universal knowledge-graph engine, making compliance demonstrable and local-first.",
+  "scope": [
+    "graph node types: Framework, Requisito, Controllo, Evidenza, Asset, Processo, Rischio, Policy, Trattamento(GDPR), Persona/Ruolo, Fornitore, Audit, Finding, Incidente, RemediationTask, AuditTrailEntry",
+    "graph edge/relation types: SODDISFA, DIMOSTRA, EQUIVALE_A, SOSTITUISCE, SI_APPLICA_A, MITIGA, MINACCIA, RESPONSABILE_DI, GOVERNA, VIOLA, RILEVA, CORREGGE, DIPENDE_DA, REGISTRA",
+    "weighted edges (evidence freshness, automation, human-validation, source reliability, path aggregation)",
+    "MVP feature set: compliance graph model (MySQL nodes+weighted edges, Flyway), CRUD framework/requirements/controls (/api/v1/compliance/*), normative ingestion (PDF->segmentation->Qdrant embedding), SODDISFA/EQUIVALE_A mapping with AI human-in-the-loop, evidence management with hash, evidence freshness, coverage & gap analysis, GraphRAG compliance Q&A (Ollama default), coverage dashboard, tamper-evident audit trail (hash-chain base), preloaded framework templates (ISO 27001:2022, SOC 2), IT/EN i18n",
+    "data connectors: normative texts (Tika/OCR document domain), preloaded framework templates (PF4J plugin/marketplace), public crosswalks (SCF, CSA CCM), CMDB/asset inventory (MCP), IdP LDAP/SSO (MCP+automation), cloud config/posture (MCP+automation), SIEM/logs (MCP+automation), Git/CI-CD repos (MCP), ticketing/ITSM (MCP/messaging), email/calendar evidence & deadlines, internal document store, GDPR processing register/DPIA",
+    "compliance frameworks: ISO 27001:2022, SOC 2, NIS2, DORA, GDPR, EU AI Act, PCI-DSS 4.0, NIST CSF/800-53",
+    "continuous controls monitoring, gap analysis, audit package generation, evidence hash-chain integrity, local-first sovereignty, Ollama-default GraphRAG"
+  ],
+  "cross_refs": [
+    ".planning/PROJECT.md"
+  ],
+  "locked": false,
+  "precedence": null,
+  "notes": "No frontmatter. Strong PRD signals dominate (personas section, requisiti in input, MVP->evolution feature tables, KPI/success metrics, risks & mitigations). Substantial SPEC-like content present (section 5 graph data model with node/edge type tables and edge-weight criteria); PRD vs SPEC competed. Resolved to PRD because the document self-describes as a 'documento di indirizzo per gli sviluppi' (product/scope direction for a vertical) and the data model is one section serving the broader requirements framing, not a standalone implementation contract. Per-vertical roadmap-phase scope (graph model, MVP set, connectors) captured in scope[]."
+}

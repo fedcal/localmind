@@ -1,0 +1,35 @@
+{
+  "source_path": "/run/media/federicocalo/D1/prj/localmind/documentazione/15-ambiti-estensione/21-graphrag-ai-it.md",
+  "type": "PRD",
+  "confidence": "medium",
+  "manifest_override": false,
+  "title": "GraphRAG & AI",
+  "summary": "Cross-cutting hybrid GraphRAG engine (semantic retrieval + weighted graph traversal) letting the AI answer multi-hop questions with cited nodes/paths, suggest missing links, all local-first.",
+  "scope": [
+    "Hybrid GraphRAG engine (Qdrant semantic + MySQL weighted graph traversal)",
+    "Adaptive query routing / intent classification",
+    "Entity linking and semantic anchoring",
+    "RRF fusion + re-ranking",
+    "Permission filter / ACL fail-safe gate",
+    "Cited answers (nodes + path + weights + chunk), anti-hallucination 'non so' threshold",
+    "Link prediction with human curation queue",
+    "Feedback loop and immutable weight recalculation",
+    "Graph node types: Chunk, Query, Answer, Citation, Path, Community, Suggested Link, Concept/Term, Embedding Anchor",
+    "Relation types: rappresenta, ancora_a, attraversa, cita, ha_generato, valutata_come, suggerisce, appartiene_a_comunita, sinonimo_di/definisce, simile_a",
+    "Edge weight factors: semantic similarity, useful-traversal frequency, human validation, suggestion confidence, source authority/freshness, answer feedback, temporal decay, node centrality",
+    "MVP features: GraphRAG orchestrator, query understanding, entity linking, weighted MySQL traversal, RRF fusion, permission filter, cited generation, 'don't know' model, ask/expand/path/subgraph APIs, base link prediction + curation queue, answer-centered graph visualization, feedback-driven weight recalc, bilingual enums",
+    "Data connectors/internal sources: domain nodes/edges (core + verticals), chunk/node embeddings via DocumentIngestionPipelineService->Qdrant, MySQL metadata/provenance, glossary/ontology, conversation history (llm), user feedback, domain events (SpringDomainEventPublisher); extension points: pluggable PF4J retrieval strategies, MCP graph tools, incremental embedding sync",
+    "API endpoints: /api/v1/knowledge/graph/ask, expand, path, subgraph",
+    "Modules: knowledge, llm/LlmGatewayService, Qdrant vectorstore, MySQL/Flyway, document pipeline, agent, mcp, auth/LocalAuthFilter, automation, common, messaging, marketplace/PF4J, chat/SSE, Angular frontend"
+  ],
+  "cross_refs": [
+    "PROJECT.md",
+    "MODULE_BOUNDARIES.md",
+    "CLAUDE.md",
+    "documentation/14-ambiti-estensione/",
+    "Sviluppi/"
+  ],
+  "locked": false,
+  "precedence": null,
+  "notes": "Cross-cutting/transversal domain (the core AI engine) likely already covered by existing roadmap phases 1-7, not a standalone vertical. Classified PRD: dominant structure is product/feature-oriented (personas, 'Requisiti in input', MVP feature tables, KPI & success metrics, goals/value). SPEC competed strongly due to detailed graph data model (node/relation types, weight criteria) and API endpoint list; PRD chosen because the technical model serves to scope the feature rather than define binding contracts. No frontmatter, no filename convention, prose-heavy guide ('guida agli sviluppi LocalMind')."
+}

@@ -1,0 +1,13 @@
+# Default owner for everything
+* @fedcal
+
+# Backend
+/localmind-backend/ @fedcal
+
+# Frontend
+/localmind-frontend/ @fedcal
+
+# Infrastructure
+/docker-compose.yml @fedcal
+/Dockerfile @fedcal
+/.github/ @fedcal

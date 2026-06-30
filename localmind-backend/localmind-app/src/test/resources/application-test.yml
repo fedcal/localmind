@@ -1,0 +1,77 @@
+spring:
+  autoconfigure:
+    exclude:
+      - org.springframework.ai.model.openai.autoconfigure.OpenAiChatAutoConfiguration
+      - org.springframework.ai.model.openai.autoconfigure.OpenAiEmbeddingAutoConfiguration
+      - org.springframework.ai.model.openai.autoconfigure.OpenAiAudioSpeechAutoConfiguration
+      - org.springframework.ai.model.openai.autoconfigure.OpenAiAudioTranscriptionAutoConfiguration
+      - org.springframework.ai.model.openai.autoconfigure.OpenAiImageAutoConfiguration
+      - org.springframework.ai.model.openai.autoconfigure.OpenAiModerationAutoConfiguration
+      - org.springframework.ai.model.anthropic.autoconfigure.AnthropicChatAutoConfiguration
+      - org.springframework.ai.model.ollama.autoconfigure.OllamaChatAutoConfiguration
+      - org.springframework.ai.model.ollama.autoconfigure.OllamaEmbeddingAutoConfiguration
+      - org.springframework.ai.vectorstore.qdrant.autoconfigure.QdrantVectorStoreAutoConfiguration
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    show-sql: false
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
+  batch:
+    job:
+      enabled: false
+
+localmind:
+  chat:
+    default-max-context-messages: 50
+  llm:
+    ollama:
+      enabled: false
+    openai:
+      enabled: false
+    anthropic:
+      enabled: false
+    google:
+      enabled: false
+    whisper:
+      enabled: false
+    default-provider: OLLAMA
+    fallback:
+      enabled: false
+  ocr:
+    enabled: false
+  calendar:
+    enabled: false
+  email:
+    enabled: false
+  knowledge-graph:
+    enabled: false
+  finetuning:
+    enabled: false
+  plugins:
+    enabled: false
+  mcp:
+    server:
+      enabled: false
+    client:
+      enabled: false
+  backup:
+    directory: ./test-backups
+  document:
+    upload-dir: ./test-uploads
+    supported-types: pdf,docx,txt,eml
+
+server:
+  port: 0
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health
+
+logging:
+  level:
+    root: WARN
+    com.localmind: INFO

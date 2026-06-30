@@ -1,0 +1,33 @@
+{
+  "source_path": "/run/media/federicocalo/D1/prj/localmind/documentazione/15-ambiti-estensione/20-motore-knowledge-graph-it.md",
+  "type": "PRD",
+  "confidence": "medium",
+  "manifest_override": false,
+  "title": "Motore Knowledge Graph",
+  "summary": "Vision and requirements for a universal, domain-agnostic weighted Knowledge Graph engine powering GraphRAG over MySQL (structure) and Qdrant (semantics), local-first.",
+  "scope": [
+    "Knowledge Graph engine (core, domain-agnostic)",
+    "GraphRAG navigation (semantic seed via Qdrant + weighted structural expansion via MySQL)",
+    "Weighted edges model (weight in [0,1] from factors: usage frequency, relevance/co-occurrence, dependency strength, user feedback, extraction confidence, recency decay; WeightPolicy per domain)",
+    "Core node types: DOCUMENT, PERSON, ORGANIZATION, PLACE, CONCEPT, EVENT, TECHNOLOGY",
+    "Domain node extensions: POI, RESTAURANT, EXPERIENCE, ITINERARY, REVIEW (consumer/tourism); MICROSERVICE, API, REPOSITORY, DATABASE, PROCESS, PROCEDURE, TICKET, DECISION, FAQ, SKILL (enterprise); COURSE, TOPIC, LESSON, STUDENT (education)",
+    "Core relation types: RELATED_TO, PART_OF, LOCATED_IN, WORKS_AT, CREATED_BY, DEPENDS_ON, REFERENCES, MENTIONED_IN",
+    "Domain relation extensions: NEAR, PAIRED_WITH, STAGE_OF, SAME_PRODUCER (consumer); CALLS, OWNED_BY, DEPLOYS_TO, CAUSED_BY, SUPERSEDES, DOCUMENTS (enterprise)",
+    "Graph query operations: weighted k-hop neighbors, shortest/max-weight path, filtered subgraph, search-by-relation",
+    "MVP feature set: edge weights, node/relation CRUD, configurable WeightPolicy, weighted neighbors query, path query, filtered subgraph query, Qdrant node embedding indexing, entity resolution/dedup, base GraphRAG with citations, bilingual REST API + DTOs (/api/v1/knowledge), modular type registry replacing hard-coded enums, Flyway migrations (weight column + factors + indexes)",
+    "Data connectors: documents (Tika/OCR + LlmEntityExtractorAdapter), email (IMAP), calendar, Git repos/microservices/APIs (PF4J plugin), open data (OSM/Wikidata), manual CRUD/UI, system events (DomainEventPublisherPort), MCP/external tools",
+    "Post-MVP: interactive Angular graph visualization, link prediction, community detection, GraphRAG as agent/MCP tool, temporal weight decay, feedback-driven weighting, domain connector plugins, graph versioning/audit, installable domain modules, query caching",
+    "Brownfield baseline: KnowledgeEntity, KnowledgeRelation, EntityType, RelationType, KnowledgeSubgraph, KnowledgeGraphUseCase, KnowledgeGraphPort, JdbcKnowledgeGraphAdapter, LlmEntityExtractorAdapter, Flyway V66/V67",
+    "Integration with existing modules: knowledge, llm/LlmGatewayService, document, vectorstore/Qdrant, MySQL+Flyway, email, calendar, mcp, agent, automation, plugin/marketplace, auth, common, frontend, finetuning"
+  ],
+  "cross_refs": [
+    ".planning/PROJECT.md",
+    "MODULE_BOUNDARIES.md",
+    ".planning/codebase/",
+    "Sviluppi/",
+    "documentation/14-ambiti-estensione/"
+  ],
+  "locked": false,
+  "precedence": null,
+  "notes": "Cross-cutting CORE domain doc, not a vertical; likely overlaps existing roadmap phases 1-7. Hybrid PRD/SPEC: strong PRD signals (personas, input requirements, success KPIs, MVP feature set, value proposition) competing closely with strong SPEC signals (graph data model with node/relation type catalogs, API contracts in 3.3-3.4, MySQL+Qdrant schema and Flyway migration implications, indexes). Resolved to PRD because the document self-frames as a development direction/vision doc and the requirements/scope framing dominates over implementation contracts. No frontmatter, no Status field, no ADR/PRD/SPEC filename convention. Synthesizer may also extract embedded technical constraints (weight column, type registry, traversal caps) as SPEC-grade material."
+}

@@ -1,0 +1,30 @@
+import { Routes } from '@angular/router';
+
+export const EXTENSIONDOMAINS_ROUTES: Routes = [
+  { path: '', redirectTo: 'tourism-territory', pathMatch: 'full' },
+    { path: 'tourism-territory', loadComponent: () => import('./tourism-territory.component').then(m => m.TourismTerritoryComponent) },
+    { path: 'events-entertainment', loadComponent: () => import('./events-entertainment.component').then(m => m.EventsEntertainmentComponent) },
+    { path: 'food-venues', loadComponent: () => import('./food-venues.component').then(m => m.FoodVenuesComponent) },
+    { path: 'itineraries-experiences', loadComponent: () => import('./itineraries-experiences.component').then(m => m.ItinerariesExperiencesComponent) },
+    { path: 'education-students', loadComponent: () => import('./education-students.component').then(m => m.EducationStudentsComponent) },
+    { path: 'culture-art-museums', loadComponent: () => import('./culture-art-museums.component').then(m => m.CultureArtMuseumsComponent) },
+    { path: 'sports-outdoor', loadComponent: () => import('./sports-outdoor.component').then(m => m.SportsOutdoorComponent) },
+    { path: 'local-commerce-shopping', loadComponent: () => import('./local-commerce-shopping.component').then(m => m.LocalCommerceShoppingComponent) },
+    { path: 'real-estate', loadComponent: () => import('./real-estate.component').then(m => m.RealEstateComponent) },
+    { path: 'local-services-health', loadComponent: () => import('./local-services-health.component').then(m => m.LocalServicesHealthComponent) },
+    { path: 'enterprise-knowledge-base', loadComponent: () => import('./enterprise-knowledge-base.component').then(m => m.EnterpriseKnowledgeBaseComponent) },
+    { path: 'software-architecture', loadComponent: () => import('./software-architecture.component').then(m => m.SoftwareArchitectureComponent) },
+    { path: 'processes-workflows', loadComponent: () => import('./processes-workflows.component').then(m => m.ProcessesWorkflowsComponent) },
+    { path: 'people-skills', loadComponent: () => import('./people-skills.component').then(m => m.PeopleSkillsComponent) },
+    { path: 'customers-suppliers', loadComponent: () => import('./customers-suppliers.component').then(m => m.CustomersSuppliersComponent) },
+    { path: 'email-communications', loadComponent: () => import('./email-communications.component').then(m => m.EmailCommunicationsComponent) },
+    { path: 'ticketing-decisions', loadComponent: () => import('./ticketing-decisions.component').then(m => m.TicketingDecisionsComponent) },
+    { path: 'onboarding-training', loadComponent: () => import('./onboarding-training.component').then(m => m.OnboardingTrainingComponent) },
+    { path: 'compliance-audit', loadComponent: () => import('./compliance-audit.component').then(m => m.ComplianceAuditComponent) },
+    { path: 'knowledge-graph-engine', loadComponent: () => import('./knowledge-graph-engine.component').then(m => m.KnowledgeGraphEngineComponent) },
+    { path: 'graphrag-ai', loadComponent: () => import('./graphrag-ai.component').then(m => m.GraphragAiComponent) },
+    { path: 'graph-visualization', loadComponent: () => import('./graph-visualization.component').then(m => m.GraphVisualizationComponent) },
+    { path: 'community-moderation', loadComponent: () => import('./community-moderation.component').then(m => m.CommunityModerationComponent) },
+    { path: 'ingestion-connectors', loadComponent: () => import('./ingestion-connectors.component').then(m => m.IngestionConnectorsComponent) },
+    { path: 'security-privacy', loadComponent: () => import('./security-privacy.component').then(m => m.SecurityPrivacyComponent) }
+];

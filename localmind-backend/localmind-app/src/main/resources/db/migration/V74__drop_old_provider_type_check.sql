@@ -1,0 +1,1 @@
+ALTER TABLE llm_provider_configs DROP CHECK chk_provider_type

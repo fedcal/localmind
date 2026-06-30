@@ -1,0 +1,24 @@
+{
+  "source_path": "/run/media/federicocalo/D1/prj/localmind/documentazione/15-ambiti-estensione/05-education-studenti-it.md",
+  "type": "PRD",
+  "confidence": "medium",
+  "manifest_override": false,
+  "title": "Education & studenti",
+  "summary": "Product requirements for the LocalMind Education vertical: a personal student knowledge graph with GraphRAG tutoring, adaptive study paths, and spaced repetition.",
+  "scope": [
+    "Education vertical (dominio education, estensione del motore knowledge graph)",
+    "Graph node types: Corso, Argomento/Modulo, Concetto, Materiale, Chunk/Frammento, Esercizio/Quiz, Flashcard, Obiettivo di apprendimento, Percorso di studio, Esame/Scadenza, Persona, Nota personale",
+    "Graph edge/relation types: e_prerequisito_di, spiega, approfondisce, e_esempio_di, appartiene_a, ricorre_in, verifica, contraddice/dibatte, deriva_da, copre, annota, fa_parte_del_percorso, autore_di",
+    "Weighted edges: peso 0-1 derived from AI extraction confidence, human confirmation/rejection, co-occurrence, semantic similarity (Qdrant), usage frequency, practice outcomes, source authority, recency decay; immutable versioned weights",
+    "MVP feature set: (1) education domain model + wiring; (2) course/material CRUD + /api/v1/education/* + Angular feature; (3) didactic material ingestion (Tika/OCR/Whisper + chunking + Qdrant with provenance); (4) AI concept extraction + edge deduction with confidence weight; (5) human-in-the-loop graph review; (6) interactive personal graph visualization; (7) GraphRAG tutor over own material with source citation; (8) flashcards + basic self-checks; (9) i18n IT/EN enum translation",
+    "Evolution features: adaptive study path, knowledge tracing/mastery estimation, graph-anchored spaced repetition, LMS/Drive/Zotero PF4J connectors, shareable course-graph/marketplace, opt-in study groups, Anki/Markdown/JSON export, gap suggestion, private study analytics",
+    "Data connectors/sources: manual file upload (DocumentController.upload), monitored local folders (LocalFileSystemScanner + Spring Batch), lecture audio/video (WhisperTranscriptionAdapter), web pages/URL fetch, LMS (Moodle/Google Classroom/Canvas via PF4J plugin), cloud storage (Google Drive/OneDrive/Nextcloud plugin), reference managers (Zotero/Mendeley plugin), academic calendar (calendar module), email (email module), Anki import/export",
+    "Personas: Giulia (undergraduate), Marco (master/thesis), Sara (high school), Davide (lifelong learner), Prof.ssa Bianchi (teacher secondary), study groups",
+    "Tech reuse: Ollama local LLM default, Qdrant vector store, Tika + Tesseract OCR, PF4J plugin system + marketplace, MySQL graph structure, local-first privacy",
+    "KPIs/success metrics, risks & mitigations"
+  ],
+  "cross_refs": [],
+  "locked": false,
+  "precedence": null,
+  "notes": "No frontmatter or PRD filename/path convention, so confidence capped at medium despite strong PRD content signals (problem/value, personas, input requirements, MVP feature table, KPIs, risks). Section 5 (graph model with node/edge types and weight criteria) carries SPEC-flavored content; resolved to PRD because the document framing is product requirements and scope rather than an implementation contract. cross_refs empty: the doc references LocalMind modules by name but contains no markdown links or sibling .md filename references."
+}

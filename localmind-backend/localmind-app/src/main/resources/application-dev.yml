@@ -1,0 +1,206 @@
+spring:
+  autoconfigure:
+    exclude:
+      - org.springframework.ai.model.openai.autoconfigure.OpenAiChatAutoConfiguration
+      - org.springframework.ai.model.openai.autoconfigure.OpenAiEmbeddingAutoConfiguration
+      - org.springframework.ai.model.openai.autoconfigure.OpenAiAudioSpeechAutoConfiguration
+      - org.springframework.ai.model.openai.autoconfigure.OpenAiAudioTranscriptionAutoConfiguration
+      - org.springframework.ai.model.openai.autoconfigure.OpenAiImageAutoConfiguration
+      - org.springframework.ai.model.openai.autoconfigure.OpenAiModerationAutoConfiguration
+      - org.springframework.ai.model.anthropic.autoconfigure.AnthropicChatAutoConfiguration
+      - org.springframework.ai.model.mistralai.autoconfigure.MistralAiChatAutoConfiguration
+      - org.springframework.ai.model.mistralai.autoconfigure.MistralAiEmbeddingAutoConfiguration
+      - org.springframework.ai.model.mistralai.autoconfigure.MistralAiModerationAutoConfiguration
+  datasource:
+    url: jdbc:mysql://${DB_HOST:localhost}:${DB_PORT:3306}/${DB_NAME:localmind}?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
+    username: ${DB_USERNAME:root}
+    password: ${DB_PASSWORD:}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
+  ai:
+    ollama:
+      base-url: http://${OLLAMA_HOST:localhost}:${OLLAMA_PORT:11434}
+      chat:
+        model: ${OLLAMA_CHAT_MODEL:llama3.2}
+      embedding:
+        model: ${OLLAMA_EMBED_MODEL:nomic-embed-text}
+    openai:
+      api-key: ${OPENAI_API_KEY:}
+      chat:
+        options:
+          model: ${OPENAI_MODEL:gpt-4o}
+    anthropic:
+      api-key: ${ANTHROPIC_API_KEY:}
+      chat:
+        options:
+          model: ${ANTHROPIC_MODEL:claude-sonnet-4-20250514}
+    mistralai:
+      api-key: ${MISTRAL_API_KEY:}
+      chat:
+        options:
+          model: ${MISTRAL_MODEL:mistral-large-latest}
+    vectorstore:
+      qdrant:
+        host: ${QDRANT_HOST:localhost}
+        port: ${QDRANT_PORT:6334}
+        collection-name: ${QDRANT_COLLECTION:localmind-documents}
+    mcp:
+      server:
+        name: localmind
+        version: 0.1.0
+  servlet:
+    multipart:
+      max-file-size: ${MAX_FILE_SIZE:50MB}
+      max-request-size: ${MAX_FILE_SIZE:50MB}
+  batch:
+    job:
+      enabled: false
+
+localmind:
+  chat:
+    default-max-context-messages: 50
+  llm:
+    ollama:
+      enabled: ${LLM_OLLAMA_ENABLED:true}
+      multimodal:
+        enabled: ${OLLAMA_MULTIMODAL_ENABLED:false}
+        model: ${OLLAMA_MULTIMODAL_MODEL:llava}
+    openai:
+      enabled: ${LLM_OPENAI_ENABLED:false}
+      multimodal:
+        enabled: ${OPENAI_MULTIMODAL_ENABLED:false}
+        model: ${OPENAI_MULTIMODAL_MODEL:gpt-4o}
+    anthropic:
+      enabled: ${LLM_ANTHROPIC_ENABLED:false}
+    google:
+      enabled: ${LLM_GOOGLE_ENABLED:false}
+    deepseek:
+      enabled: ${LLM_DEEPSEEK_ENABLED:false}
+      api-key: ${DEEPSEEK_API_KEY:}
+      base-url: ${DEEPSEEK_BASE_URL:https://api.deepseek.com}
+    mistral:
+      enabled: ${LLM_MISTRAL_ENABLED:false}
+    xai:
+      enabled: ${LLM_XAI_ENABLED:false}
+      api-key: ${XAI_API_KEY:}
+      base-url: ${XAI_BASE_URL:https://api.x.ai/v1}
+    whisper:
+      enabled: ${WHISPER_ENABLED:false}
+    default-provider: ${LLM_DEFAULT_PROVIDER:OLLAMA}
+    retry:
+      max-attempts: 3
+      backoff-ms: 1000
+    fallback:
+      enabled: true
+      order: OLLAMA,OPENAI,ANTHROPIC,GOOGLE,DEEPSEEK,MISTRAL,XAI
+  ocr:
+    enabled: ${OCR_ENABLED:true}
+    datapath: ${OCR_DATAPATH:/usr/share/tesseract-ocr/5/tessdata}
+    languages: ${OCR_LANGUAGES:ita+eng}
+    dpi: ${OCR_DPI:300}
+    min-confidence: ${OCR_MIN_CONFIDENCE:30.0}
+  document:
+    upload-dir: ${DOCUMENT_UPLOAD_DIR:${user.home}/.localmind/uploads}
+    max-file-size: ${MAX_FILE_SIZE:50MB}
+    supported-types: pdf,docx,txt,eml
+  batch:
+    chunk-size: 500
+    chunk-overlap: 50
+    cron-folder-scan: "0 */15 * * * *"
+  n8n:
+    base-url: http://${N8N_HOST:localhost}:${N8N_PORT:5678}
+    webhook-path: /webhook
+  mcp:
+    server:
+      enabled: true
+    client:
+      enabled: true
+  backup:
+    directory: ${BACKUP_DIRECTORY:./backups}
+    retention-days: ${BACKUP_RETENTION_DAYS:30}
+  plugins:
+    enabled: true
+    directory: ./plugins
+    auto-load: true
+  calendar:
+    enabled: ${CALENDAR_ENABLED:false}
+    url: ${CALDAV_URL:}
+    username: ${CALDAV_USER:}
+    password: ${CALDAV_PASS:}
+  knowledge-graph:
+    enabled: ${KG_ENABLED:false}
+    max-entities-per-extraction: ${KG_MAX_ENTITIES:50}
+    max-depth: ${KG_MAX_DEPTH:3}
+  finetuning:
+    enabled: ${FINETUNING_ENABLED:false}
+    python-path: ${FINETUNING_PYTHON_PATH:python3}
+    scripts-dir: ${FINETUNING_SCRIPTS_DIR:./scripts/finetuning}
+    output-dir: ${FINETUNING_OUTPUT_DIR:${user.home}/.localmind/finetuning}
+  messaging:
+    slack:
+      enabled: false
+    discord:
+      enabled: false
+    telegram:
+      enabled: false
+  email:
+    enabled: ${EMAIL_ENABLED:false}
+    imap:
+      host: ${IMAP_HOST:}
+      port: ${IMAP_PORT:993}
+    smtp:
+      host: ${SMTP_HOST:}
+      port: ${SMTP_PORT:587}
+    username: ${EMAIL_USER:}
+    password: ${EMAIL_PASS:}
+
+server:
+  port: ${SERVER_PORT:8080}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,prometheus
+  endpoint:
+    health:
+      show-details: when-authorized
+  metrics:
+    tags:
+      application: localmind
+  info:
+    env:
+      enabled: true
+
+info:
+  app:
+    name: LocalMind
+    version: 0.1.0
+    description: Local AI Document Management Platform
+
+springdoc:
+  api-docs:
+    path: /api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+    operations-sorter: method
+    tags-sorter: alpha
+    display-request-duration: true
+  packages-to-scan: com.localmind.api
+  show-actuator: false
+
+logging:
+  level:
+    com.localmind: DEBUG
+    org.springframework.ai: DEBUG
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n"

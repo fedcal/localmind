@@ -1,0 +1,27 @@
+{
+  "source_path": "/run/media/federicocalo/D1/prj/localmind/documentazione/15-ambiti-estensione/03-ristorazione-locali-it.md",
+  "type": "PRD",
+  "confidence": "medium",
+  "manifest_override": false,
+  "title": "Ristorazione & locali",
+  "summary": "Product definition for the LocalMind restaurant/dining vertical: a community-driven, weighted knowledge graph of eateries navigable via local-first GraphRAG.",
+  "scope": [
+    "Graph node types: Locale, Cucina, Piatto, Ingrediente, Menu/SezioneMenu, Recensione, Persona, Luogo/POI, Quartiere/Zona, Evento, Itinerario, Collezione/Lista, Tag/Attributo",
+    "Graph edge/relation types: SERVE, APPARTIENE_A_CUCINA, CONTIENE, ADATTO_A, RECENSISCE, VICINO_A, NEL_QUARTIERE, COLLEGATO_A_EVENTO, TAPPA_DI, INCLUSO_IN, HA_ATTRIBUTO, SIMILE_A, GESTITO_DA, SEGUE/PREFERISCE",
+    "Edge weighting criteria: reviewer reliability, volume/consensus, freshness decay, outlier detection, dimensional specificity, usage frequency, proximity, event pertinence, curation",
+    "MVP feature set: dining domain schema (bilingual node/edge enums), Flyway migrations, CRUD Locale, CRUD Piatto/Menu with allergens/diets, multi-dimension reviews + Persona/reputation base, weight engine v1 (reputation+freshness+consensus), Qdrant semantic indexing, structured search filters, GraphRAG v1 chat with citations, CSV/JSON batch import, PDF menu extraction (Tika/OCR), Angular ristorazione frontend, IT/EN i18n, base moderation queue",
+    "Evolution features: interactive graph view, weight engine v2, personalized recommendations, AI food itineraries, venue-event linking, owner claim, curated collections, missing-link suggestions, PF4J connector plugins, closure/stale-price detection, advanced reputation, dish-photo multimodal, collection export",
+    "Data connectors/sources: community manual contributions, structured CSV/JSON files, unstructured documents (PDF menus via Tika/OCR + AI), open georeferenced feeds (PF4J plugin), email/IMAP signals, messaging channels/bots, territory events (calendar reuse), MCP tools",
+    "Personas: gastronomic explorer, foodie/reviewer, curator/moderator, restaurateur, territorial entity/pro-loco, event/group planner, instance admin",
+    "Local-first GraphRAG over MySQL (structure) + Qdrant (semantics), Ollama default, no Neo4j"
+  ],
+  "cross_refs": [
+    "documentation/14-ambiti-estensione/",
+    "Sviluppi/",
+    "documentation/",
+    "documentazione/"
+  ],
+  "locked": false,
+  "precedence": null,
+  "notes": "PRD vs SPEC competition: document is product-framed (problem/value, personas, input requirements, user flows, MVP-vs-evolution roadmap, KPIs, risks) which dominates, but section 5 (graph model: node/edge types + weight criteria) carries SPEC-like data-model content. Resolved to PRD because product/requirement framing is the document's primary intent across 11 of 12 sections; the graph model is supporting domain modeling. Source_hash suffix in filename is a deterministic placeholder (no hashing tool available in this agent's toolset: Read/Write/Grep/Glob only); filename slug is already unique among siblings."
+}

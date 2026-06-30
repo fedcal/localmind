@@ -1,0 +1,24 @@
+{
+  "source_path": "/run/media/federicocalo/D1/prj/localmind/documentazione/15-ambiti-estensione/07-sport-outdoor-it.md",
+  "type": "PRD",
+  "confidence": "medium",
+  "manifest_override": false,
+  "title": "Sport & outdoor",
+  "summary": "Product requirements for the Sport & outdoor vertical extending LocalMind's universal knowledge graph for trails, outdoor activities, facilities, and events.",
+  "scope": [
+    "Graph node types: Sentiero/Percorso, Itinerario/Anello, Attivita, PuntoDiInteresse(POI), Impianto, Rifugio/Bivacco, Falesia/SettoreArrampicata, EventoSportivo, Difficolta, Stagione/FinestraTemporale, Condizione, Luogo/Area, PuntoDiPartenza/Parcheggio, Servizio, Organizzatore/Gestore, Persona/Contributore, Recensione/Segnalazione, Documento",
+    "Graph edge/relation types: HA_DIFFICOLTA, PRATICABILE_IN, HA_CONDIZIONE, PARTE_DA, ATTRAVERSA/PASSA_PER, COLLEGA, SI_PRATICA_CON, OSPITA_EVENTO, OFFRE_SERVIZIO, VICINO_A, ADATTO_A, SIMILE_A, GESTITO_DA, RECENSITO_DA, DESCRITTO_IN, FA_PARTE_DI (weighted by freshness, source reliability, community consensus, usage frequency, physical relation strength, profile match, hybrid similarity)",
+    "MVP feature set M1-M10: outdoor domain graph schema, bilingual IT/EN enums (difficulty/season/activity/condition), GPX/GeoJSON ingestion with metrics, OSM Overpass connector with dedup, CRUD API for nodes/edges with proximity+filter queries, GraphRAG search with citations, Angular Outdoor UI feature, community contributions, safety moderation queue, edge weights v1",
+    "Data connectors: OpenStreetMap (Overpass API), GPX/KML/GeoJSON/TCX file upload, DEM/elevation data, outdoor portals (Komoot/Outdooractive/AllTrails/Wikiloc/Strava), weather bulletins, avalanche bulletins (EAWS/AINEVA 1-5), facility/refuge openings, event calendars (ICS), document domain (Tika+OCR), email/messaging, community contributions",
+    "Difficulty scales: CAI (T/E/EE/EEA), SAC sac_scale (T1-T6), MTB mtb:scale (S0-S5), piste:difficulty, UIAA/French/YDS climbing, via ferrata (F-EX), ski mountaineering (F/PD/AD/D/TD)",
+    "Hexagonal architecture flows: route ingestion, GraphRAG discovery, community contribution/moderation, dynamic-condition updates",
+    "Module integration: knowledge, llm (Ollama), document, Qdrant, MySQL+Flyway, automation, calendar, messaging, email, mcp, agent, auth, plugin(PF4J)+marketplace, finetuning, Angular frontend"
+  ],
+  "cross_refs": [
+    "documentation/14-ambiti-estensione/",
+    "Sviluppi/"
+  ],
+  "locked": false,
+  "precedence": null,
+  "notes": "Classified PRD on content signals (personas, input requirements, goals/non-goals 'Cosa NON e', MVP feature table, KPI/success-metrics, risks). No YAML frontmatter and filename lacks PRD-* convention, hence medium confidence. Contains substantial SPEC-flavored material (graph data model node/edge tables, difficulty-scale mappings, connector tables); PRD chosen as the dominant frame since the doc is structured around user value, personas, and a phased feature roadmap rather than implementation contracts."
+}

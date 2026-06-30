@@ -1,0 +1,28 @@
+{
+  "source_path": "/run/media/federicocalo/D1/prj/localmind/documentazione/15-ambiti-estensione/10-servizi-sanita-locale-it.md",
+  "type": "PRD",
+  "confidence": "medium",
+  "manifest_override": false,
+  "title": "Servizi & sanità locale",
+  "summary": "Product brief for a LocalMind consumer vertical that maps local public, health, and professional services as a weighted knowledge graph queried via GraphRAG to guide citizens from need to service.",
+  "scope": [
+    "Vertical: Servizi & sanità locale (local services & healthcare consumer vertical)",
+    "Graph node types: Bisogno, Servizio, Prestazione, Ente/Organizzazione, Sede/PuntoDiAccesso, Professionista, Requisito, Documento/Modulo, Procedura/Percorso, Categoria/Tassonomia, Area territoriale, Contatto, FonteDato",
+    "Graph relation/edge types: SODDISFA, EROGATO_DA, HA_SEDE_PRESSO, RICHIEDE_PREREQUISITO, RICHIEDE_REQUISITO, RICHIEDE_DOCUMENTO, ALTERNATIVA_A, FA_PARTE_DI, APPARTIENE_A_CATEGORIA, SERVE_AREA, STEP_DI, CORRELATO_A, HA_CONTATTO, ATTESTATO_DA",
+    "Edge weighting factors: source authority, freshness/decay, semantic relevance, user feedback, usage frequency, node completeness, territorial proximity, multi-source confirmation",
+    "MVP feature set: domain schema (graph nodes/edges + Flyway), needs+services taxonomy IT/EN, HSDS connector + tabular importer, ingestion pipeline, services node/edge CRUD API, catalog editor + moderation, need-to-service GraphRAG conversational assistant, catalog search/filters, full service card, community contributions & feedback, disclaimer & emergency handling, IT/EN bilingualism",
+    "Data connectors: open-data PA (CKAN/DCAT-AP_IT), HSDS/Open Referral, FHIR Human Services Directory, institutional web scraping + Tika, PDF/flyers (Tika+OCR Tesseract), FSE 2.0 / HL7 CDA2 healthcare catalog, regional CUP, community contribution form, editorial editing, legacy Excel/CSV importer",
+    "Interchange standards: HSDS 3.x, FHIR Human Services Directory IG, CKAN/DCAT-AP_IT, HL7 CDA2/FSE 2.0, Schema.org GovernmentService/MedicalOrganization",
+    "GraphRAG use cases, KPIs/success metrics, risks & mitigations",
+    "Integration with existing LocalMind modules: knowledge graph core, llm/Ollama, Qdrant, MySQL/Flyway, document, localmind-batch, plugin (PF4J), marketplace, auth, calendar, messaging/email, mcp, automation, agent, finetuning, Angular frontend feature servizi"
+  ],
+  "cross_refs": [
+    "documentation/14-ambiti-estensione/",
+    "documentazione/",
+    "documentation/",
+    "Sviluppi/"
+  ],
+  "locked": false,
+  "precedence": null,
+  "notes": "Classified PRD over SPEC: product framing dominates (personas, input requirements, MVP scope, goals/non-goals, KPIs/success metrics). Document also embeds a SPEC-grade graph data model (section 5 node/edge types) and a connector inventory (section 6); synthesizer may extract those as technical constraints. No YAML frontmatter, no ADR/SPEC filename convention, no Decision/Consequences sections. Confidence medium: content signals only, PRD dominant but with significant SPEC overlap."
+}

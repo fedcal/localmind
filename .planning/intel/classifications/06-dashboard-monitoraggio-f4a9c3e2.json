@@ -1,0 +1,27 @@
+{
+  "source_path": "/run/media/federicocalo/D1/prj/localmind/documentazione/03-analisi-funzionale/06-dashboard-monitoraggio.md",
+  "type": "DOC",
+  "confidence": "high",
+  "manifest_override": true,
+  "title": "Specifica Funzionale: Dashboard e Monitoraggio",
+  "summary": "Describes the LocalMind Dashboard and Monitoring module covering health check REST endpoint, service metrics, Spring Boot Actuator integration, and Angular Signal-based frontend.",
+  "scope": [
+    "dashboard",
+    "monitoring",
+    "health-check",
+    "metrics",
+    "Spring Boot Actuator",
+    "Angular",
+    "MySQL",
+    "Qdrant",
+    "Ollama",
+    "n8n",
+    "batch-jobs",
+    "token-usage",
+    "latency"
+  ],
+  "cross_refs": [],
+  "locked": false,
+  "precedence": null,
+  "notes": ""
+}

@@ -1,0 +1,11 @@
+spring:
+  application:
+    name: localmind
+  profiles:
+    active: dev
+
+server:
+  port: 8080
+
+localmind:
+  version: 0.1.0

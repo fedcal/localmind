@@ -1,0 +1,27 @@
+{
+  "source_path": "/run/media/federicocalo/D1/prj/localmind/documentazione/15-ambiti-estensione/24-ingestione-connettori-it.md",
+  "type": "PRD",
+  "confidence": "medium",
+  "manifest_override": false,
+  "title": "Ingestione & connettori",
+  "summary": "Requirements document for a unified, incremental, traceable ingestion framework that turns heterogeneous sources into weighted nodes and edges of LocalMind's universal Knowledge Graph.",
+  "scope": [
+    "ingestion framework (cross-cutting / core domain, applies to consumer + enterprise verticals)",
+    "abstractions: SourceConnector, IngestionPipeline, IngestionState/cursors, RawRecord",
+    "graph node types: SOURCE, INGESTION_RUN, RAW_RECORD (provenance/lineage); PERSON, ORGANIZATION, PLACE, EVENT, DOCUMENT, TECHNOLOGY, CONCEPT (reused domain); API_ENDPOINT, REPOSITORY, TICKET, EXPERIENCE (extended)",
+    "graph relation/edge types: EXTRACTED_FROM, INGESTED_BY, PROVIDED_BY (lineage); MENTIONED_IN, CREATED_BY, WORKS_AT, LOCATED_IN, DEPENDS_ON, REFERENCES, PART_OF, RELATED_TO (reused); CALLS, OWNER_OF, REPLIES_TO, ATTENDS (extended)",
+    "edge weighting factors: extraction confidence, signal strength, frequency/co-occurrence, recency, source reliability, human feedback/curation (idempotent accumulation + temporal decay)",
+    "data connectors catalog: FILE_SYSTEM, UPLOAD, IMAP/Email, ICS/Calendar, Git, OpenAPI/REST, CSV/Excel, RSS/Atom, Google Drive/SharePoint, Messaging, Database/JDBC, Wiki (Confluence/Notion), Ticketing (Jira/GitHub Issues)",
+    "sync modes (Airbyte model): FULL_REFRESH, INCREMENTAL_APPEND, INCREMENTAL_DEDUPED with cursors/watermarks + checkpoints",
+    "MVP feature set: ingestion domain, generalized IngestionPipeline, graph stage, FILE_SYSTEM/IMAP/CSV connectors, incremental sync+cursors, base dedup, lineage (source_lineage), encrypted secrets, per-connector scheduling, /api/v1/ingestion/* REST API, Angular connectors/ingestion UI, Flyway tables (ingestion_sources, ingestion_runs, ingestion_state, source_lineage), base observability",
+    "post-MVP evolution: semantic entity resolution, optimized AI extraction, cascade deletion/tombstones, Git/OpenAPI/RSS/ICS connectors, SourceConnectorExtension (PF4J), event-driven webhooks, staging/moderation, dead-letter+retry, Drive/SharePoint/DB/CDC connectors, freshness/lag dashboard",
+    "non-functional: idempotency, resumability, backpressure, observability, i18n IT/EN, Flyway one-query-per-migration",
+    "integration with existing modules: document, knowledge, localmind-batch, email, calendar, messaging, mcp, plugin/PF4J, marketplace, llm/Ollama, Qdrant, MySQL/Flyway, Angular frontend"
+  ],
+  "cross_refs": [
+    "20-motore-knowledge-graph-it.md"
+  ],
+  "locked": false,
+  "precedence": null,
+  "notes": "No frontmatter or filename convention, so confidence capped at medium. Strong dominant PRD structure (personas, requirements-in-input, MVP/evolution feature tables, KPIs/success metrics, risks). Competing SPEC signals present (RawRecord/SourceConfig field tables, SourceConnector port sketch, graph schema tables) but document self-describes as a 'documento di indirizzo' and explicitly defers exact signatures/table names/weight formulas to plan mode, so it is requirements-level not a binding contract. Not an ADR (no decision/consequences, no status). Cross-cutting/core domain feeding per-vertical roadmap phases."
+}

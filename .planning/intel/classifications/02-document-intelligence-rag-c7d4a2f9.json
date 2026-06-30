@@ -1,0 +1,29 @@
+{
+  "source_path": "/run/media/federicocalo/D1/prj/localmind/documentazione/03-analisi-funzionale/02-document-intelligence-rag.md",
+  "type": "DOC",
+  "confidence": "high",
+  "manifest_override": true,
+  "title": "Specifica Funzionale: Document Intelligence e RAG Pipeline",
+  "summary": "Functional specification of the Document Intelligence and RAG pipeline in LocalMind, covering document ingestion, chunking, embedding, vector storage, and semantic search.",
+  "scope": [
+    "Document Intelligence",
+    "RAG Pipeline",
+    "document ingestion",
+    "chunking",
+    "embedding",
+    "Qdrant",
+    "Apache Tika",
+    "Spring Batch",
+    "semantic search",
+    "folder scanning",
+    "DocumentService",
+    "ChunkingService",
+    "VectorStorePort",
+    "TextExtractorPort",
+    "FileSystemScannerPort"
+  ],
+  "cross_refs": [],
+  "locked": false,
+  "precedence": null,
+  "notes": "MANIFEST_TYPE override applied as DOC. Document contains substantial SPEC-like signals (REST endpoint definitions, Java interface schemas, YAML configuration tables, gRPC/HTTP protocol details, validation rules) that would otherwise suggest SPEC classification, but classified as DOC per manifest authority."
+}

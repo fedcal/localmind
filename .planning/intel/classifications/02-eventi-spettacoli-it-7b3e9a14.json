@@ -1,0 +1,29 @@
+{
+  "source_path": "/run/media/federicocalo/D1/prj/localmind/documentazione/15-ambiti-estensione/02-eventi-spettacoli-it.md",
+  "type": "PRD",
+  "confidence": "medium",
+  "manifest_override": false,
+  "title": "Eventi & spettacoli",
+  "summary": "Domain-extension scope for an events/shows knowledge-graph vertical of LocalMind: problem/value, personas, input requirements, graph model, connectors, MVP-to-evolution feature roadmap, KPIs and risks.",
+  "scope": [
+    "Node types: Evento, Luogo/Venue, Artista/Performer, Organizzatore, Rassegna/Festival, Genere/Tema, Data/Periodo, Utente, Recensione, Itinerario",
+    "Edge/relation types: SI_TIENE_IN, SI_TIENE_IL, ESEGUITO_DA, ORGANIZZATO_DA, APPARTIENE_A, HA_GENERE, EDIZIONE_DI, SIMILE_A, SEGUE, INTERESSATO_A/PARTECIPA_A, HA_RECENSITO, VICINO_A, COLLATERALE_A, INCLUDE_TAPPA",
+    "Edge weighting factors: relevance, frequency/recurrence, recency/freshness, proximity, semantic affinity, community signals, source reliability, intent level (configurable alpha-theta formula)",
+    "MVP feature set M1-M12: graph node/edge types (M1), Flyway migrations (M2), ICS/iCal PF4J connector (M3), schema.org ingestion+validation+Ollama embedding+Qdrant pipeline (M4), entity resolution/de-dup (M5), events CRUD + nearby-events query API /api/v1/events (M6), discovery feed with filters (M7), map view (M8), GraphRAG chat (M9), IT/EN enum translation (M10), follow + personalized feed (M11), bilingual docs (M12)",
+    "Evolution features E1-E12: additional connectors, interactive graph viz, AI itineraries, dynamic weights/decay/recurrences, advanced recommendations, alerts, reviews/rating, curation/moderation tools, calendar+messaging integration, tourism cross-domain synergy, festival recurrence series, advanced accessibility",
+    "Data connectors (PF4J EventSourceExtension): ICS/iCal feeds, RSS/Atom, ticketing APIs (Eventbrite, Ticketmaster, DICE), municipal/institutional portals (scraping/API via Tika), PDF posters via Tika+Tesseract OCR, newsletter/email via IMAP email domain, user calendar bidirectional sync, manual/community editor+API, schema.org JSON-LD extraction",
+    "Event data model aligned to schema.org/Event (titolo, dataInizio/Fine, tipoEvento, stato/EventStatusType, modalita/EventAttendanceMode, luogoRef, performerRefs, generi, prezzo/offers, sorgente, idEsterno)",
+    "Storage: MySQL nodes/edges tables (UUID CHAR(36)) + Qdrant embeddings, no Neo4j; recursive CTE traversals",
+    "Personas: scopritrice urbana, appassionato di nicchia, pianificatori weekend, turista, organizzatore/locale, ufficio cultura comunale, curatrice community, sviluppatore",
+    "Pipelines: ingestion/normalization, discovery, GraphRAG recommendation/itineraries, community contribution/curation, weight-update/historical-maintenance",
+    "Non-functional: local-first/Ollama, privacy, IT/EN i18n, idempotency, PF4J extensibility, Flyway one-query migrations, geo+temporal performance, data licensing",
+    "Reused LocalMind modules: knowledge, llm, document, Qdrant vector store, email, calendar, messaging, automation, agent, mcp, plugin PF4J, marketplace, auth, common domain events, Angular 21 frontend"
+  ],
+  "cross_refs": [
+    "documentation/14-ambiti-estensione/",
+    "Sviluppi/"
+  ],
+  "locked": false,
+  "precedence": null,
+  "notes": "No frontmatter, content-only signals. Strong PRD hallmarks dominate: personas, input requirements, MVP/evolution feature roadmap, KPIs, goals/differentiators, risks. SPEC signals also present (graph data model, node/edge schema, MySQL+Qdrant representation, weight formula, schema.org/Event field tables) but they are embedded supporting design rather than the document's primary purpose, which is product scoping for a vertical. Resolved to PRD over SPEC since the doc frames what the vertical should do from user/business perspective and feeds roadmap phase creation. Header references sibling extension-area folder (written as 14-ambiti-estensione though it resides in 15-ambiti-estensione) and the Sviluppi/ tracking folder; no explicit markdown links to other docs."
+}

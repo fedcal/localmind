@@ -1,0 +1,61 @@
+package com.localmind.api.mcp.controller;
+
+import com.localmind.api.mcp.dto.*;
+import com.localmind.domain.mcp.port.in.TimeTrackingUseCase;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+import java.util.Map;
+
+@RestController
+@RequestMapping("/api/v1/mcp/time")
+@Tag(name = "MCP Time", description = "Time tracking")
+public class McpTimeController {
+
+    private final TimeTrackingUseCase timeTrackingUseCase;
+
+    public McpTimeController(TimeTrackingUseCase timeTrackingUseCase) {
+        this.timeTrackingUseCase = timeTrackingUseCase;
+    }
+
+    @PostMapping("/start")
+    @Operation(summary = "Avvia timer / Start timer")
+    @ApiResponse(responseCode = "200", description = "Timer avviato / Timer started")
+    @ApiResponse(responseCode = "400", description = "Richiesta non valida / Bad request")
+    public ResponseEntity<Map<String, Object>> startTimer(@RequestBody StartTimerRequest request) {
+        return ResponseEntity.ok(timeTrackingUseCase.startTimer(
+                request.getTaskId(),
+                request.getDescription()));
+    }
+
+    @PostMapping("/stop")
+    @Operation(summary = "Ferma timer / Stop timer")
+    @ApiResponse(responseCode = "200", description = "Timer fermato / Timer stopped")
+    public ResponseEntity<Map<String, Object>> stopTimer() {
+        return ResponseEntity.ok(timeTrackingUseCase.stopTimer());
+    }
+
+    @PostMapping("/log")
+    @Operation(summary = "Registra tempo manualmente / Log time manually")
+    @ApiResponse(responseCode = "200", description = "Tempo registrato / Time logged")
+    @ApiResponse(responseCode = "400", description = "Richiesta non valida / Bad request")
+    public ResponseEntity<Map<String, Object>> logTime(@RequestBody LogTimeRequest request) {
+        return ResponseEntity.ok(timeTrackingUseCase.logTime(
+                request.getTaskId(),
+                request.getDurationMinutes(),
+                request.getDescription(),
+                request.getDate()));
+    }
+
+    @GetMapping("/timesheet")
+    @Operation(summary = "Ottieni timesheet / Get timesheet")
+    @ApiResponse(responseCode = "200", description = "Timesheet / Timesheet data")
+    public ResponseEntity<Map<String, Object>> getTimesheet(
+            @RequestParam(required = false) String startDate,
+            @RequestParam(required = false) String endDate,
+            @RequestParam(required = false) String userId) {
+        return ResponseEntity.ok(timeTrackingUseCase.getTimesheet(startDate, endDate, userId));
+    }
+}

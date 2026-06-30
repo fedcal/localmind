@@ -1,0 +1,28 @@
+{
+  "source_path": "/run/media/federicocalo/D1/prj/localmind/documentazione/15-ambiti-estensione/01-turismo-territorio-it.md",
+  "type": "PRD",
+  "confidence": "medium",
+  "manifest_override": false,
+  "title": "Turismo & territorio",
+  "summary": "Consumer vertical applying LocalMind's universal weighted Knowledge Graph engine to tourism/territory discovery via GraphRAG, local-first on MySQL+Qdrant+Ollama.",
+  "scope": [
+    "Graph node types: Luogo/Area, POI/Attrazione, Esercizio/Locale, Evento, Esperienza/Attivita, Itinerario/Percorso, Tema/Tag, Prodotto tipico, Persona/Operatore, Recensione/Valutazione, Media (extensible per domain)",
+    "Graph relation/edge types: VICINO_A, SI_TROVA_IN, TAPPA_DI, ABBINATO_A, SIMILE_A, HA_TEMA, OSPITA_EVENTO, PRODUCE/OFFRE, GESTITO_DA, RECENSISCE, CONTRIBUITO_DA, RAGGIUNGIBILE_CON",
+    "Edge weight criteria: distance decay, semantic similarity, itinerary co-occurrence, community signal, contributor reputation, source reliability, freshness/seasonality, navigation frequency, anti-popularity hidden-gem boost (batch-recalculated, explainable)",
+    "Persistence: MySQL graph_node/graph_edge tables + recursive CTE traversal, Qdrant embeddings, no Neo4j",
+    "MVP feature set: graph data model, node/edge CRUD API, base graph queries, Qdrant node embedding, GraphRAG hybrid search, NL discovery endpoint with filters, AI synthesis with node/path citation, OpenStreetMap connector, Wikidata connector, ingestion pipeline (mapping/dedup/baseline weights), contribution UI, search+list UI, map view, interactive graph view, reviews/reputation, edge weight batch calc, moderation/curation, IT/EN i18n, bilingual docs",
+    "Data connectors: OpenStreetMap (Overpass API, ODbL), Wikidata/Wikipedia (CC0/CC BY-SA), regional/DMO tourism open data, event feeds (iCal/schema.org Event), community contributions, GPX tracks, local documents (Tika/OCR), email/calendar modules, weather/seasonality API",
+    "Personas: Esploratore, Local explorer, Contributor/curatore, Operatore DMO/Comune, Operatore esperienziale, Sviluppatore",
+    "GraphRAG AI use cases, KPIs, risks, integration with existing LocalMind modules (knowledge, llm, vectorstore, plugin/PF4J, auth, batch)"
+  ],
+  "cross_refs": [
+    ".planning/PROJECT.md",
+    "documentation/",
+    "documentazione/",
+    "Sviluppi/",
+    "CLAUDE.md"
+  ],
+  "locked": false,
+  "precedence": null,
+  "notes": "PRD dominant (personas, input requirements section 3, MVP feature table section 7, KPIs section 9, risks section 10). Significant embedded SPEC content (graph node/edge data model, weight derivation, MySQL+Qdrant persistence in section 5) and DOC-style rationale prose. Resolved to PRD per ambiguity rule since the document's purpose is defining what the vertical should do and its scope, not locking a single technical contract. Numbered filename prefix (01-) is ordering within 15-ambiti-estensione, not an ADR convention; no frontmatter type field present."
+}

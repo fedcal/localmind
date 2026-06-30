@@ -1,0 +1,23 @@
+{
+  "source_path": "/run/media/federicocalo/D1/prj/localmind/documentazione/15-ambiti-estensione/12-architettura-software-it.md",
+  "type": "PRD",
+  "confidence": "high",
+  "manifest_override": false,
+  "title": "Architettura software",
+  "summary": "Enterprise extension scope modeling an organization's entire software estate as an AI-navigable weighted knowledge graph (GraphRAG) for impact analysis, dependency mapping, and security.",
+  "scope": [
+    "node-types: Repository, System, Service/Component, Api, Endpoint/Operation, Event/Topic, Database/Datastore, Table/Dataset, Library/Dependency, Vulnerability/CVE, InfraResource, Pipeline/Deployment, Domain/BoundedContext, Team/Group, Person, Adr/Decision, Document",
+    "relation-types: CALLS, PROVIDES_API, CONSUMES_API, DEPENDS_ON, READS/WRITES, PUBLISHES/SUBSCRIBES, IMPORTS/CALLS_FN, DEPLOYED_ON, DEPLOYED_BY, OWNED_BY, PART_OF, STORES_IN, AFFECTED_BY, REFERENCES, DECIDES/GOVERNS, DOCUMENTED_BY, SIMILAR_TO",
+    "edge-weight-factors: runtime frequency, static multiplicity, node criticality, consumer cardinality, relation type, source confidence, freshness decay, CVE severity, curator feedback",
+    "MVP-features: graph core model, CRUD+query API (neighbors/paths/subgraphs), Git+AST connector (Java/TS), Build/Dependency connector (Maven/npm), OpenAPI/AsyncAPI connector, catalog-info connector, entity resolution/canonical identity, base weight calc, semantic indexing to Qdrant, base GraphRAG, impact analysis 1-N hop, interactive graph visualizer, scheduled incremental ingestion, IT/EN i18n",
+    "evolution-features: SBOM/CycloneDX-VEX connector + CVE blast radius, OpenTelemetry connector, IaC/CICD/DB-schema connectors, fitness functions, drift detection (as-designed vs as-built), graph metrics, SIMILAR_TO link suggestion, downstream actions, PF4J connector plugins, architect agent, temporal graph diff, C4/SBOM export",
+    "data-connectors: Git, AST multi-language, Build/Dependency, OpenAPI/AsyncAPI, SBOM (CycloneDX/SPDX/VEX), catalog-info (Backstage-like), IaC (Terraform/Helm/K8s), CI/CD, DB schema (DDL/JDBC), OpenTelemetry, ADR/Docs",
+    "standards: C4 model, Backstage entity model, CycloneDX/SBOM, OpenAPI/AsyncAPI, OpenTelemetry, MADR",
+    "personas: developer, architect/tech-lead, platform-engineer, SRE, security-engineer, engineering-manager, new-hire, data-engineer, instance-admin",
+    "infra-reuse: MySQL (structure/weights), Qdrant (semantics), Ollama (local embeddings/LLM), hexagonal domains (knowledge, document, llm, vectorstore, automation, batch, messaging, agent, mcp, plugin/PF4J, auth), local-first privacy"
+  ],
+  "cross_refs": [],
+  "locked": false,
+  "precedence": null,
+  "notes": "Dominant framing is PRD (personas, problem/value, MVP-to-evolution feature lists, KPIs/success metrics, goals/non-goals in section 1.4). Contains SPEC-flavored material (graph data model in section 5, connector catalog in section 6) but no API contracts/schemas to honor and no single locked decision; PRD chosen as primary type. Part of the '15-ambiti-estensione' enterprise extension series."
+}

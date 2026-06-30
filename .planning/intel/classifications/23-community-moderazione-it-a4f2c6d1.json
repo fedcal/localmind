@@ -1,0 +1,30 @@
+{
+  "source_path": "/run/media/federicocalo/D1/prj/localmind/documentazione/15-ambiti-estensione/23-community-moderazione-it.md",
+  "type": "PRD",
+  "confidence": "medium",
+  "manifest_override": false,
+  "title": "Community & moderazione",
+  "summary": "Cross-cutting domain defining the social trust, reputation, ranking and moderation layer that governs how contributors feed and curate the universal Knowledge Graph.",
+  "scope": [
+    "cross-cutting/enabling core domain (not a vertical) parameterized per domain for consumer and enterprise",
+    "four pillars: user contributions, evaluations, emergent ranking, anti-spam + moderation/curation",
+    "graph node types: USER/CONTRIBUTOR, CONTRIBUTION, REVIEW, EVALUATION/VOTE, REPORT/FLAG, MODERATION_CASE, MODERATION_ACTION, BADGE/REPUTATION_LEVEL, CURATOR/OWNER",
+    "graph relation/edge types: CONTRIBUTED, AUTHORED, EVALUATED, CONFIRMED/REJECTED, REPORTED, MODERATED, OWNS, TRUSTS/ENDORSES, SUSPECTED_SOCKPUPPET",
+    "weight families: domain-edge feedback/consenso/affidabilita/recency factors; internal social scores (vote weight, target quality score, user reputation, spam risk)",
+    "MVP features: contribution model+states, configurable moderation workflow (ModerationPolicy), evaluations (vote/star/confirm), base reputation + weighted voting (ReputationPolicy), emergent ranking, reports + moderation queue, local AI moderation via Ollama, base anti-spam (rate limit+identity), immutable audit trail, graph edge-weight integration, extended RBAC, bilingual REST API+DTOs (/api/v1/community/*), Angular community/moderation UI, Flyway migrations",
+    "post-MVP: Qdrant duplicate/spam-farm detection, spam-wave detection, sockpuppet/reciprocity graph detection, transitive reputation+decay, badges/gamification, appeals flow, enterprise owner curation/approval, wiki-style versioning, moderation dashboard, PF4J moderation/list connectors, multi-channel notifications",
+    "data connectors/sources: UI community CRUD API, DomainEventPublisherPort system-event listener, AI content classifier adapter (LlmGatewayService/Ollama), Qdrant similarity adapter (QdrantVectorStoreAdapter), auth identity/roles integration, opt-in PF4J external moderation/denylist plugins, enterprise candidate-knowledge extraction (LlmEntityExtractorAdapter)",
+    "persistence: MySQL 8.0 (contributions, evaluations, user_reputation, moderation_cases, moderation_actions, versioning) + Qdrant (similarity); Flyway one-query-per-file; append-only audit",
+    "API input contracts for contribution submission, evaluation, moderation cases/decisions, anti-spam signals; bilingual IT/EN enums",
+    "constraints: local-first/self-hostable, hexagonal architecture (pure domain wired in DomainConfig), reuse MySQL+Qdrant, PF4J extensibility, immutability, boundary validation + rate limiting"
+  ],
+  "cross_refs": [
+    "documento 20 (Motore Knowledge Graph)",
+    ".planning/PROJECT.md",
+    ".planning/codebase/",
+    "MODULE_BOUNDARIES.md"
+  ],
+  "locked": false,
+  "precedence": null,
+  "notes": "Dominant PRD framing (problem/value, personas, requirements input, MVP feature set, KPIs, risks) for a cross-cutting domain extension. SPEC signals also present (API input contracts in section 3, graph data model and weight formulas in section 5, MySQL/Qdrant physical representation). Ambiguity PRD vs SPEC resolved toward PRD because contracts are stated at requirements/input level rather than as enforceable schemas; flagged medium confidence. No YAML frontmatter, no ADR Decision/Consequences structure. Marked CROSS-CUTTING domain per orchestrator note."
+}

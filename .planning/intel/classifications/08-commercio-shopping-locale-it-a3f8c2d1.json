@@ -1,0 +1,25 @@
+{
+  "source_path": "/run/media/federicocalo/D1/prj/localmind/documentazione/15-ambiti-estensione/08-commercio-shopping-locale-it.md",
+  "type": "PRD",
+  "confidence": "medium",
+  "manifest_override": false,
+  "title": "Commercio & shopping locale",
+  "summary": "Domain-extension product doc applying LocalMind's weighted knowledge graph + local GraphRAG to local commerce: personas, input requirements, flows, graph model, connectors, MVP, KPIs.",
+  "scope": [
+    "graph node types: Negozio, Artigiano/Produttore, Prodotto, Servizio, CategoriaMerceologica, MateriaPrima/Ingrediente, Mercato, Evento, Quartiere/ZonaCommerciale, Certificazione/Riconoscimento, Cliente/Utente, Recensione, Tradizione/Tema",
+    "graph relation types: VENDE, PRODOTTO_DA, USA_MATERIA_PRIMA, FORNISCE, APPARTIENE_A_CATEGORIA, SITUATO_IN, VICINO_A, COMPLEMENTARE_A, PARTECIPA_A, HA_CERTIFICAZIONE, RECENSISCE, PREFERISCE/HA_ACQUISTATO, INCARNA_TRADIZIONE, SIMILE_A",
+    "edge weight factors: proximity, co-occurrence, community quality, source reliability, verification state, recency, supply-chain strength, semantic relevance, seasonality, AI-usage feedback",
+    "MVP feature set: commerce domain schema (Flyway), CRUD Negozio/Prodotto/Artigiano nodes, bulk CSV merchant import + geocoding + dedup, per-shop product catalog, semantic catalog indexing (Qdrant), base search + filters (category/proximity/open-now), commerce GraphRAG chat, interactive graph visualization, reviews and votes, edge weight calculation v1, address geocoding, full IT/EN i18n",
+    "data connectors: manual UI entry, CSV/JSON bulk import (municipal/chamber lists), territorial open data, public business listings/maps, merchant ERP/e-commerce feeds, flyers/price-lists/menus via Tika+OCR, social/event pages, email/IMAP supplier lists, community contributions",
+    "cross-cutting: local-first self-hosting, Ollama local AI default, privacy-by-design, MySQL+Qdrant (no Neo4j), PF4J plugin connectors, hexagonal architecture, integration with knowledge/llm/document/email/calendar/automation/agent/auth modules"
+  ],
+  "cross_refs": [
+    "documentation/14-ambiti-estensione/",
+    "documentazione/",
+    "documentation/",
+    "Sviluppi/"
+  ],
+  "locked": false,
+  "precedence": null,
+  "notes": "Strong PRD signals (personas, input requirements, MVP feature set, KPIs/success metrics, goals). Secondary SPEC signals from the graph data model (node/edge schema, weight contract, connector ingestion). Resolved to PRD as dominant intent (a per-vertical development/requirements guide, not an implementation contract); the graph model section should also be mined for technical constraints by the synthesizer. No frontmatter type and no filename convention, hence medium confidence."
+}

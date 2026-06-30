@@ -1,0 +1,26 @@
+{
+  "source_path": "/run/media/federicocalo/D1/prj/localmind/documentazione/15-ambiti-estensione/16-mail-comunicazioni-it.md",
+  "type": "PRD",
+  "confidence": "medium",
+  "manifest_override": false,
+  "title": "Mail & comunicazioni",
+  "summary": "Product requirements for a LocalMind extension that ingests company mailboxes via IMAP into a weighted people-communications-topics knowledge graph queried via GraphRAG, fully self-hosted.",
+  "scope": [
+    "Graph node types: Persona, Organizzazione, Casella/Account, Messaggio, Thread/Conversazione, Tema/Argomento, Allegato/Documento, Impegno/Action item, Decisione, Evento/Scadenza",
+    "Graph relation types: HA_SCRITTO, DESTINATARIO_DI, APPARTIENE_A, RISPONDE_A, COMUNICA_CON, TRATTA, APPARTIENE_A_ORG, COINVOLGE_ORG, CONTIENE_ALLEGATO, CITA_DOCUMENTO, CONTIENE_IMPEGNO, RESPONSABILE_DI, HA_DECISO, SCADE_IL, SIMILE_A",
+    "Edge weighting factors: frequenza, recenza/time-decay, direzionalita/ruolo, reciprocita, rilevanza semantica, densita thread, confidenza estrazione, feedback utente, importanza partecipanti",
+    "MVP feature set (15): IMAP connector with incremental UID/UIDVALIDITY sync + encrypted credentials; EmailMessage model extension (Message-ID/In-Reply-To/References/Cc/attachments/language); MIME parsing + de-quoting + signature removal; thread reconstruction; attachment extraction via document pipeline (Tika/OCR to Qdrant); local AI enrichment (NER, message/thread summary, classification); person/org entity resolution; communications graph schema on MySQL; content embedding on Qdrant with perimeter filters; base edge weights; REST API for IMAP account mgmt/ingestion status/graph query; GraphRAG with cited answers; UI for account config/persona-org dossier/graph chat; commitment/deadline extraction with mail to-do view; base privacy controls (visibility perimeters, Ollama-only policy)",
+    "Data connectors: IMAP (Eclipse Angus Mail, existing email domain), Gmail/Google Workspace IMAP+OAuth2/XOAUTH2, Microsoft 365/Exchange IMAP+OAuth2 (future Graph API), attachments via DocumentIngestionPipelineService (Tika/OCR), shared/functional mailboxes (info@/sales@), messaging domain connectors (Slack/Telegram), calendar domain, .mbox/.eml/PST file import, PF4J CommunicationSourceExtension extension point",
+    "GraphRAG ingestion pipeline (IMAP fetch to graph) and query pipeline (question to cited answer)",
+    "Personas: account/sales manager, project manager, procurement, founder, knowledge worker, new hire, assistant, IT admin, DPO/compliance",
+    "Privacy/governance: PII redaction, retention/oblio, visibility perimeters, consent/purpose, Ollama-only LLM policy",
+    "KPIs: coverage >98%, thread reconstruction >95%, NER precision >0.85, entity resolution >0.9, zero data exfiltration",
+    "Integration with existing modules: email, knowledge, llm/Ollama, document, vectorstore/Qdrant, MySQL/Flyway, batch, auth, calendar, messaging, automation, agent, marketplace/PF4J, common, frontend"
+  ],
+  "cross_refs": [
+    "documentation/14-ambiti-estensione/"
+  ],
+  "locked": false,
+  "precedence": null,
+  "notes": "No frontmatter or filename convention; classified by content. Dominant signals are PRD (personas, input requirements, goals/non-goals, KPI/success metrics, MVP-to-evolution roadmap). Contains a substantial SPEC-like section (section 5 graph node/edge data model) and section 6 connector inventory, but these are embedded within a product-requirements document rather than standalone implementation contracts. Resolved toward PRD as the overarching document intent."
+}

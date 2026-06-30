@@ -1,0 +1,24 @@
+{
+  "source_path": "/run/media/federicocalo/D1/prj/localmind/documentazione/03-analisi-funzionale/04-automazioni-n8n.md",
+  "type": "DOC",
+  "confidence": "high",
+  "manifest_override": true,
+  "title": "Specifica Funzionale: Automazioni n8n",
+  "summary": "Functional specification for n8n integration with LocalMind via HTTP webhooks, covering data models, workflow examples, class structure, configuration, and deployment.",
+  "scope": [
+    "n8n",
+    "LocalMind",
+    "webhook",
+    "AutomationService",
+    "WebhookClientPort",
+    "AutomationEvent",
+    "AutomationController",
+    "WebhookEntity",
+    "N8nWebhookClient",
+    "Docker"
+  ],
+  "cross_refs": [],
+  "locked": false,
+  "precedence": null,
+  "notes": ""
+}

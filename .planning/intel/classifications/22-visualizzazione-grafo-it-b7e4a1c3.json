@@ -1,0 +1,28 @@
+{
+  "source_path": "/run/media/federicocalo/D1/prj/localmind/documentazione/15-ambiti-estensione/22-visualizzazione-grafo-it.md",
+  "type": "PRD",
+  "confidence": "high",
+  "manifest_override": false,
+  "title": "Visualizzazione grafo",
+  "summary": "PRD for LocalMind's local-first, WebGL-based interactive knowledge-graph visualizer: progressive exploration, weighted rendering, multidimensional filters, and GraphRAG chat-to-graph integration.",
+  "scope": [
+    "graph model: visualization is type-agnostic (no own node/edge types); maps domain-defined nodes (Luogo, Documento, Persona, Servizio, Evento, Recensione) and relations (e.g. CITES, SIMILAR_TO, directed/bidirectional) to visual attributes",
+    "node visual mapping: domain->color, type->icon/shape, centrality/weight->size, state(new/stale/orphan/selected)->border/badge/opacity, cluster->halo, query relevance->saturation/fade",
+    "edge visual mapping: weight->thickness+opacity, type->color/dash, direction->arrow/curvature, source confidence->opacity, freshness->desaturation, multiplicity->curvature/offset",
+    "purely visual constructs: Cluster/Community, frontier node, super-node (collapse), ghost/placeholder node, highlighted path",
+    "weight criteria: non-linear (log/percentile) scale, weight threshold filter, render priority by weight, weight-driven layout forces, per-relation-type normalization",
+    "MVP feature set (16): standalone Angular graph feature with lazy routing + Signal store, WebGL render engine (Sigma.js/graphology) with Canvas fallback, force-directed layout in Web Worker, seed load (node + 1-hop neighborhood), progressive expansion, pan/zoom/fit/minimap/breadcrumb/node counter, selection + detail panel, hover highlight, filters by node-type/relation-type/domain, weight-range filter, weight->thickness/size mapping, per-domain theme + bilingual IT/EN legend, search->center node, AI chat->graph jump, controlled degradation, basic accessibility (keyboard nav, contrast, alt text)",
+    "evolution feature set (17-32): advanced LoD + community clustering, multiple layouts (hierarchical/radial/circular), node pinning, path query A->B highlight, branch collapse/expand, navigation history undo/redo, saved views, PNG/SVG/JSON export, graph->AI GraphRAG context, visual curation (annotation/dedup/inline correction), visual graph metrics (centrality/community/SPOF/density), 3D/VR mode, temporal diff, hybrid graph+geographic-map view, per-domain visualization plugins (PF4J/marketplace), GPU compute-shader layout for 100k+ nodes",
+    "data connectors: NO own ingestion connectors; consumes graph-engine APIs (get node + 1-hop neighborhood, expand node N-hop filtered, path query A->B, subgraph by search query, precomputed clusters/communities, graph metrics, node/relation detail, write/curation), all under negotiated budget with truncation metadata",
+    "client rendering architecture: Graph data store (Angular Signals), Render engine (WebGL/Sigma.js + Canvas fallback), Layout worker (Web Worker / graphology ForceAtlas2), LoD/clustering controller, interaction layer, ApiService client, theme/i18n provider",
+    "personas: consumer explorer, enterprise analyst/architect, knowledge worker, graph curator, AI assistant user, power user/data explorer, instance admin, frontend contributor, accessibility user",
+    "candidate libraries: Sigma.js + graphology (MVP reference), Cosmograph (extreme scale), react-force-graph, G6, Cytoscape.js",
+    "integration with existing modules: knowledge/graph core, llm/chat (GraphRAG), vectorstore Qdrant, search, auth (reader/curator/admin roles), automation/messaging/agent, document/email/calendar/mcp, plugin PF4J + marketplace, MySQL + Caffeine cache"
+  ],
+  "cross_refs": [
+    "documentation/14-ambiti-estensione/"
+  ],
+  "locked": false,
+  "precedence": null,
+  "notes": "CROSS-CUTTING domain: the doc self-describes as the universal knowledge-graph engine's visual surface, traversal to all verticals and likely overlapping existing roadmap phases 1-7. Strong unambiguous PRD signals (personas, stakeholder value, explicit non-goals in 1.4, MVP/evolution feature tables, KPIs in section 9, risks) with no competing ADR/SPEC signals; high confidence. Visualizer introduces no own graph types - it is a consumer/visual-mapping layer over domain-defined nodes/edges."
+}

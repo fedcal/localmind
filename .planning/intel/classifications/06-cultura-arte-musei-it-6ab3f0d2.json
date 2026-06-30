@@ -1,0 +1,30 @@
+{
+  "source_path": "/run/media/federicocalo/D1/prj/localmind/documentazione/15-ambiti-estensione/06-cultura-arte-musei-it.md",
+  "type": "PRD",
+  "confidence": "medium",
+  "manifest_override": false,
+  "title": "Cultura, arte & musei",
+  "summary": "Extension of LocalMind to the culture/art/museums vertical: a weighted cultural knowledge graph with GraphRAG, thematic itineraries, community contributions, and MVP feature set.",
+  "scope": [
+    "Cultural knowledge graph (MySQL structure + Qdrant semantics, no Neo4j)",
+    "Node types: Opera, Artista, Museo, Luogo, Movimento, Periodo, Tecnica, Materiale, Soggetto, Mostra, Collezione, Committente, FonteCritica, PercorsoTematico",
+    "Relation types (weighted, directed): creata_da, conservata_in, appartiene_a, datata_in, realizzata_con, raffigura, influenzato_da, maestro_di, dialoga_con, esposta_in, commissionata_da, situato_in, parte_di, simile_a, tappa_di, documentata_in",
+    "Edge weighting criteria: evidence strength, source agreement/authority, semantic/visual similarity, usage frequency, user feedback, recency decay, thematic relevance",
+    "GraphRAG hybrid retrieval (semantic Qdrant + structural MySQL graph expansion) with cited nodes/paths",
+    "Thematic itinerary generator (theme/time/level/accessibility/geo-proximity)",
+    "MVP feature set: cultural domain schema module, structured ingestion (CSV/JSON/Excel), unstructured text ingestion + LLM triple extraction, dual persistence with provenance, edge weight computation, graph CRUD/neighbors/paths/subgraph API, cultural GraphRAG, frontend Cultura feature, interactive graph visualization, thematic path generator, IT/EN bilingual, Wikidata connector, community contributions + moderation with immutable versioning",
+    "Future evolutions: multimodal visual embeddings, Europeana/Getty/Iconclass/IIIF connectors, link prediction, geolocated multi-museum routes, in-gallery audio mode, curatorial tools, LocalMind instance federation, full CIDOC-CRM + RDF/JSON-LD export, emergent ranking, specialized domain packs",
+    "Data connectors: Wikidata (SPARQL/REST + QID reconciliation), Europeana (REST API), Getty Vocabularies AAT/ULAN/TGN (LOD/SPARQL), Iconclass (API/dump), CIDOC-CRM/LIDO/museum records (parser/mapping), ICCD/national catalogs (CSV/XML parser), IIIF (manifest), local files (upload + folder watcher batch), exhibition/event feeds (API/CSV), community contributions (form + API)",
+    "Infrastructure reuse: DocumentIngestionPipelineService, Tika, Tesseract, Qdrant, MySQL/Flyway, PF4J plugins + marketplace, Ollama local LLM/embeddings",
+    "Personas (visitor, art-history student, teacher, curator, small-museum manager, community contributor, accessibility user), KPIs, risks/mitigations, integration with existing LocalMind modules"
+  ],
+  "cross_refs": [
+    "documentation/14-ambiti-estensione/",
+    "documentazione/",
+    "documentation/",
+    "Sviluppi/"
+  ],
+  "locked": false,
+  "precedence": null,
+  "notes": "No frontmatter, no ADR status/decision sections, no API request/response schemas or SLOs. Dominant PRD signals (personas, section 3 'Requisiti in input', MVP feature table, KPIs, use cases). Competing SPEC signals exist (graph node/relation model in section 5, connector tables in section 6) and a DOC framing (self-described 'guida agli sviluppi', prose-heavy). Resolved to PRD as the document is requirement/scope-driven from a user/business perspective; the graph model is descriptive rather than an implementation contract. Confidence medium due to PRD/SPEC overlap."
+}

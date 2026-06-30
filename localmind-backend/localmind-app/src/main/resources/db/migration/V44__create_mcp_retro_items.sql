@@ -1,0 +1,8 @@
+CREATE TABLE mcp_retro_items (
+    id CHAR(36) NOT NULL PRIMARY KEY,
+    retro_id CHAR(36) NOT NULL,
+    category VARCHAR(50) NOT NULL,
+    content LONGTEXT NOT NULL,
+    votes INT NOT NULL DEFAULT 0,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);

@@ -1,0 +1,33 @@
+{
+  "source_path": "/run/media/federicocalo/D1/prj/localmind/documentazione/11-roadmap/02-evoluzione-futura.md",
+  "type": "DOC",
+  "confidence": "high",
+  "manifest_override": true,
+  "title": "Evoluzione Futura",
+  "summary": "Long-term vision and roadmap for LocalMind covering planned post-v1.0 features, architectural evolution, and open-source community strategy.",
+  "scope": [
+    "LocalMind",
+    "roadmap",
+    "SSE streaming",
+    "OCR",
+    "plugin system",
+    "PWA",
+    "API SDK",
+    "multimodal models",
+    "knowledge graph",
+    "fine-tuning",
+    "marketplace",
+    "i18n",
+    "analytics dashboard",
+    "calendar integration",
+    "email integration",
+    "microservices",
+    "event-driven architecture",
+    "CQRS",
+    "Kubernetes"
+  ],
+  "cross_refs": [],
+  "locked": false,
+  "precedence": null,
+  "notes": ""
+}

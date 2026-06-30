@@ -1,0 +1,26 @@
+{
+  "source_path": "/run/media/federicocalo/D1/prj/localmind/documentazione/15-ambiti-estensione/25-sicurezza-privacy-it.md",
+  "type": "PRD",
+  "confidence": "medium",
+  "manifest_override": false,
+  "title": "Sicurezza & privacy",
+  "summary": "Cross-cutting security and privacy capability for the LocalMind knowledge graph: ReBAC node/edge authorization, pre-retrieval filtering, anti-exfiltration AI routing, PII/GDPR handling, and tamper-evident audit.",
+  "scope": [
+    "graph node types: Principal, Ruolo, Permesso, Tenant, Workspace, ClasseSensibilita, PolicyAccesso, PolicyEsfiltrazione, Consenso, Trattamento(GDPR), DataSubject, EtichettaPII, Segreto/Credenziale, AuditEvent, EventoSicurezza, SessioneAccesso",
+    "graph relation types: HA_RUOLO, CONCEDE, PUO_LEGGERE, PUO_SCRIVERE, PUO_ESPANDERE, MEMBRO_DI, APPARTIENE_A, CLASSIFICATO_COME, CONTIENE_PII, CONSENTE, GOVERNATO_DA, DELEGA, EREDITA_DA, REGISTRA, PROTEGGE",
+    "weighted edges: explicit-vs-inherited authorization, delegation scope/expiry decay, classification confidence, consent freshness",
+    "MVP features: principal & tenant model; ReBAC graph model; access decision engine (deny-by-default); data classification; pre-retrieval filter on MySQL+Qdrant; exfiltration/AI-routing policy (Ollama-default); context minimization; tamper-evident audit trail (hash-chain); base prompt-injection defense; secret management; at-rest/in-transit encryption; security dashboard; IT/EN i18n",
+    "data connectors: IdP/LDAP/SSO, HR/RACI, CMDB/inventory, document store (Tika/OCR), email/calendar, GDPR processing register/DPIA, secret manager/KMS, external SIEM/DLP (signed export), security policy crosswalk",
+    "domains touched: auth, knowledge, document, llm, agent, mcp, automation, messaging, email, calendar, common, finetuning, marketplace/PF4J plugins, Angular security feature"
+  ],
+  "cross_refs": [
+    ".planning/PROJECT.md",
+    "documentation/14-ambiti-estensione/",
+    "documentation/",
+    "documentazione/",
+    "Sviluppi/"
+  ],
+  "locked": false,
+  "precedence": null,
+  "notes": "Content-only PRD signals (personas, problem/value, MVP feature table, KPIs, use cases); no frontmatter or filename convention, hence medium confidence. CROSS-CUTTING/foundational capability rather than a vertical domain; the author explicitly states it is trasversale to all existing domains and likely overlaps existing roadmap phases 1-7 (auth, knowledge, llm, agent). Document also embeds SPEC-like graph-model and connector tables, but framing is requirements/scope-driven so PRD dominates."
+}

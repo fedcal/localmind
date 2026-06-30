@@ -1,0 +1,24 @@
+{
+  "source_path": "/run/media/federicocalo/D1/prj/localmind/documentazione/03-analisi-funzionale/05-interfaccia-utente.md",
+  "type": "DOC",
+  "confidence": "high",
+  "manifest_override": true,
+  "title": "Specifica Funzionale: Interfaccia Utente",
+  "summary": "Describes the Angular 21 frontend UI layout, components, interactions, and interface modes for all LocalMind sections.",
+  "scope": [
+    "Angular frontend",
+    "Chat section",
+    "Documents section",
+    "Search section",
+    "Folders section",
+    "Settings section",
+    "Dashboard section",
+    "sidebar navigation",
+    "LLM provider configuration",
+    "interface modes"
+  ],
+  "cross_refs": [],
+  "locked": false,
+  "precedence": null,
+  "notes": ""
+}

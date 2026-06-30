@@ -1,0 +1,114 @@
+# Docker Compose per simulazione architettura microservizi
+# Docker Compose for microservice architecture simulation
+#
+# NOTA: Questo file e' preparatorio e non viene utilizzato in produzione.
+# NOTE: This file is preparatory and is not used in production.
+#
+# Uso / Usage:
+#   docker compose -f docker-compose.microservices.yml --profile microservices up
+#
+version: '3.8'
+
+services:
+  # Chat Service - Gestisce conversazioni LLM
+  chat-service:
+    build:
+      context: ./localmind-backend
+      dockerfile: Dockerfile
+    profiles: ["microservices"]
+    environment:
+      SPRING_PROFILES_ACTIVE: chat-only
+      SERVER_PORT: 8081
+      DB_HOST: mysql
+      DB_PORT: 3306
+    ports:
+      - "8081:8081"
+    depends_on:
+      - mysql
+    networks:
+      - localmind-network
+
+  # Document Service - Gestisce documenti e ricerca semantica
+  document-service:
+    build:
+      context: ./localmind-backend
+      dockerfile: Dockerfile
+    profiles: ["microservices"]
+    environment:
+      SPRING_PROFILES_ACTIVE: document-only
+      SERVER_PORT: 8082
+      DB_HOST: mysql
+      DB_PORT: 3306
+      QDRANT_HOST: qdrant
+    ports:
+      - "8082:8082"
+    depends_on:
+      - mysql
+      - qdrant
+    networks:
+      - localmind-network
+
+  # MCP Service - Gestisce server e tool MCP
+  mcp-service:
+    build:
+      context: ./localmind-backend
+      dockerfile: Dockerfile
+    profiles: ["microservices"]
+    environment:
+      SPRING_PROFILES_ACTIVE: mcp-only
+      SERVER_PORT: 8083
+      DB_HOST: mysql
+      DB_PORT: 3306
+    ports:
+      - "8083:8083"
+    depends_on:
+      - mysql
+    networks:
+      - localmind-network
+
+  # API Gateway (Nginx reverse proxy)
+  api-gateway:
+    image: nginx:alpine
+    profiles: ["microservices"]
+    ports:
+      - "8080:80"
+    volumes:
+      - ./docker/nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+    depends_on:
+      - chat-service
+      - document-service
+      - mcp-service
+    networks:
+      - localmind-network
+
+  # Infrastructure services
+  mysql:
+    image: mysql:8.0
+    profiles: ["microservices"]
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD:-localmind}
+      MYSQL_DATABASE: localmind
+    ports:
+      - "3307:3306"
+    volumes:
+      - mysql-data:/var/lib/mysql
+    networks:
+      - localmind-network
+
+  qdrant:
+    image: qdrant/qdrant:latest
+    profiles: ["microservices"]
+    ports:
+      - "6335:6334"
+    volumes:
+      - qdrant-data:/qdrant/storage
+    networks:
+      - localmind-network
+
+networks:
+  localmind-network:
+    driver: bridge
+
+volumes:
+  mysql-data:
+  qdrant-data:

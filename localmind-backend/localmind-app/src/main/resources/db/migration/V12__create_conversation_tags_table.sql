@@ -1,0 +1,1 @@
+CREATE TABLE conversation_tags (id CHAR(36) NOT NULL PRIMARY KEY, conversation_id CHAR(36) NOT NULL, tag VARCHAR(100) NOT NULL, CONSTRAINT fk_conversation_tags_conversation FOREIGN KEY (conversation_id) REFERENCES conversations(id) ON DELETE CASCADE, CONSTRAINT uq_conversation_tag UNIQUE (conversation_id, tag))

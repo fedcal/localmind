@@ -1,0 +1,21 @@
+{
+  "source_path": "/run/media/federicocalo/D1/prj/localmind/documentazione/15-ambiti-estensione/04-itinerari-esperienze-it.md",
+  "type": "PRD",
+  "confidence": "medium",
+  "manifest_override": false,
+  "title": "Itinerari & esperienze",
+  "summary": "Direction/requirements document for the LocalMind consumer 'Itinerari & esperienze' vertical: GraphRAG-based, hallucination-free, local-first itinerary generation over a territory knowledge graph.",
+  "scope": [
+    "Graph node types: Luogo/Area, POI, Esperienza, Evento, Ristorazione/Hospitality, Itinerario, Tema/Tag, Persona/Operatore, Recensione/Contributo",
+    "Graph relation/edge types: VICINO_A, PERCORRIBILE_VERSO, HA_TEMA, COMPLEMENTARE_A, CO_VISITATO_CON, PARTE_DI, OFFERTO_DA, SI_SVOLGE_IN, STAGIONALE_IN, RECENSISCE, SIMILE_A, ALTERNATIVA_DI",
+    "Edge weighting factors: distanza/tempo, affinita tematica, co-visita, popolarita, feedback community, affidabilita/freschezza, percorribilita per mezzo, disponibilita temporale, diversita/anti-overtourism",
+    "MVP feature set (12 features): domain node/relation types + Flyway, ItineraryRequest DTO + validation, hybrid candidate retrieval (Qdrant+MySQL), weighted subgraph construction, greedy+2-opt TTDP optimizer, GraphRAG narrative synthesis, REST API POST/GET /api/v1/itineraries, timeline/map UI, itinerary-as-node persistence, manual node editing, basic feedback, .ics/PDF/link export",
+    "Data connectors/sources: community contributions (UI form), territorial Open Data importers (CSV/JSON/API), OpenStreetMap/geo importers, event calendars (calendar module), document pipeline (Tika/OCR PDF), web feeds/scraping (opt-in), weather real-time connector, maps/routing time-distance provider, internal user-feedback events",
+    "Storage mapping: MySQL graph_node/graph_edge tables, Qdrant embedding collection, batch weight recalculation",
+    "Personas, input requirements (mandatory/optional/contextual), KPIs, risks, GraphRAG use cases, maintenance roadmap, integration with existing LocalMind modules"
+  ],
+  "cross_refs": [],
+  "locked": false,
+  "precedence": null,
+  "notes": "Hybrid PRD/SPEC. Classified PRD: dominant framing is product direction (problem/value, personas, input requirements, MVP feature set, KPI success metrics, risks). Strong competing SPEC signals (section 5 graph data model with typed nodes/edges, storage mapping, API endpoint contract). Per ambiguity rule SPEC outranks PRD when equal, but PRD signals clearly dominate here so kept as PRD; synthesizer should still mine section 5 for technical constraints. No frontmatter and no manifest type, so confidence is medium."
+}

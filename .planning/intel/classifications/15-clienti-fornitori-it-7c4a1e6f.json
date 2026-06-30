@@ -1,0 +1,29 @@
+{
+  "source_path": "/run/media/federicocalo/D1/prj/localmind/documentazione/15-ambiti-estensione/15-clienti-fornitori-it.md",
+  "type": "PRD",
+  "confidence": "medium",
+  "manifest_override": false,
+  "title": "Clienti & fornitori",
+  "summary": "Product scope for the LocalMind enterprise Customers & Suppliers extension: a unified weighted CRM/SRM knowledge graph with local GraphRAG over organizations, contracts, interactions and supply dependencies.",
+  "scope": [
+    "Unified CRM/SRM weighted knowledge graph (Customer 360 / Supplier 360)",
+    "Graph node types: Organizzazione, Persona, Sede, Contratto, Opportunita, Ordine, Fattura, Interazione, Prodotto/Servizio, Componente/MateriaPrima, AreaGeografica, CategoriaSpesa, RischioConcentrazione",
+    "Graph relation/edge types: HA_RUOLO, CONTROLLA, HA_REFERENTE, PRESIDIA, RIPORTA_A, HA_CONTRATTO, HA_OPPORTUNITA, HA_ORDINE, HA_FATTURA, HA_INTERAZIONE, ACQUISTA, RICHIEDE, FORNISCE, LOCALIZZATO_IN, GARANTISCE, ALTERNATIVO_A, ESPONE_A, SIMILE_A",
+    "Edge weighting: legame cliente-azienda, criticita fornitore, forza relazione interpersonale, salute relazione, rischio concentrazione, SIMILE_A semantic",
+    "Entity resolution (chiavi forti P.IVA/VAT/DUNS, chiavi deboli, auto-merge + coda revisione umana)",
+    "MVP feature set: graph model on MySQL+Qdrant, CSV/Excel + 1 CRM connector, base entity resolution, email interaction ingestion + local sentiment, Vista 360, interactive graph exploration, base weights/indicators, GraphRAG Q&A with citations, contract-expiry alerts, IT/EN bilingualism",
+    "Evolution feature set: native ERP connectors, multi-tier dependency chain, structural risk engine (SPOF, key-person, concentration), what-if simulation, churn/deterioration prediction, advanced entity resolution, dashboards, contract multimodal extraction",
+    "Data connectors: CRM (Salesforce/HubSpot/Dynamics/Pipedrive REST), ERP/gestionale (SAP/Dynamics/Odoo DB+API, BOM), Email IMAP module, Calendar module, Contracts/documents (Tika+OCR), CSV/Excel importer, external enrichment (registri imprese/DUNS/geo-risk, opt-in)",
+    "Risk analysis: single point of failure, supply dependency chain, revenue/spend concentration, key-person risk, geographic exposure",
+    "Local-first privacy (Ollama default, no cloud without opt-in), GDPR, PF4J plugin/marketplace distribution",
+    "Personas: Sales manager, Account/Sales rep, Procurement, Buyer/Category manager, Risk/Compliance, CFO, Customer Success, Self-hoster/Data engineer",
+    "KPIs: graph quality, coverage, risk visibility, AI citation accuracy, on-prem flow percentage"
+  ],
+  "cross_refs": [
+    "documentation/14-ambiti-estensione/",
+    "Sviluppi"
+  ],
+  "locked": false,
+  "precedence": null,
+  "notes": "Content-only signals (no YAML frontmatter, no filename/path convention). PRD dominates: personas, detailed input requirements, goals/non-goals, MVP-vs-evolution feature set, KPIs/success metrics. Competing SPEC signals present in section 5 (graph node/relation data model + weight formulas) and section 6 (connector tables); SPEC has higher precedence but PRD strength is clearly dominant, so classified PRD with the SPEC overlap recorded here for the synthesizer. Italian-language extension-scope guide ('guida agli sviluppi'), part of a numbered vertical series (15)."
+}

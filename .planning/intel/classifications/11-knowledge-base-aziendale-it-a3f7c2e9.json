@@ -1,0 +1,25 @@
+{
+  "source_path": "/run/media/federicocalo/D1/prj/localmind/documentazione/15-ambiti-estensione/11-knowledge-base-aziendale-it.md",
+  "type": "PRD",
+  "confidence": "medium",
+  "manifest_override": false,
+  "title": "Knowledge base aziendale",
+  "summary": "Vertical extension PRD turning LocalMind into a unified enterprise knowledge graph with GraphRAG assistant, defining personas, input requirements, MVP scope, KPIs and risks.",
+  "scope": [
+    "Graph model node types: Documento, Procedura/SOP, Processo, FAQ, Decisione(ADR), Persona, Team/Dipartimento, Repository, Servizio/Microservizio, API, Database/Datastore, Sistema/Infrastruttura, Ticket/Issue, Cliente/Fornitore, Competenza/Skill, Concetto/Termine, Riunione/Evento, Conversazione, Frammento(Chunk)",
+    "Graph relation types (directed, weighted): documenta, e_prerequisito_di, fa_parte_di, sostituisce/e_sostituito_da, contraddice, dipende_da, espone/consuma, e_esperto_di, e_owner_di, deriva_da, menziona/riferisce, risolve, correlato_a, appartiene_a, definisce",
+    "Edge weight factors: source authority, link explicitness, human validation, semantic co-occurrence/similarity, real usage frequency, freshness/time-decay, answer feedback, criticality/centrality",
+    "MVP feature set: enterprise KB domain with IT/EN enums, MySQL graph schema (nodes/edges/weights/versions via Flyway), document ingestion reuse (Tika/Tesseract/Whisper/Chunking), Qdrant embedding+semantic search, AI entity/relation extraction, dedup/reconciliation, graph CRUD+query API (/api/v1/knowledge/graph), GraphRAG assistant with source citation, ACL permission filter, edge weight computation, curation queue, interactive graph visualization (Angular Signal store), MVP connectors (local folders, email, calendar, Git), IT/EN i18n",
+    "Data connectors: local folders/file server (folder watcher), Confluence/Notion/wiki, SharePoint/Google Drive, Git repositories, Slack/Teams, Jira/ServiceNow/issue trackers, Email (IMAP/Angus Mail), Calendar, intranet/web pages, proprietary DBs via PF4J plugins",
+    "GraphRAG assistant, multi-hop traversal, dependency/impact analysis, find-the-expert, contradiction detection, community detection, obsolescence/gap detection",
+    "Reuses MySQL + Qdrant, hexagonal architecture, Ollama local-first; no Neo4j this cycle"
+  ],
+  "cross_refs": [
+    "documentation/14-ambiti-estensione/",
+    "MODULE_BOUNDARIES.md",
+    "CLAUDE.md"
+  ],
+  "locked": false,
+  "precedence": null,
+  "notes": "No frontmatter or PRD filename convention; classified PRD on content signals (personas, input requirements, MVP scope, KPIs/success metrics, risks) which dominate. Contains SPEC-like graph model tables (node/edge types, weight factors) and integration mappings, but overall framing is product requirements + scope for a vertical rather than implementation contracts, so PRD chosen over SPEC. Confidence medium (content-only signals)."
+}

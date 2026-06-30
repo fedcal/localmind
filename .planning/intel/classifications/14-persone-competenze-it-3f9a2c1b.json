@@ -1,0 +1,25 @@
+{
+  "source_path": "/run/media/federicocalo/D1/prj/localmind/documentazione/15-ambiti-estensione/14-persone-competenze-it.md",
+  "type": "PRD",
+  "confidence": "medium",
+  "manifest_override": false,
+  "title": "Persone & competenze",
+  "summary": "Product requirements for a People & Skills enterprise vertical building a weighted, evidence-inferred organizational skill graph on LocalMind with expert location, gap analysis, and privacy controls.",
+  "scope": [
+    "skill graph node types: Persona, Competenza/Skill, Ruolo, Team/Unita-org, Progetto, Certificazione, Evidenza, Cliente/Dominio, Obiettivo-Capability",
+    "skill graph relation types: POSSIEDE_COMPETENZA (central weighted edge), RICHIEDE, ASPIRA_A, RICOPRE_RUOLO, APPARTIENE_A, RIPORTA_A, HA_LAVORATO_A, CONOSCE_CLIENTE, DIMOSTRATA_DA, MENTORE_DI, ENDORSED_BY, PREREQUISITO_DI/CORRELATA_A, COLLABORA_CON",
+    "edge weighting model: evidence quantity/quality, signal-type reliability, recency/temporal decay (half-life), human confirmations/endorsements, AI inference confidence, contextual coherence; normalized to 1-5 Dreyfus mastery scale",
+    "MVP feature set: (1) skill graph data model extending knowledge domain EntityType/RelationType, (2) import anagrafica + taxonomy (custom + ESCO), (3) skill extraction from documents via EntityExtractorPort + local Ollama, (4) inferred skill profile + provenance/weight, (5) human-in-the-loop validation UI, (6) find-the-expert GraphRAG, (7) basic gap analysis, (8) graph visualization subset, (9) privacy & consent base",
+    "evolution features: Git/Jira/LMS PF4J connectors, HRIS/AD API sync, temporal decay/freshness, bus-factor analysis, automatic team composition, endorsement & mentoring, internal talent marketplace, targeted L&D plans, strategic workforce planning, aggregated/anonymized exec dashboards, pre-exit knowledge capture, advanced ontological normalization",
+    "data connectors: HRIS (CSV/API), Active Directory/LDAP, document domain (Tika/OCR folder watcher), email (IMAP), messaging, calendar, Git repository (PF4J GitHub/GitLab/Bitbucket), Jira/issue tracker (PF4J), LMS, CV/profile upload (PDF), UI input (self-declaration/endorsement), ESCO/O*NET skill standard datasets",
+    "taxonomy/ontology: ESCO/O*NET import, custom corporate taxonomy, emergent ontology, bilingual IT/EN enums, mastery level scales",
+    "privacy & compliance: GDPR legal basis, granular consent/opt-out per source, human-in-the-loop proposals vs confirmed, immutability/auditability, anonymization for exec views",
+    "personas: Laura (HR), Marco (Resource Manager), Sara (Team Lead), Davide (employee), Giulia (new hire), Antonio (CTO), DPO",
+    "GraphRAG use cases: NL expert location, team composition, attribution explanation, conversational gap analysis, bus-factor risk, growth path, assisted onboarding",
+    "integration with LocalMind modules: knowledge, document, email/messaging, calendar, llm, mcp, agent, automation, marketplace/plugin (PF4J), finetuning, auth/common, Angular people-skills feature"
+  ],
+  "cross_refs": [],
+  "locked": false,
+  "precedence": null,
+  "notes": "No YAML frontmatter and no PRD/ADR/SPEC filename convention; path is 15-ambiti-estensione (extension verticals). Dominant content signals are PRD (personas, 'Requisiti in input', MVP->evoluzione feature set, KPIs, use cases). Section 5 contains a SPEC-like graph data model (node/relation/weighting) but is framed to support product requirements, not as a standalone build contract; classified PRD over SPEC since requirements/personas/scope dominate. Cross-refs are external best-practice URLs only (365Talents, Gloat, AIHR, ESCO/O*NET); no internal .md doc paths referenced."
+}

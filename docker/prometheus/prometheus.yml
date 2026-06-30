@@ -1,0 +1,27 @@
+# ==========================================================
+# Prometheus - Configurazione scrape per LocalMind
+# Prometheus - Scrape configuration for LocalMind
+# ==========================================================
+
+global:
+  scrape_interval: 15s
+  evaluation_interval: 15s
+
+scrape_configs:
+  # Backend Spring Boot (in Docker con profilo full)
+  # Backend Spring Boot (Docker with full profile)
+  - job_name: 'localmind-backend'
+    metrics_path: '/actuator/prometheus'
+    static_configs:
+      - targets: ['backend:8080']
+        labels:
+          environment: 'docker'
+
+  # Backend locale (quando si usa il profilo monitoring senza full)
+  # Local backend (when using monitoring profile without full)
+  - job_name: 'localmind-backend-local'
+    metrics_path: '/actuator/prometheus'
+    static_configs:
+      - targets: ['host.docker.internal:8080']
+        labels:
+          environment: 'local'

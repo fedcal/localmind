@@ -1,0 +1,26 @@
+{
+  "source_path": "/run/media/federicocalo/D1/prj/localmind/documentazione/11-roadmap/01-fasi-sviluppo.md",
+  "type": "DOC",
+  "confidence": "high",
+  "manifest_override": true,
+  "title": "Fasi di Sviluppo",
+  "summary": "Roadmap of LocalMind's 6 incremental development phases from LLM Gateway to AI Agents, all completed as of v1.0.0.",
+  "scope": [
+    "LocalMind",
+    "roadmap",
+    "LLM Gateway",
+    "File System Ingestion",
+    "RAG",
+    "Angular UI",
+    "n8n automations",
+    "AI Agents",
+    "Spring Boot",
+    "Qdrant",
+    "Spring Batch",
+    "MCP"
+  ],
+  "cross_refs": [],
+  "locked": false,
+  "precedence": null,
+  "notes": ""
+}

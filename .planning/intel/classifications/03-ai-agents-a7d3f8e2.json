@@ -1,0 +1,25 @@
+{
+  "source_path": "/run/media/federicocalo/D1/prj/localmind/documentazione/03-analisi-funzionale/03-ai-agents.md",
+  "type": "DOC",
+  "confidence": "high",
+  "manifest_override": true,
+  "title": "Specifica Funzionale: AI Agents",
+  "summary": "Functional specification for LocalMind's AI Agents module covering four specialized agent types, data models, execution flow, and hexagonal architecture class structure.",
+  "scope": [
+    "AI Agents",
+    "AgentService",
+    "AgentController",
+    "AgentConfigRepository",
+    "AgentType",
+    "AgentTool",
+    "AgentExecutionResult",
+    "LLM Gateway",
+    "RAG",
+    "tool calling",
+    "LocalMind"
+  ],
+  "cross_refs": [],
+  "locked": false,
+  "precedence": null,
+  "notes": "Content signals strongly suggest SPEC (field-level data models, sequence diagrams, JSON Schema for tool parameters, REST endpoint reference at /api/v1/agents, class architecture); classified as DOC per manifest override."
+}
